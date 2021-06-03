@@ -32,27 +32,47 @@
 						</li>
 
 						<li class="nav-item">
-							<a class="nav-link" id="btnAnalizar" role="button">Analizar</a>
+							<a class="nav-link" id="btnAnalizar" role="button">Cargar</a>
 						</li>
 
 						<li class="nav-item">
 							<a class="nav-link" id="btnCerrar" role="button" onclick="cerrarTab();">Cerrar</a>
 						</li>
 					</ul>
+
+					<form class="d-flex">
+						<input class="form-control me-2" type="search" placeholder="Ruta" aria-label="Search">
+						<button class="btn btn-outline-success" type="submit">Buscar</button>
+					</form>
 				</div>
 			</div>
 		</nav>
 	</div>
 
-	<div>
-		<nav>
-			<div class="nav nav-tabs" id="nav-tab" role="tablist"></div>
-		</nav>
+	<div style="display: flex; align-items: flex-start; margin-left: 20px; margin-right: 20px; margin-top: 20px;">
+		<div style="width: 65%; margin-right: 10px;">
+			<nav>
+				<div class="nav nav-tabs" id="nav-tab" role="tablist"></div>
+			</nav>
 
-		<div class="tab-content" id="nav-tabContent"></div>
+			<div class="tab-content" id="nav-tabContent"></div>
+		</div>
+
+		<div style="width: 35%; margin-left: 10px;">
+			<nav>
+				<div class="nav nav-tabs" id="nav-tab-salida" role="tablist">
+					<button class="nav-link active" id="nav-salida-tab" data-bs-toggle="tab" data-bs-target="#nav-salida" type="button" role="tab" aria-controls="nav-salida" aria-selected="true">Salida</button>
+				</div>
+			</nav>
+
+			<div class="tab-content" id="nav-tabContent-salida">
+				<div class="tab-pane fade active show" id="nav-salida" role="tabpanel" aria-labelledby="nav-salida-tab"><textarea class="form-control" id="textAreaSalida" rows="15" style="background-color: #151515; color: lime" disabled>Salida</textarea></div>
+			</div>
+
+		</div>
 	</div>
 
-	<div>
+	<div style="margin-left: 20px; margin-right: 20px; margin-top: 20px;">
 		<nav>
 			<div class="nav nav-tabs" id="nav-tab-console" role="tablist">
 				<button class="nav-link active" id="nav-console-tab" data-bs-toggle="tab" data-bs-target="#nav-console" type="button" role="tab" aria-controls="nav-console" aria-selected="true">Consola</button>
@@ -60,7 +80,7 @@
 		</nav>
 
 		<div class="tab-content" id="nav-tabContent-console">
-			<div class="tab-pane fade active show" id="nav-console" role="tabpanel" aria-labelledby="nav-console-tab"><textarea class="form-control" id="textAreaConsole" rows="5" style="background-color:#151515; color:lime" disabled>Salida</textarea></div>
+			<div class="tab-pane fade active show" id="nav-console" role="tabpanel" aria-labelledby="nav-console-tab"><textarea class="form-control" id="textAreaConsole" rows="5" style="background-color: #151515; color: lime" disabled>S;G</textarea></div>
 		</div>
 
 	</div>
@@ -130,7 +150,7 @@
 		element.click();
 
 		document.body.removeChild(element);
-	}
+	};
 
 	document.getElementById("btnGuardar").addEventListener("click", function () {
 		var texto = document.getElementById(activeText).value;
