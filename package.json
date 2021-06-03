@@ -8,7 +8,6 @@
   },
   "scripts": {
     "build": "tsc -w",
-    "dev": "nodemon build/index.js",
     "gramaticaXML": "jison ./Gramatica/gramaticaXML.jison",
     "gramaticaXPath": "jison ./Gramatica/gramaticaXPath.jison"
   },
