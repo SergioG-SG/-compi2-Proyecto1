@@ -24,6 +24,12 @@ BSL                                 "\\".
 "/"                                 return 'div';
 "<"                                 return 'lt';
 ">"                                 return 'gt';
+"="                                 return 'asig';
+"?"                                 return 'qmr';
+
+"xml"                       return 'RXML';
+"version"                   return 'RVERSION';
+"encoding"                  return 'RENCODING'
 
 
 /* Number literals */
@@ -51,42 +57,42 @@ BSL                                 "\\".
 %%
 
 /* Definición de la gramática */
-START : RAICES EOF         { $$ = $1; return $$; }
+START : XML OEF                                                                    { $$ = $1; return $$; }
+      ;
+
+XML: PROLOG ROOTS                                                                  
+   | ROOTS
+   ;
+
+PROLOG: lt qmr RXML ATRIB_PROLOG qmr gt
+	 ;
+
+ATRIB_PROLOG: RVERSION asig StringLiteral RENCODING asig STRINGLITERAL
+		  | RVERSION asig StringLiteral
+	       | RENCODING asig STRINGLITERAL
+		  | RENCODING asig STRINGLITERAL RVERSION asig StringLiteral
+		  ;
+
+ROOTS: ROOTS ROOT                                                                  { $1.push($2); $$ = $1;}
+	| ROOT                                                                        { $$ = [$1]; }
+     ;
+
+ROOT: lt identifier LIST_ATRIBUTOS gt ROOTS             lt div identifier gt       { ; }
+    | lt identifier LIST_ATRIBUTOS gt LIST_ID_OB        lt div identifier gt       { ; }
+    | lt identifier LIST_ATRIBUTOS div gt                                          { ; }
     ;
 
-RAICES:
-    RAICES RAIZ           { $1.push($2); $$ = $1;}
-	| RAIZ                { $$ = [$1]; }
-;
+LIST_ATRIBUTOS: ATRIBUTOS                                                          { $$ = $1; }
+              |                                                                    { $$ = []; }
+              ;
 
-RAIZ:
-    OBJETO              { $$ = $1 }
-;
+ATRIBUTOS: ATRIBUTOS ATRIBUTO                                                      { $1.push($2); $$ = $1;}
+         | ATRIBUTO                                                                { $$ = [$1]; }
+         ;
 
-OBJETO:
-      lt identifier LATRIBUTOS gt OBJETOS           lt div identifier gt       { ; }
-    | lt identifier LATRIBUTOS gt LISTA_ID_OBJETO   lt div identifier gt       { ; }
-    | lt identifier LATRIBUTOS div gt                                          { ; }
-;
+ATRIBUTO: identifier asig StringLiteral                                            { ; }
+        ;
 
-LATRIBUTOS: ATRIBUTOS                               { $$ = $1; }
-           |                                        { $$ = []; }
-;
-
-ATRIBUTOS:
-    ATRIBUTOS ATRIBUTO                              { $1.push($2); $$ = $1;}
-    | ATRIBUTO                                      { $$ = [$1]; } 
-;
-
-ATRIBUTO: 
-    identifier asig StringLiteral                   { ; }
-;
-
-LISTA_ID_OBJETO: LISTA_ID_OBJETO identifier          { $1=$1 + ' ' +$2 ; $$ = $1;}
-        | identifier                                 { $$ = $1 }
-;
-
-OBJETOS:
-      OBJETOS OBJETO        { $1.push($2); $$ = $1;}
-	| OBJETO                { $$ = [$1]; }
-;
+LIST_ID_OBJ: LIST_ID_OBJ identifier                                                { $1=$1 + ' ' +$2 ; $$ = $1;}
+           | identifier                                                            { $$ = $1 }
+           ;
