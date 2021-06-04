@@ -8,8 +8,8 @@
   },
   "scripts": {
     "build": "tsc -w",
-    "gramaticaXML": "jison ./Gramatica/gramaticaXML.jison",
-    "gramaticaXPath": "jison ./Gramatica/gramaticaXPath.jison"
+    "gramaticaXML": "jison ./Analizador/gramaticaXML.jison",
+    "gramaticaXPath": "jison ./Analizador/gramaticaXPath.jison"
   },
   "repository": {
     "type": "git",
