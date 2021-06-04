@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/SergioG-SG/-compi2-Proyecto1#readme",
   "devDependencies": {
-    "@types/node": "^15.6.1"
+    "@types/node": "^15.12.0"
   }
 }

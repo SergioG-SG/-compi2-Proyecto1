@@ -4,7 +4,7 @@ import { Instruccion } from "./Interfaces/Instruccion";
 
 const gramaticaXML = require('./gramaticaXML');
 
-function ejecutarCodigo(entrada:string){
+function ejecutarXML(entrada:string){
     const instrucciones = gramaticaXML.parse(entrada);
 
     const entornoGlobal:Entorno = new Entorno(null);
@@ -17,7 +17,7 @@ function ejecutarCodigo(entrada:string){
 */
 }
 
-ejecutarCodigo(`
+ejecutarXML(`
     print(1);
     print(true);
     print("hola mundo");
