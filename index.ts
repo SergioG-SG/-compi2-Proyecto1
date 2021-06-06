@@ -18,31 +18,37 @@ function ejecutarXML(entrada:string){
 }
 
 ejecutarXML(`
-<?XML encoding="UTF-8" version="1.0"?>
+<?XML version="1.0" encoding="UTF-8" ?>
 
-<biblioteca dir="calle 3" prop="Sergio">
+<biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
-        <autor>Autor A</autor>
-        <fechaPublicacion año="2001" mes="Enero"/>
+        <autor>Autor 'A' Julio "Tommy" Garcia</autor>
+        <fechaPublicacion ano="2001" mes="Enero"/>
     </libro>
 
     <libro>
         <titulo>Libro B</titulo>
-        <autor>Autor B</autor>
-        <fechaPublicacion año="2002" mes="Febrero"/>
+        <autor>Autor 2</autor>
+        <fechaPublicacion ano="2002" mes="Febrero"/>
     </libro>
 
     <libro>
         <titulo>Libro C</titulo>
-        <autor>Autor C</autor>
-        <fechaPublicacion  año="2003" mes="Marzo"/>
+        <autor>Autor 3.</autor>
+        <fechaPublicacion  ano="2003" mes="Marzo"/>
     </libro>
 
     <libro>
-        <titulo>Libro D</titulo>
-        <autor>Autor D</autor>
-        <fechaPublicacion  año="2004" mes="Abril"/>
+        <titulo>Libro D/</titulo>
+        <autor>Autor 4.4</autor>
+        <fechaPublicacion  ano="2004" mes="Abril"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro E</titulo>
+        <autor>Autor 5 !#$%&/()?¡=¿/asd>áé´ríóúÁÉÍÓÚ........</autor>
+        <fechaPublicacion  ano="2004" mes="Abril"/>
     </libro>
 </biblioteca>
 

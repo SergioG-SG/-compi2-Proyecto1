@@ -2,16 +2,6 @@
 
 %options case-insensitive
 
-escapechar                          [\'\"\\bfnrtv]
-escape                              \\{escapechar}
-acceptedcharsdouble                 [^\"\\]+
-stringdouble                        {escape}|{acceptedcharsdouble}
-stringliteral                       \"{stringdouble}*\"
-
-acceptedcharssingle                 [^\'\\]
-stringsingle                        {escape}|{acceptedcharssingle}
-charliteral                         \'{stringsingle}\'
-
 %s                                  comment
 
 %%
@@ -20,26 +10,28 @@ charliteral                         \'{stringsingle}\'
 <comment>.                          /* ignora contenido de los comentarios*/
 \s+                                 // ignora los espacios en blanco
 
-"/"                                 return 'div';
-"<"                                 return 'lt';
-">"                                 return 'gt';
-"="                                 return 'asig';
-"?"                                 return 'qmr';
+"<?xml"                             return 'prologo';
+"?>"                                return 'prologc';
+"</"                                return 'etiqca';
+"/>"                                return 'etiqcc';
 
-"xml"                               return 'RXML';
 "version"                           return 'RVERSION';
 "encoding"                          return 'RENCODING'
 
+"<"                                 return 'lt';
+">"                                 return 'gt';
+"="                                 return 'asig';
 
 /* Number literals */
-(([0-9]+"."[0-9]*)|("."[0-9]+))     return 'DoubleLiteral';
-[0-9]+                              return 'IntegerLiteral';
+\d+([.]\d*)?                        return 'DoubleLiteral';
+\"[^\"]*\"                          return 'StringLiteral1'
+\'[^\']*\'                          return 'StringLiteral2'
+[a-zA-Z][a-zA-Z0-9_]*               return 'identifier';
 
-[a-zA-Z_][a-zA-Z0-9_ñÑ]*            return 'identifier';
-
-{stringliteral}                     return 'StringLiteral'
-{charliteral}                       return 'CharLiteral'
-
+([\u0021-\u002F]|[\u003A-\u003B]|[\u003F-\u0040]|[\u005B-\u0060]|[\u007B-\u007E]|[\u00A1-\u00AC]|[\u00AE-\uD7F0])+                  return 'simbolos1';
+/*([\u003A-\u003B]|[\u003F-\u0040])+  return 'simbolos2';
+([\u005B-\u0060]|[\u007B-\u007E])+  return 'simbolos3';
+([\u00A1-\u00AC]|[\u00AE-\uD7F0])+  return 'simbolos4';*/
 
 //error lexico
 .                                   {
@@ -64,23 +56,18 @@ XML: PROLOG ROOTS
    | ROOTS
    ;
 
-PROLOG: lt qmr RXML ATRIB_PROLOG qmr gt
+PROLOG: prologo RVERSION asig StringLiteral1 RENCODING asig StringLiteral1 prologc
 	  ;
 
-ATRIB_PROLOG: RVERSION asig StringLiteral RENCODING asig StringLiteral
-		    | RVERSION asig StringLiteral
-	        | RENCODING asig StringLiteral
-		    | RENCODING asig StringLiteral RVERSION asig StringLiteral
-		    ;
 
 ROOTS: ROOTS ROOT                                                                  { $1.push($2); $$ = $1;}
      | ROOT                                                                        { $$ = [$1]; }
      ;
 
-ROOT: lt identifier LIST_ATRIBUTOS gt ROOTS             lt div identifier gt       { ; }
-    | lt identifier LIST_ATRIBUTOS gt CONTENIDO       lt div identifier gt       { ; }
-    | lt identifier LIST_ATRIBUTOS gt                   lt div identifier gt       { ; }
-    | lt identifier LIST_ATRIBUTOS div gt                                          { ; }
+ROOT: lt identifier LIST_ATRIBUTOS gt      ROOTS         etiqca identifier gt      { ; }
+    | lt identifier LIST_ATRIBUTOS gt      CONTENTS      etiqca identifier gt      { ; } 
+    | lt identifier LIST_ATRIBUTOS gt                    etiqca identifier gt      { ; }
+    | lt identifier LIST_ATRIBUTOS etiqcc                                          { ; }
     ;
 
 LIST_ATRIBUTOS: ATRIBUTOS                                                          { $$ = $1; }
@@ -91,9 +78,22 @@ ATRIBUTOS: ATRIBUTOS ATRIBUTO                                                   
          | ATRIBUTO                                                                { $$ = [$1]; }
          ;
 
-ATRIBUTO: identifier asig StringLiteral                                            { ; }
+ATRIBUTO: identifier asig StringLiteral1                                            {;}
+        | identifier asig StringLiteral2                                            {;}
         ;
 
-CONTENIDO: CONTENIDO identifier                                                { $1=$1 + ' ' +$2 ; $$ = $1;}
-         | identifier                                                            { $$ = $1 }
+CONTENTS: CONTENTS BODY                                                            { $1=$1 + ' ' +$2 ; $$ = $1;}
+         | BODY                                                                    { $$ = $1 }
          ;
+
+BODY: identifier { $$ = $1; console.log($$); }
+    | DoubleLiteral { $$ = $1; console.log($$); }
+    | StringLiteral1 { $$ = $1; console.log($$); }
+    | StringLiteral2 { $$ = $1; console.log($$); }
+    | simbolos1  { $$ = $1; console.log($$); }
+    /*| simbolos2  { $$ = $1; console.log($$); }
+    | simbolos3  { $$ = $1; console.log($$); }
+    | simbolos4  { $$ = $1; console.log($$); }*/
+    | gt { $$ = $1; console.log($$); }
+    | asig { $$ = $1; console.log($$); }
+    ;
