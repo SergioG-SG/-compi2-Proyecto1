@@ -1,20 +1,61 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const AST_1 = require("./Simbolo/AST");
-const Entorno_1 = require("./Simbolo/Entorno");
-const gramaticaXML = require('./gramaticaXML');
+const gramaticaXML = require('../gramaticaXML');
 function ejecutarXML(entrada) {
     const instrucciones = gramaticaXML.parse(entrada);
-    const entornoGlobal = new Entorno_1.Entorno(null);
-    const ast = new AST_1.AST(instrucciones);
-    /*
-        instrucciones.forEach((element:Instruccion) => {
-            element.ejecutar(entornoGlobal,ast);
-      });
-    */
+    /*const entornoGlobal:Entorno = new Entorno(null);
+    const ast:AST = new AST(instrucciones);
+
+/*
+    instrucciones.forEach((element:Instruccion) => {
+        element.ejecutar(entornoGlobal,ast);
+  });
+*/
 }
 ejecutarXML(`
-    print(1);
-    print(true);
-    print("hola mundo");
+<?XML encoding="UTF-8" version="1.0"?>
+
+<biblioteca dir="calle 3" prop="Sergio">
+    <libro>
+        <titulo>Libro A</titulo>
+        <autor>Autor A</autor>
+        <fechaPublicacion año="2001" mes="Enero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro B</titulo>
+        <autor>Autor B</autor>
+        <fechaPublicacion año="2002" mes="Febrero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro C</titulo>
+        <autor>Autor C</autor>
+        <fechaPublicacion  año="2003" mes="Marzo"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro D</titulo>
+        <autor>Autor D</autor>
+        <fechaPublicacion  año="2004" mes="Abril"/>
+    </libro>
+</biblioteca>
+
+<hemeroteca>
+    <hemeroteca>
+        <hemeroteca>
+            <hemeroteca>
+                <hemeroteca>
+                    <hemeroteca>
+                        <hemeroteca>
+                            <hemeroteca>
+
+                            </hemeroteca>
+                        </hemeroteca>
+                    </hemeroteca>
+                </hemeroteca>
+            </hemeroteca>
+        </hemeroteca>
+    </hemeroteca>
+</hemeroteca>
 `);

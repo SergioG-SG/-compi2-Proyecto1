@@ -12,14 +12,13 @@ acceptedcharssingle                 [^\'\\]
 stringsingle                        {escape}|{acceptedcharssingle}
 charliteral                         \'{stringsingle}\'
 
-BSL                                 "\\".
 %s                                  comment
 
 %%
 "<!--"                              this.begin('comment');
 <comment>"-->"                      this.popState();
-<comment>.                          /* skip comment content*/
-\s+
+<comment>.                          /* ignora contenido de los comentarios*/
+\s+                                 // ignora los espacios en blanco
 
 "/"                                 return 'div';
 "<"                                 return 'lt';
@@ -27,9 +26,9 @@ BSL                                 "\\".
 "="                                 return 'asig';
 "?"                                 return 'qmr';
 
-"xml"                       return 'RXML';
-"version"                   return 'RVERSION';
-"encoding"                  return 'RENCODING'
+"xml"                               return 'RXML';
+"version"                           return 'RVERSION';
+"encoding"                          return 'RENCODING'
 
 
 /* Number literals */
@@ -57,28 +56,30 @@ BSL                                 "\\".
 %%
 
 /* Definición de la gramática */
-START : XML OEF                                                                    { $$ = $1; return $$; }
+START : XML EOF                                                                    { $$ = $1; return $$; }
       ;
 
 XML: PROLOG ROOTS                                                                  
+   | PROLOG
    | ROOTS
    ;
 
 PROLOG: lt qmr RXML ATRIB_PROLOG qmr gt
-	 ;
+	  ;
 
-ATRIB_PROLOG: RVERSION asig StringLiteral RENCODING asig STRINGLITERAL
-		  | RVERSION asig StringLiteral
-	       | RENCODING asig STRINGLITERAL
-		  | RENCODING asig STRINGLITERAL RVERSION asig StringLiteral
-		  ;
+ATRIB_PROLOG: RVERSION asig StringLiteral RENCODING asig StringLiteral
+		    | RVERSION asig StringLiteral
+	        | RENCODING asig StringLiteral
+		    | RENCODING asig StringLiteral RVERSION asig StringLiteral
+		    ;
 
 ROOTS: ROOTS ROOT                                                                  { $1.push($2); $$ = $1;}
-	| ROOT                                                                        { $$ = [$1]; }
+     | ROOT                                                                        { $$ = [$1]; }
      ;
 
 ROOT: lt identifier LIST_ATRIBUTOS gt ROOTS             lt div identifier gt       { ; }
-    | lt identifier LIST_ATRIBUTOS gt LIST_ID_OB        lt div identifier gt       { ; }
+    | lt identifier LIST_ATRIBUTOS gt CONTENIDO       lt div identifier gt       { ; }
+    | lt identifier LIST_ATRIBUTOS gt                   lt div identifier gt       { ; }
     | lt identifier LIST_ATRIBUTOS div gt                                          { ; }
     ;
 
@@ -93,6 +94,6 @@ ATRIBUTOS: ATRIBUTOS ATRIBUTO                                                   
 ATRIBUTO: identifier asig StringLiteral                                            { ; }
         ;
 
-LIST_ID_OBJ: LIST_ID_OBJ identifier                                                { $1=$1 + ' ' +$2 ; $$ = $1;}
-           | identifier                                                            { $$ = $1 }
-           ;
+CONTENIDO: CONTENIDO identifier                                                { $1=$1 + ' ' +$2 ; $$ = $1;}
+         | identifier                                                            { $$ = $1 }
+         ;
