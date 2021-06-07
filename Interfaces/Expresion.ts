@@ -7,6 +7,5 @@ export interface Expresion{
      columna: number;
     
      getTipo(ent:Entorno, arbol:AST):Tipo ;
-     getValorImplicito(ent:Entorno, arbol:AST):any;
-     
+     getValorImplicito(ent:Entorno, arbol:AST):any;     
 }

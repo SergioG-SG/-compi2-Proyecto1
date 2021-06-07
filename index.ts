@@ -2,15 +2,14 @@ import { AST } from "./Simbolo/AST";
 import { Entorno } from "./Simbolo/Entorno";
 import { Instruccion } from "./Interfaces/Instruccion";
 
-const gramaticaXML = require('../gramaticaXML');
+const gramaticaXML = require('../Analizador/gramaticaXML');
 
 function ejecutarXML(entrada:string){
-    const instrucciones = gramaticaXML.parse(entrada);
+    const objetos = gramaticaXML.parse(entrada);
+    const entornoGlobal:Entorno = new Entorno(null);
+    //const ast:AST = new AST(instrucciones);
 
-    /*const entornoGlobal:Entorno = new Entorno(null);
-    const ast:AST = new AST(instrucciones);
-
-/*    
+/*
     instrucciones.forEach((element:Instruccion) => {
         element.ejecutar(entornoGlobal,ast);
   });

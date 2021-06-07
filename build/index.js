@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const gramaticaXML = require('../gramaticaXML');
+const Entorno_1 = require("./Simbolo/Entorno");
+const gramaticaXML = require('../Analizador/gramaticaXML');
 function ejecutarXML(entrada) {
-    const instrucciones = gramaticaXML.parse(entrada);
-    /*const entornoGlobal:Entorno = new Entorno(null);
-    const ast:AST = new AST(instrucciones);
-
-/*
-    instrucciones.forEach((element:Instruccion) => {
-        element.ejecutar(entornoGlobal,ast);
-  });
-*/
+    const objetos = gramaticaXML.parse(entrada);
+    const entornoGlobal = new Entorno_1.Entorno(null);
+    //const ast:AST = new AST(instrucciones);
+    /*
+        instrucciones.forEach((element:Instruccion) => {
+            element.ejecutar(entornoGlobal,ast);
+      });
+    */
 }
 ejecutarXML(`
 <?XML version="1.0" encoding="UTF-8" ?>
