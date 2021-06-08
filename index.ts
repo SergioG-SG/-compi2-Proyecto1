@@ -59,13 +59,14 @@ ejecutarXML(`
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
-        <autor>Autor 'A' Julio "Tommy" Garcia</autor>
+        <autor>Autor A Julio &quot;Tommy&quot; Garcia</autor>
         <fechaPublicacion ano="2001" mes="Enero"/>
     </libro>
 
     <libro>
         <titulo>Libro B</titulo>
-        <autor>Autor 2</autor>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> !#$%/()=?¡¿°|´¨+*{}[],;.:-_ </descripcion>
         <fechaPublicacion ano="2002" mes="Febrero"/>
     </libro>
 
