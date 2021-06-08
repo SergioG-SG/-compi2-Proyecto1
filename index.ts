@@ -1,19 +1,56 @@
 import { AST } from "./Simbolo/AST";
+import { Tipo } from './Simbolo/Tipo'
 import { Entorno } from "./Simbolo/Entorno";
 import { Instruccion } from "./Interfaces/Instruccion";
+import { Objeto } from "./Interprete/Expresion/Objeto";
+import { Simbolo } from "./Simbolo/Simbolo";
+import { Atributo } from "./Interprete/Expresion/Atributo";
 
 const gramaticaXML = require('../Analizador/gramaticaXML');
 
-function ejecutarXML(entrada:string){
-    const objetos = gramaticaXML.parse(entrada);
-    const entornoGlobal:Entorno = new Entorno(null);
-    //const ast:AST = new AST(instrucciones);
+function ejecutarXML(entrada: string) {
+    //Parseo para obtener la raiz o raices  
+    const objetos = gramaticaXML.parse(entrada)
+    const entornoGlobal: Entorno = new Entorno(null)
+    //funcion recursiva para manejo de entornos
+    objetos.forEach((objeto: Objeto) => {
+        if (objeto.identificador1 == "?XML") {
+            //Acciones para el prologo
+        } else {
+            llenarTablaXML(objeto, entornoGlobal);
+        }
+    })
+    //esta es solo para debug jaja
+    const ent = entornoGlobal;
+}
 
-/*
-    instrucciones.forEach((element:Instruccion) => {
-        element.ejecutar(entornoGlobal,ast);
-  });
-*/
+function llenarTablaXML(objeto: Objeto, entorno: Entorno) {
+    //Recorro todas las raices  DEBERIA SER RECURSIVA
+    //Inicializamos los entornos del objeto
+    const entornoObjeto: Entorno = new Entorno(null)
+    //Verificamos si tiene atributos para asignarselos
+    if (objeto.listaAtributos.length > 0) {
+        objeto.listaAtributos.forEach((atributo: Atributo) => {
+            const simbolo: Simbolo = new Simbolo(Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor, entornoObjeto)
+            entornoObjeto.agregar(simbolo.indentificador, simbolo)
+        })
+    }
+     //Verificamos si tiene texto para agregarselo
+    if(objeto.texto!=''){
+        const simbolo: Simbolo = new Simbolo(Tipo.ATRIBUTO, 'textoInterno', objeto.linea, objeto.columna, objeto.texto, entornoObjeto)
+        entornoObjeto.agregar(simbolo.indentificador, simbolo)
+    }
+    //Agregamos al entorno global
+    objeto.entorno = entornoObjeto
+    const simbolo: Simbolo = new Simbolo(Tipo.ETIQUETA, objeto.identificador1, objeto.linea, objeto.columna, objeto, entornoObjeto)
+    entorno.agregar(simbolo.indentificador, simbolo)
+    //Verificamos si tiene mas hijos para recorrerlos recursivamente
+    if (objeto.listaObjetos.length > 0) {
+        objeto.listaObjetos.forEach((objetoHijo: Objeto) => {
+            const resultado = objetoHijo;
+            llenarTablaXML(objetoHijo, entornoObjeto);
+        })
+    }
 }
 
 ejecutarXML(`
@@ -32,40 +69,10 @@ ejecutarXML(`
         <fechaPublicacion ano="2002" mes="Febrero"/>
     </libro>
 
-    <libro>
-        <titulo>Libro C</titulo>
-        <autor>Autor 3.</autor>
-        <fechaPublicacion  ano="2003" mes="Marzo"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro D/</titulo>
-        <autor>Autor 4.4</autor>
-        <fechaPublicacion  ano="2004" mes="Abril"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro E</titulo>
-        <autor>Autor 5 !#$%&/()?¡=¿/asd>áé´ríóúÁÉÍÓÚ........</autor>
-        <fechaPublicacion  ano="2004" mes="Abril"/>
-    </libro>
+  
 </biblioteca>
 
 <hemeroteca>
-    <hemeroteca>
-        <hemeroteca>
-            <hemeroteca>
-                <hemeroteca>
-                    <hemeroteca>
-                        <hemeroteca>
-                            <hemeroteca>
-
-                            </hemeroteca>
-                        </hemeroteca>
-                    </hemeroteca>
-                </hemeroteca>
-            </hemeroteca>
-        </hemeroteca>
-    </hemeroteca>
+    
 </hemeroteca>
 `);

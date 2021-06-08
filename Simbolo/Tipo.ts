@@ -5,6 +5,9 @@ export enum Tipo {
     BOOL,
     VOID,
     STRUCT,
-    ARRAY
+    ARRAY,
+    ETIQUETA,
+    ATRIBUTO,
+    ENCODING
 }
 

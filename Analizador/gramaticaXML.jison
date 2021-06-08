@@ -74,8 +74,9 @@ LIST_ATRIBUTOS: ATRIBUTOS                           {$$=$1;}
               |                                     {$$=[];}                               
               ;
 
-ATRIBUTOS: ATRIBUTOS ATRIBUTO                       {$$=$1;}                               
-         | ATRIBUTO                                 {$$ = [$1];}                               
+ATRIBUTOS: ATRIBUTOS ATRIBUTO                       {$1.push($2);$$=$1;}                               
+         | ATRIBUTO                                 {$$ = [$1];}        
+
          ;
 
 ATRIBUTO: identifier asig StringLiteral1            {$$ = new Atributo($1,$3,@1.first_line,@1.first_column);}                                

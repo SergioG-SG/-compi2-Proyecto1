@@ -114,7 +114,7 @@ case 10:
 this.$=[];
 break;
 case 11:
-this.$=$$[$0-1];
+$$[$0-1].push($$[$0]);this.$=$$[$0-1];
 break;
 case 13: case 14:
 this.$ = new Atributo($$[$0-2],$$[$0],_$[$0-2].first_line,_$[$0-2].first_column);
