@@ -3,10 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Tipo_1 = require("./Simbolo/Tipo");
 const Entorno_1 = require("./Simbolo/Entorno");
 const Simbolo_1 = require("./Simbolo/Simbolo");
+const GraficarAST_1 = require("./Graficador/GraficarAST");
 const gramaticaXML = require('../Analizador/gramaticaXML');
+let ObjetosXML;
 function ejecutarXML(entrada) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
+    ObjetosXML = objetos;
     const entornoGlobal = new Entorno_1.Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto) => {
@@ -21,13 +24,12 @@ function ejecutarXML(entrada) {
     const ent = entornoGlobal;
 }
 function llenarTablaXML(objeto, entorno) {
-    //Recorro todas las raices  DEBERIA SER RECURSIVA
     //Inicializamos los entornos del objeto
     const entornoObjeto = new Entorno_1.Entorno(null);
     //Verificamos si tiene atributos para asignarselos
     if (objeto.listaAtributos.length > 0) {
         objeto.listaAtributos.forEach((atributo) => {
-            const simbolo = new Simbolo_1.Simbolo(Tipo_1.Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor, entornoObjeto);
+            const simbolo = new Simbolo_1.Simbolo(Tipo_1.Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor.replace(/['"]+/g, ''), entornoObjeto);
             entornoObjeto.agregar(simbolo.indentificador, simbolo);
         });
     }
@@ -54,21 +56,26 @@ ejecutarXML(`
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
-        <autor>Autor A Julio &quot;Tommy&quot; Garcia</autor>
+        <autor>Julio &amp;Tommy&amp; Garcia</autor>
         <fechaPublicacion ano="2001" mes="Enero"/>
     </libro>
 
     <libro>
         <titulo>Libro B</titulo>
         <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> !#$%/()=?¡¿°|´¨+*{}[],;.:-_ </descripcion>
+        <descripcion> holi </descripcion>
         <fechaPublicacion ano="2002" mes="Febrero"/>
     </libro>
 
   
 </biblioteca>
 
-<hemeroteca>
+<hemeroteca dir="zona 21" prop="kev" estado="chilera">
     
 </hemeroteca>
 `);
+function realizarGraficaAST() {
+    const graficador = new GraficarAST_1.GraficarAST;
+    graficador.graficar(ObjetosXML);
+}
+realizarGraficaAST();

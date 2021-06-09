@@ -5,12 +5,15 @@ import { Instruccion } from "./Interfaces/Instruccion";
 import { Objeto } from "./Interprete/Expresion/Objeto";
 import { Simbolo } from "./Simbolo/Simbolo";
 import { Atributo } from "./Interprete/Expresion/Atributo";
+import { GraficarAST } from "./Graficador/GraficarAST";
 
 const gramaticaXML = require('../Analizador/gramaticaXML');
+let ObjetosXML :any
 
 function ejecutarXML(entrada: string) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada)
+    ObjetosXML = objetos
     const entornoGlobal: Entorno = new Entorno(null)
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto: Objeto) => {
@@ -25,13 +28,13 @@ function ejecutarXML(entrada: string) {
 }
 
 function llenarTablaXML(objeto: Objeto, entorno: Entorno) {
-    //Recorro todas las raices  DEBERIA SER RECURSIVA
+
     //Inicializamos los entornos del objeto
     const entornoObjeto: Entorno = new Entorno(null)
     //Verificamos si tiene atributos para asignarselos
     if (objeto.listaAtributos.length > 0) {
         objeto.listaAtributos.forEach((atributo: Atributo) => {
-            const simbolo: Simbolo = new Simbolo(Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor, entornoObjeto)
+            const simbolo: Simbolo = new Simbolo(Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor.replace(/['"]+/g, ''), entornoObjeto)
             entornoObjeto.agregar(simbolo.indentificador, simbolo)
         })
     }
@@ -59,21 +62,28 @@ ejecutarXML(`
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
-        <autor>Autor A Julio &quot;Tommy&quot; Garcia</autor>
+        <autor>Julio &amp;Tommy&amp; Garcia</autor>
         <fechaPublicacion ano="2001" mes="Enero"/>
     </libro>
 
     <libro>
         <titulo>Libro B</titulo>
         <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> !#$%/()=?¡¿°|´¨+*{}[],;.:-_ </descripcion>
+        <descripcion> holi </descripcion>
         <fechaPublicacion ano="2002" mes="Febrero"/>
     </libro>
 
   
 </biblioteca>
 
-<hemeroteca>
+<hemeroteca dir="zona 21" prop="kev" estado="chilera">
     
 </hemeroteca>
 `);
+
+function realizarGraficaAST(){
+const graficador :GraficarAST = new GraficarAST
+graficador.graficar(ObjetosXML)
+}
+
+realizarGraficaAST()
