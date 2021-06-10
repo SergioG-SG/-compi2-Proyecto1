@@ -25,6 +25,7 @@ class GraficarAST {
             this.cadenaFinal += "\n}";
             console.log(this.cadenaFinal);
             var direccion = encodeURI("https://dreampuf.github.io/GraphvizOnline/#" + this.cadenaFinal);
+            console.log(direccion);
             window.open(direccion, '_blank');
         }
         catch (error) {
