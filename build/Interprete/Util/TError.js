@@ -1,6 +1,9 @@
-export let errorSem = [];
-export let errorSin = [];
-export let errorLex = [];
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.resetTE = exports.ELexico = exports.ESintactico = exports.TError = exports.errorLex = exports.errorSin = exports.errorSem = void 0;
+exports.errorSem = [];
+exports.errorSin = [];
+exports.errorLex = [];
 function Error(tipo, desc, analizador, linea, col) {
     return {
         tipo: tipo,
@@ -10,7 +13,7 @@ function Error(tipo, desc, analizador, linea, col) {
         columna: col
     };
 }
-export class TError {
+class TError {
     constructor() {
         this.tablaErrores = [];
         this.semantico = [];
@@ -19,7 +22,7 @@ export class TError {
     agregar(tipo, desc, analizador, linea, col) {
         const result = Error(tipo, desc, analizador, linea, col);
         this.tablaErrores.push(result);
-        errorSem.push(result);
+        exports.errorSem.push(result);
     }
     imprimir() {
         let todosErrores = "";
@@ -32,20 +35,24 @@ export class TError {
         return this.tablaErrores;
     }
 }
-export class ESintactico {
+exports.TError = TError;
+class ESintactico {
     constructor(tipo, descripcion, analizador, linea, columna) {
         const result = Error(tipo, descripcion, analizador, linea, columna);
-        errorSin.push(result);
+        exports.errorSin.push(result);
     }
 }
-export class ELexico {
+exports.ESintactico = ESintactico;
+class ELexico {
     constructor(tipo, descripcion, analizador, linea, columna) {
         const result = Error(tipo, descripcion, analizador, linea, columna);
-        errorLex.push(result);
+        exports.errorLex.push(result);
     }
 }
-export function resetTE() {
-    errorSem = [];
-    errorSin = [];
-    errorLex = [];
+exports.ELexico = ELexico;
+function resetTE() {
+    exports.errorSem = [];
+    exports.errorSin = [];
+    exports.errorLex = [];
 }
+exports.resetTE = resetTE;
