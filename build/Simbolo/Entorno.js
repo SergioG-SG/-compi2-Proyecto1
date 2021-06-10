@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Entorno = void 0;
-class Entorno {
+export class Entorno {
     constructor(anterior) {
         this.tabla = {};
         this.anterior = anterior;
@@ -58,4 +55,3 @@ class Entorno {
         }
     }
 }
-exports.Entorno = Entorno;

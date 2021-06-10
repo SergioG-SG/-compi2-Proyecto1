@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Atributo = void 0;
-class Atributo {
+export class Atributo {
     constructor(id, valor, linea, columna) {
         this.identificador = id;
         this.valor = valor;
@@ -9,4 +6,3 @@ class Atributo {
         this.columna = columna;
     }
 }
-exports.Atributo = Atributo;
