@@ -4,7 +4,7 @@ import { Simbolo } from "./Simbolo/Simbolo.js";
 import { GraficarAST } from "./Graficador/GraficarAST.js";
 import { gramaticaXML } from'./Analizadores/gramaticaXML.js';
 let ObjetosXML;
-export function ejecutarXML(entrada) {
+function ejecutarXML(entrada) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;

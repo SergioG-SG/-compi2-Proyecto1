@@ -31,7 +31,7 @@
 						</li>
 
 						<li class="nav-item">
-							<a class="nav-link" href="javascript:;" id="btnAnalizar" role="button" onclick="cargarXML_ASC();">Cargar</a>
+							<a class="nav-link" href="javascript:;" id="btnCargarA" role="button">Cargar</a>
 						</li>
 
 						<li class="nav-item">
@@ -161,7 +161,7 @@
 		descargar(activeName, texto);
 	}, false);
 
-	function cargarXML_ASC(){
+	document.getElementById("btnCargarA").addEventListener('click', function() {
 		var texto = document.getElementById(activeText).value;
 
 		if (texto != null && texto != "") {
@@ -169,8 +169,7 @@
 		}else {
 			alert('No hay texto para analizar!');
 		}
-		
-	}
+	});
 
 	function graficarAST () {
 		realizarGraficaAST();
