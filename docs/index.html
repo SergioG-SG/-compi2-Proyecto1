@@ -35,6 +35,10 @@
 						</li>
 
 						<li class="nav-item">
+							<a class="nav-link" id="btnGraficaAST" role="button" onclick="graficarAST();">Grafica</a>
+						</li>
+
+						<li class="nav-item">
 							<a class="nav-link" id="btnCerrar" role="button" onclick="cerrarTab();">Cerrar</a>
 						</li>
 					</ul>
@@ -160,9 +164,14 @@
 	function cargarXML_ASC(){
 		var texto = document.getElementById(activeText).value;
 
-		if (texto != null && texto == "") {
+		if (texto != null && texto != "") {
 			ejecutarXML(texto);
 		}
+		
+	}
+
+	function graficarAST () {
+		realizarGraficaAST();
 	}
 
 </script>
