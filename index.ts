@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import { AST } from "./Simbolo/AST.js";
 import { Tipo } from './Simbolo/Tipo.js'
 import { Entorno } from "./Simbolo/Entorno.js";
@@ -44,19 +44,7 @@ tablaErroresFicticia()
 }
 
 accionesEjecutables()
-=======
-import { AST } from "./Simbolo/AST";
-import { Tipo } from './Simbolo/Tipo'
-import { Entorno } from "./Simbolo/Entorno";
-import { Instruccion } from "./Interfaces/Instruccion";
-import { Objeto } from "./Interprete/Expresion/Objeto";
-import { Simbolo } from "./Simbolo/Simbolo";
-import { Atributo } from "./Interprete/Expresion/Atributo";
-import { GraficarAST } from "./Graficador/GraficarAST";
 
-const gramaticaXML = require('./Analizadores/gramaticaXML');
-let ObjetosXML :any
->>>>>>> 63bd85c18214e967617a6fe0717740138c5c0331
 
 function ejecutarXML(entrada: string) {
 
