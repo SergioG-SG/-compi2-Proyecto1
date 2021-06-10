@@ -87,3 +87,5 @@ graficador.graficar(ObjetosXML)
 }
 
 realizarGraficaAST()
+
+module.exports = { ejecutarXML, realizarGraficaAST };

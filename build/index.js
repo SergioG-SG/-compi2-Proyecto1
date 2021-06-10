@@ -79,3 +79,4 @@ function realizarGraficaAST() {
     graficador.graficar(ObjetosXML);
 }
 realizarGraficaAST();
+module.exports = { ejecutarXML, realizarGraficaAST };
