@@ -5,7 +5,6 @@
 
 	<link rel="stylesheet" href="./css/bootstrap.min.css">
 	<script src="./js/bootstrap.min.js"></script>
-	<script src="./build/index.js" type="module"></script>
 
 </head>
 
@@ -162,6 +161,9 @@
 		descargar(activeName, texto);
 	}, false);
 
+</script>
+
+<script src="./build/index.js" type="module">
 	function cargarXML_ASC(){
 		var texto = document.getElementById(activeText).value;
 
@@ -176,9 +178,6 @@
 	function graficarAST () {
 		realizarGraficaAST();
 	}
-
 </script>
-
-
 
 </html>
