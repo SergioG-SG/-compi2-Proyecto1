@@ -22,6 +22,9 @@
 							
 							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 								<li>
+									<button name="btnNuevo" id="btnNuevo" class="dropdown-item">Nuevo</button>
+								</li>
+								<li>
 									<button name="attachment" id="attachment" class="dropdown-item">Abrir</button>
 									<input id="file-input" type="file" style="display:none" />
 								</li>
@@ -97,6 +100,24 @@
 	var activeText = "";
 	var activeNombre = "";
 
+	document.getElementById("btnNuevo").addEventListener('click', function() {
+		var nombre = prompt('Nombre del archivo');
+
+		if (nombre == "" || nombre == null) {
+			alert("Campo vacio!")
+		}else{
+			nombre += ".xml";
+
+			var boton = document.getElementById("nav-tab");
+			boton.innerHTML += `<button class="nav-link" id="nav-${contTab}-tab" data-bs-toggle="tab" data-bs-target="#nav-${contTab}" type="button" role="tab" aria-controls="nav-${contTab}" aria-selected="true" onclick="selector('nav-${contTab}-tab', 'nav-${contTab}', 'textArea${contTab}', '${nombre}');">${nombre}</button>`;
+
+			var elemento = document.getElementById("nav-tabContent");
+			elemento.innerHTML += `<div class="tab-pane fade" id="nav-${contTab}" role="tabpanel" aria-labelledby="nav-${contTab}-tab"><textarea class="form-control" id="textArea${contTab}" rows="15"></textarea></div>`;
+			
+			contTab++;
+		}
+	});
+
 	document.getElementById("attachment").addEventListener('click', function() {
 		document.getElementById("file-input").click();
 	});
@@ -109,7 +130,7 @@
 		}
 
 		var boton = document.getElementById("nav-tab");
-		boton.innerHTML += `<button class="nav-link" id="nav-${contTab}-tab" data-bs-toggle="tab" data-bs-target="#nav-${contTab}" type="button" role="tab" aria-controls="nav-${contTab}" aria-selected="true" onclick="selector('nav-${contTab}-tab', 'nav-${contTab}', 'textArea${contTab}', '${archivo.name}');">${archivo.name} </button>`;
+		boton.innerHTML += `<button class="nav-link" id="nav-${contTab}-tab" data-bs-toggle="tab" data-bs-target="#nav-${contTab}" type="button" role="tab" aria-controls="nav-${contTab}" aria-selected="true" onclick="selector('nav-${contTab}-tab', 'nav-${contTab}', 'textArea${contTab}', '${archivo.name}');">${archivo.name}</button>`;
 
 		var lector = new FileReader();
 		lector.onload = function(e) {
