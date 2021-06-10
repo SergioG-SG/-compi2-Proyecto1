@@ -51,7 +51,7 @@ function llenarTablaXML(objeto, entorno) {
     }
 }
 ejecutarXML(`
-<?XML version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
