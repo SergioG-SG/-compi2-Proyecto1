@@ -2,8 +2,41 @@ import { Tipo } from './Simbolo/Tipo.js';
 import { Entorno } from "./Simbolo/Entorno.js";
 import { Simbolo } from "./Simbolo/Simbolo.js";
 import { GraficarAST } from "./Graficador/GraficarAST.js";
+import { ELexico, ESintactico, errorLex, errorSin } from "./Interprete/Util/TError.js";
+
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
+
 let ObjetosXML;
+//Esta funcion es para mientras en lo que sincroniza con la pag
+function accionesEjecutables() {
+    ejecutarXML(`
+<?XML version="1.0" encoding="UTF-8" ?>
+
+<biblioteca dir="calle 3>5<5" prop="Sergio's">
+    <libro>
+        <titulo>Libro A</titulo>
+        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <fechaPublicacion ano="2001" mes="Enero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro B</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechaPublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+  
+</biblioteca>
+
+<hemeroteca dir="zona 21" prop="kev" estado="chilera">
+    
+</hemeroteca>
+`);
+    realizarGraficaAST();
+    tablaErroresFicticia();
+}
+accionesEjecutables();
 function ejecutarXML(entrada) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
@@ -48,32 +81,22 @@ function llenarTablaXML(objeto, entorno) {
         });
     }
 }
-ejecutarXML(`
-<?XML version="1.0" encoding="UTF-8" ?>
-
-<biblioteca dir="calle 3>5<5" prop="Sergio's">
-    <libro>
-        <titulo>Libro A</titulo>
-        <autor>Julio &amp;Tommy&amp; Garcia</autor>
-        <fechaPublicacion ano="2001" mes="Enero"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro B</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechaPublicacion ano="2002" mes="Febrero"/>
-    </libro>
-
-  
-</biblioteca>
-
-<hemeroteca dir="zona 21" prop="kev" estado="chilera">
-    
-</hemeroteca>
-`);
 function realizarGraficaAST() {
     const graficador = new GraficarAST;
     graficador.graficar(ObjetosXML);
 }
-realizarGraficaAST();
+function tablaErroresFicticia() {
+    new ELexico('Lexico', "Caracter inesperado \'@\'", 'XML', 1, 1);
+    new ELexico('Lexico', "Caracter inesperado \'$\'", 'XML', 1, 1);
+    new ELexico('Lexico', "Caracter inesperado \'%\'", 'XML', 1, 1);
+    new ELexico('Lexico', "Caracter inesperado \'+\'", 'Xpath', 1, 1);
+    new ESintactico('Sintactico', "No se esperaba \'@\'", 'XML', 1, 1);
+    let todosErrores = "";
+    errorLex.forEach(element => {
+        todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion + ", Tipo:" + element.tipo + "\n";
+    });
+    errorSin.forEach(element => {
+        todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion + ", Tipo:" + element.tipo + "\n";
+    });
+    console.log(todosErrores);
+}
