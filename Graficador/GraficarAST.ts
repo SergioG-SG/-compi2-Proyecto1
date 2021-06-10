@@ -28,8 +28,11 @@ export class GraficarAST {
                 //this.cadenaFinal += cadenaInterna
             })
 
-            this.cadenaFinal += "\n}"
-            console.log(this.cadenaFinal)
+            this.cadenaFinal += "\n}";
+            console.log(this.cadenaFinal);
+            
+            var direccion = encodeURI("https://dreampuf.github.io/GraphvizOnline/#"+this.cadenaFinal);
+            window.open(direccion, '_blank');
         } catch (error) {
 
         }
