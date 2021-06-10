@@ -1,4 +1,4 @@
-import { Entorno } from '../../Simbolo/Entorno';
+import { Entorno } from '../../Simbolo/Entorno.js';
 export class Objeto {
     constructor(id, texto, linea, columna, listaA, listaO, ide) {
         this.identificador1 = id;

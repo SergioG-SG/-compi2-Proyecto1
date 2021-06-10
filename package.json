@@ -9,8 +9,8 @@
   },
   "scripts": {
     "build": "tsc -w",
-    "gramaticaXML": "jison ./Analizador/gramaticaXML.jison && MOVE gramaticaXML.js Analizador",
-    "gramaticaXPath": "jison ./Analizador/gramaticaXPath.jison"
+    "gramaticaXML": "jison ./Analizadores/gramaticaXML.jison && MOVE gramaticaXML.js build/Analizadores",
+    "gramaticaXPath": "jison ./Analizadores/gramaticaXPath.jison && MOVE gramaticaXPath.js build/Analizadores"
   },
   "repository": {
     "type": "git",

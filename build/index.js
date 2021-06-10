@@ -1,8 +1,8 @@
-import { Tipo } from './Simbolo/Tipo';
-import { Entorno } from "./Simbolo/Entorno";
-import { Simbolo } from "./Simbolo/Simbolo";
-import { GraficarAST } from "./Graficador/GraficarAST";
-const gramaticaXML = require('../Analizador/gramaticaXML');
+import { Tipo } from './Simbolo/Tipo.js';
+import { Entorno } from "./Simbolo/Entorno.js";
+import { Simbolo } from "./Simbolo/Simbolo.js";
+import { GraficarAST } from "./Graficador/GraficarAST.js";
+const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 let ObjetosXML;
 function ejecutarXML(entrada) {
     //Parseo para obtener la raiz o raices  

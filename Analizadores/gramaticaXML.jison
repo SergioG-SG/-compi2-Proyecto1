@@ -1,8 +1,10 @@
  /* segmento de codigo, es equivalente a la seccion parseCode que encontramos en CUP */
  /* aca podemos importar los módulos que vamos a utilizar, crear funciones, etc */
 %{
-	const { Objeto } = require('../build/Interprete/Expresion/Objeto');
-    const { Atributo } = require('../build/Interprete/Expresion/Atributo');
+
+import { Objeto } from '../Interprete/Expresion/Objeto.js';
+import { Atributo } from'../Interprete/Expresion/Atributo.js';
+
 %}
 
 
@@ -45,9 +47,9 @@
 ([\u0021]|[\u0023-\u0025]|[\u0028-\u002F]|[\u003A-\u003B]|[\u003F-\u0040]|[\u005B-\u0060]|[\u007B-\u007E]|[\u00A1-\u00AC]|[\u00AE-\uD7F0])+                  return 'simbolos1';
 
 //error lexico
-.                                   {
-                                        console.error('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);
-                                    }
+.       {
+            console.error('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);
+        }
 
 <<EOF>>                             return 'EOF'
 
