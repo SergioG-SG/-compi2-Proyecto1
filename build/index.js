@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Tipo_1 = require("./Simbolo/Tipo");
-const Entorno_1 = require("./Simbolo/Entorno");
-const Simbolo_1 = require("./Simbolo/Simbolo");
-const GraficarAST_1 = require("./Graficador/GraficarAST");
-const gramaticaXML = require('./Analizadores/gramaticaXML');
+const Tipo_js_1 = require("./Simbolo/Tipo.js");
+const Entorno_js_1 = require("./Simbolo/Entorno.js");
+const Simbolo_js_1 = require("./Simbolo/Simbolo.js");
+const GraficarAST_js_1 = require("./Graficador/GraficarAST.js");
+const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 let ObjetosXML;
 function ejecutarXML(entrada) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
-    const entornoGlobal = new Entorno_1.Entorno(null);
+    const entornoGlobal = new Entorno_js_1.Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto) => {
         if (objeto.identificador1 == "?XML") {
@@ -25,22 +25,22 @@ function ejecutarXML(entrada) {
 }
 function llenarTablaXML(objeto, entorno) {
     //Inicializamos los entornos del objeto
-    const entornoObjeto = new Entorno_1.Entorno(null);
+    const entornoObjeto = new Entorno_js_1.Entorno(null);
     //Verificamos si tiene atributos para asignarselos
     if (objeto.listaAtributos.length > 0) {
         objeto.listaAtributos.forEach((atributo) => {
-            const simbolo = new Simbolo_1.Simbolo(Tipo_1.Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor.replace(/['"]+/g, ''), entornoObjeto);
+            const simbolo = new Simbolo_js_1.Simbolo(Tipo_js_1.Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor.replace(/['"]+/g, ''), entornoObjeto);
             entornoObjeto.agregar(simbolo.indentificador, simbolo);
         });
     }
     //Verificamos si tiene texto para agregarselo
     if (objeto.texto != '') {
-        const simbolo = new Simbolo_1.Simbolo(Tipo_1.Tipo.ATRIBUTO, 'textoInterno', objeto.linea, objeto.columna, objeto.texto, entornoObjeto);
+        const simbolo = new Simbolo_js_1.Simbolo(Tipo_js_1.Tipo.ATRIBUTO, 'textoInterno', objeto.linea, objeto.columna, objeto.texto, entornoObjeto);
         entornoObjeto.agregar(simbolo.indentificador, simbolo);
     }
     //Agregamos al entorno global
     objeto.entorno = entornoObjeto;
-    const simbolo = new Simbolo_1.Simbolo(Tipo_1.Tipo.ETIQUETA, objeto.identificador1, objeto.linea, objeto.columna, objeto, entornoObjeto);
+    const simbolo = new Simbolo_js_1.Simbolo(Tipo_js_1.Tipo.ETIQUETA, objeto.identificador1, objeto.linea, objeto.columna, objeto, entornoObjeto);
     entorno.agregar(simbolo.indentificador, simbolo);
     //Verificamos si tiene mas hijos para recorrerlos recursivamente
     if (objeto.listaObjetos.length > 0) {
@@ -75,7 +75,7 @@ ejecutarXML(`
 </hemeroteca>
 `);
 function realizarGraficaAST() {
-    const graficador = new GraficarAST_1.GraficarAST;
+    const graficador = new GraficarAST_js_1.GraficarAST;
     graficador.graficar(ObjetosXML);
 }
 realizarGraficaAST();
