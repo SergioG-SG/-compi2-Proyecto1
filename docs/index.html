@@ -31,7 +31,7 @@
 						</li>
 
 						<li class="nav-item">
-							<a class="nav-link" href="javascript:;" id="btnAnalizar" role="button" onclick="ejecutarXML(document.getElementById(activeText).value);">Cargar</a>
+							<a class="nav-link" href="javascript:;" id="btnAnalizar" role="button" onclick="cargarXML_ASC();">Cargar</a>
 						</li>
 
 						<li class="nav-item">
@@ -161,10 +161,7 @@
 		descargar(activeName, texto);
 	}, false);
 
-</script>
-
-<script src="./build/index.js" type="module">
-	export function cargarXML_ASC(){
+	function cargarXML_ASC(){
 		var texto = document.getElementById(activeText).value;
 
 		if (texto != null && texto != "") {
@@ -178,6 +175,10 @@
 	function graficarAST () {
 		realizarGraficaAST();
 	}
+</script>
+
+<script src="./build/index.js" type="module">
+	
 </script>
 
 </html>
