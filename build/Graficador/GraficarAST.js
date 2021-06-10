@@ -1,4 +1,7 @@
-export class GraficarAST {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GraficarAST = void 0;
+class GraficarAST {
     constructor() {
         this.cadenaFinal = "";
         this.i = 0;
@@ -58,3 +61,4 @@ export class GraficarAST {
         return cadena;
     }
 }
+exports.GraficarAST = GraficarAST;

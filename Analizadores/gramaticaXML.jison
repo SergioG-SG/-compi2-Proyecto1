@@ -2,8 +2,8 @@
  /* aca podemos importar los módulos que vamos a utilizar, crear funciones, etc */
 %{
 
-import { Objeto } from '../Interprete/Expresion/Objeto.js';
-import { Atributo } from'../Interprete/Expresion/Atributo.js';
+const { Objeto } = require('../Interprete/Expresion/Objeto');
+const { Atributo } = require('../Interprete/Expresion/Atributo');
 
 %}
 

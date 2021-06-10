@@ -1,5 +1,5 @@
-import { Entorno } from '../../Simbolo/Entorno.js';
-import { Atributo } from './Atributo.js'
+import { Entorno } from '../../Simbolo/Entorno';
+import { Atributo } from './Atributo'
 
 export class Objeto{
     identificador1:string;
