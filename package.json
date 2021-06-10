@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Link para acceder a la pagina web: https://sergiog-sg.github.io/-compi2-Proyecto1/",
   "main": "index.js",
-  "type": "module",
   "directories": {
     "doc": "docs"
   },

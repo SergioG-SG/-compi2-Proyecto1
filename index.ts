@@ -1,13 +1,13 @@
-import { AST } from "./Simbolo/AST.js";
-import { Tipo } from './Simbolo/Tipo.js'
-import { Entorno } from "./Simbolo/Entorno.js";
-import { Instruccion } from "./Interfaces/Instruccion.js";
-import { Objeto } from "./Interprete/Expresion/Objeto.js";
-import { Simbolo } from "./Simbolo/Simbolo.js";
-import { Atributo } from "./Interprete/Expresion/Atributo.js";
-import { GraficarAST } from "./Graficador/GraficarAST.js";
+import { AST } from "./Simbolo/AST";
+import { Tipo } from './Simbolo/Tipo'
+import { Entorno } from "./Simbolo/Entorno";
+import { Instruccion } from "./Interfaces/Instruccion";
+import { Objeto } from "./Interprete/Expresion/Objeto";
+import { Simbolo } from "./Simbolo/Simbolo";
+import { Atributo } from "./Interprete/Expresion/Atributo";
+import { GraficarAST } from "./Graficador/GraficarAST";
 
-const gramaticaXML = require('./Analizadores/gramaticaXML.js');
+const gramaticaXML = require('./Analizadores/gramaticaXML');
 let ObjetosXML :any
 
 function ejecutarXML(entrada: string) {

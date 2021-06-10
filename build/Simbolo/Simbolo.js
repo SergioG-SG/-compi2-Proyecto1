@@ -1,4 +1,7 @@
-export class Simbolo {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Simbolo = void 0;
+class Simbolo {
     constructor(tipo, id, linea, columna, value, ent) {
         this.indentificador = id;
         this.linea = linea;
@@ -11,3 +14,4 @@ export class Simbolo {
         return String(this.valor);
     }
 }
+exports.Simbolo = Simbolo;
