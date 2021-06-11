@@ -8,13 +8,15 @@ import { Atributo } from "./Interprete/Expresion/Atributo.js";
 import { GraficarAST } from "./Graficador/GraficarAST.js";
 
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
+const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
+
 let ObjetosXML :any
 
 function ejecutarXML(entrada: string) {
     //Parseo para obtener la raiz o raices  
-    const objetos = gramaticaXML.parse(entrada)
-    ObjetosXML = objetos
-    const entornoGlobal: Entorno = new Entorno(null)
+    const objetos = gramaticaXML.parse(entrada);
+    ObjetosXML = objetos;
+    const entornoGlobal: Entorno = new Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto: Objeto) => {
         if (objeto.identificador1 == "?XML") {
@@ -25,7 +27,11 @@ function ejecutarXML(entrada: string) {
     })
     //esta es solo para debug jaja
     const ent = entornoGlobal;
-}
+};
+
+function ejecutarXML_DSC(entrada: string){
+    const objetos = gramaticaXMLD.parse(entrada);
+};
 
 function llenarTablaXML(objeto: Objeto, entorno: Entorno) {
 
@@ -54,7 +60,12 @@ function llenarTablaXML(objeto: Objeto, entorno: Entorno) {
             llenarTablaXML(objetoHijo, entornoObjeto);
         })
     }
-}
+};
+
+function realizarGraficaAST(){
+    const graficador :GraficarAST = new GraficarAST
+    graficador.graficar(ObjetosXML)
+};
 
 ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -81,11 +92,31 @@ ejecutarXML(`
 </hemeroteca>
 `);
 
-function realizarGraficaAST(){
-const graficador :GraficarAST = new GraficarAST
-graficador.graficar(ObjetosXML)
-}
-
 realizarGraficaAST()
+
+ejecutarXML_DSC(`
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<biblioteca dir="calle 3>5<5" prop="Sergio's">
+    <libro>
+        <titulo>Libro A</titulo>
+        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <fechaPublicacion ano="2001" mes="Enero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro B</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechaPublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+  
+</biblioteca>
+
+<hemeroteca dir="zona 21" prop="kev" estado="chilera">
+    
+</hemeroteca>
+`);
 
 module.exports = { ejecutarXML, realizarGraficaAST };

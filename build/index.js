@@ -5,6 +5,7 @@ const Entorno_js_1 = require("./Simbolo/Entorno.js");
 const Simbolo_js_1 = require("./Simbolo/Simbolo.js");
 const GraficarAST_js_1 = require("./Graficador/GraficarAST.js");
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
+const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
 let ObjetosXML;
 function ejecutarXML(entrada) {
     //Parseo para obtener la raiz o raices  
@@ -23,6 +24,11 @@ function ejecutarXML(entrada) {
     //esta es solo para debug jaja
     const ent = entornoGlobal;
 }
+;
+function ejecutarXML_DSC(entrada) {
+    const objetos = gramaticaXMLD.parse(entrada);
+}
+;
 function llenarTablaXML(objeto, entorno) {
     //Inicializamos los entornos del objeto
     const entornoObjeto = new Entorno_js_1.Entorno(null);
@@ -50,6 +56,12 @@ function llenarTablaXML(objeto, entorno) {
         });
     }
 }
+;
+function realizarGraficaAST() {
+    const graficador = new GraficarAST_js_1.GraficarAST;
+    graficador.graficar(ObjetosXML);
+}
+;
 ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
@@ -74,9 +86,29 @@ ejecutarXML(`
     
 </hemeroteca>
 `);
-function realizarGraficaAST() {
-    const graficador = new GraficarAST_js_1.GraficarAST;
-    graficador.graficar(ObjetosXML);
-}
 realizarGraficaAST();
+ejecutarXML_DSC(`
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<biblioteca dir="calle 3>5<5" prop="Sergio's">
+    <libro>
+        <titulo>Libro A</titulo>
+        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <fechaPublicacion ano="2001" mes="Enero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro B</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechaPublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+  
+</biblioteca>
+
+<hemeroteca dir="zona 21" prop="kev" estado="chilera">
+    
+</hemeroteca>
+`);
 module.exports = { ejecutarXML, realizarGraficaAST };
