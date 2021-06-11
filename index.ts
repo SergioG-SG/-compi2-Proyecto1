@@ -6,17 +6,18 @@ import { Objeto } from "./Interprete/Expresion/Objeto.js";
 import { Simbolo } from "./Simbolo/Simbolo.js";
 import { Atributo } from "./Interprete/Expresion/Atributo.js";
 import { GraficarAST } from "./Graficador/GraficarAST.js";
-import { ELexico, ESintactico, errorLex, errorSem,errorSin } from "./Interprete/Util/TError.js";
+import { ELexico, ESintactico, errorLex, errorSem, errorSin } from "./Interprete/Util/TError.js";
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
 
-let ObjetosXML :any
-
+let ObjetosXML: any
+let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
+                        </tr></thead>`
 //Esta funcion es para mientras en lo que sincroniza con la pag
 function accionesEjecutables() {
 
     ejecutarXML(`
-<?XML version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
@@ -32,15 +33,14 @@ function accionesEjecutables() {
         <fechaPublicacion ano="2002" mes="Febrero"/>
     </libro>
 
-  
 </biblioteca>
 
 <hemeroteca dir="zona 21" prop="kev" estado="chilera">
     
 </hemeroteca>
 `);
-realizarGraficaAST()
-tablaErroresFicticia()
+    realizarGraficaAST()
+    tablaErroresFicticia()
 }
 
 accionesEjecutables()
@@ -57,42 +57,64 @@ function ejecutarXML(entrada: string) {
         if (objeto.identificador1 == "?XML") {
             //Acciones para el prologo
         } else {
-            llenarTablaXML(objeto, entornoGlobal);
+            cadenaReporteTS += `<tr>`
+            llenarTablaXML(objeto, entornoGlobal,null);
+            cadenaReporteTS += `</tr>`
         }
     })
     //esta es solo para debug jaja
     const ent = entornoGlobal;
 };
 
-function ejecutarXML_DSC(entrada: string){
+function ejecutarXML_DSC(entrada: string) {
     const objetos = gramaticaXMLD.parse(entrada);
 };
 
-function llenarTablaXML(objeto: Objeto, entorno: Entorno) {
+function llenarTablaXML(objeto: Objeto, entorno: Entorno,padre:Objeto|null) {
 
     //Inicializamos los entornos del objeto
     const entornoObjeto: Entorno = new Entorno(null)
     //Verificamos si tiene atributos para asignarselos
     if (objeto.listaAtributos.length > 0) {
+        
         objeto.listaAtributos.forEach((atributo: Atributo) => {
+            
+            //ESto para el llenada
             const simbolo: Simbolo = new Simbolo(Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor.replace(/['"]+/g, ''), entornoObjeto)
             entornoObjeto.agregar(simbolo.indentificador, simbolo)
+            //Esto es para la graficada de la tabla de simbolos
+            cadenaReporteTS += `<tr>`
+            cadenaReporteTS+=`<td>${simbolo.indentificador}</td><td>Atributo</td><td>${objeto.identificador1}</td><td>${atributo.linea}</td><td>${atributo.columna}</td>`
+            cadenaReporteTS += `<tr>`
         })
     }
     //Verificamos si tiene texto para agregarselo
     if (objeto.texto != '') {
         const simbolo: Simbolo = new Simbolo(Tipo.ATRIBUTO, 'textoInterno', objeto.linea, objeto.columna, objeto.texto, entornoObjeto)
         entornoObjeto.agregar(simbolo.indentificador, simbolo)
+        //Esto es para la graficada de la tabla de simbolos
+       // cadenaReporteTS+=`<td>${objeto.texto}</td><td>Atributo</td><td>${objeto.identificador1}</td><td>${objeto.linea}</td><td>${objeto.columna}</td>`
     }
     //Agregamos al entorno global
     objeto.entorno = entornoObjeto
     const simbolo: Simbolo = new Simbolo(Tipo.ETIQUETA, objeto.identificador1, objeto.linea, objeto.columna, objeto, entornoObjeto)
     entorno.agregar(simbolo.indentificador, simbolo)
-    //Verificamos si tiene mas hijos para recorrerlos recursivamente
+      //Esto es para la graficada de la tabla de simbolos
+      let ambitoTS=""
+      if(ambitoTS!=null){
+        ambitoTS=objeto.identificador1
+      }else{
+        ambitoTS="Global"
+      }
+      cadenaReporteTS += `<tr>`
+      cadenaReporteTS+=`<td>${objeto.identificador1}</td><td>Objeto</td><td>${ambitoTS}</td><td>${objeto.linea}</td><td>${objeto.columna}</td>`
+      cadenaReporteTS += `</tr>`
+      //Verificamos si tiene mas hijos para recorrerlos recursivamente
     if (objeto.listaObjetos.length > 0) {
         objeto.listaObjetos.forEach((objetoHijo: Objeto) => {
             const resultado = objetoHijo;
-            llenarTablaXML(objetoHijo, entornoObjeto);
+          
+            llenarTablaXML(objetoHijo, entornoObjeto,objetoHijo);
         })
     }
 };
@@ -109,12 +131,12 @@ function tablaErroresFicticia() {
     new ELexico('Lexico', "Caracter inesperado \'+\'", 'Xpath', 1, 1)
     new ESintactico('Sintactico', "No se esperaba \'@\'", 'XML', 1, 1)
 
-    let todosErrores=""
+    let todosErrores = ""
     errorLex.forEach(element => {
-        todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion +", Tipo:" +element.tipo+"\n";
+        todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion + ", Tipo:" + element.tipo + "\n";
     });
     errorSin.forEach(element => {
-        todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion +", Tipo:" +element.tipo+"\n";
+        todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion + ", Tipo:" + element.tipo + "\n";
     });
     console.log(todosErrores)
 }
@@ -144,4 +166,5 @@ ejecutarXML_DSC(`
 </hemeroteca>
 `);
 
-module.exports = { ejecutarXML, realizarGraficaAST };
+
+module.exports = { ejecutarXML, realizarGraficaAST, cadenaReporteTS };
