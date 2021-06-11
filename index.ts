@@ -12,9 +12,6 @@ const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
 
 let ObjetosXML :any
 
-
-const gramaticaXML = require('./Analizadores/gramaticaXML.js');
-let ObjetosXML: any
 //Esta funcion es para mientras en lo que sincroniza con la pag
 function accionesEjecutables() {
 
