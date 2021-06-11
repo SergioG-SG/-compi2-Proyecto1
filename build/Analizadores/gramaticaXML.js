@@ -84,7 +84,7 @@ performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* actio
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
- this.$=$$[$0-1]; return this.$; 
+ this.$=$$[$0-1]; console.log($$[$0-1]); return this.$; 
 break;
 case 2: case 11:
  $$[$0-1].push($$[$0]); this.$=$$[$0-1]; 
@@ -619,7 +619,7 @@ pushState:function pushState (condition) {
 stateStackSize:function stateStackSize() {
         return this.conditionStack.length;
     },
-options: {"case-insensitive":true},
+options: {},
 performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START) {
 var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
@@ -677,7 +677,7 @@ case 24:return 5
 break;
 }
 },
-rules: [/^(?:<!--)/i,/^(?:-->)/i,/^(?:.)/i,/^(?:\s+)/i,/^(?:<\?xml\b)/i,/^(?:\?>)/i,/^(?:<\/)/i,/^(?:\/>)/i,/^(?:version\b)/i,/^(?:encoding\b)/i,/^(?:&lt;)/i,/^(?:&gt;)/i,/^(?:&amp;)/i,/^(?:&apos;)/i,/^(?:&quot;)/i,/^(?:<)/i,/^(?:>)/i,/^(?:=)/i,/^(?:\d+([.]\d*)?)/i,/^(?:"[^\"]*")/i,/^(?:'[^\']*')/i,/^(?:[a-zA-Z][a-zA-Z0-9_]*)/i,/^(?:([\u0021]|[\u0023-\u0025]|[\u0028-\u002F]|[\u003A-\u003B]|[\u003F-\u0040]|[\u005B-\u0060]|[\u007B-\u007E]|[\u00A1-\u00AC]|[\u00AE-\uD7F0])+)/i,/^(?:.)/i,/^(?:$)/i],
+rules: [/^(?:<!--)/,/^(?:-->)/,/^(?:.)/,/^(?:\s+)/,/^(?:<\?xml\b)/,/^(?:\?>)/,/^(?:<\/)/,/^(?:\/>)/,/^(?:version\b)/,/^(?:encoding\b)/,/^(?:&lt;)/,/^(?:&gt;)/,/^(?:&amp;)/,/^(?:&apos;)/,/^(?:&quot;)/,/^(?:<)/,/^(?:>)/,/^(?:=)/,/^(?:\d+([.]\d*)?)/,/^(?:"[^\"]*")/,/^(?:'[^\']*')/,/^(?:[a-zA-Z][a-zA-Z0-9_]*)/,/^(?:([\u0021]|[\u0023-\u0025]|[\u0028-\u002F]|[\u003A-\u003B]|[\u003F-\u0040]|[\u005B-\u0060]|[\u007B-\u007E]|[\u00A1-\u00AC]|[\u00AE-\uD7F0])+)/,/^(?:.)/,/^(?:$)/],
 conditions: {"comment":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],"inclusive":true},"INITIAL":{"rules":[0,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],"inclusive":true}}
 });
 return lexer;

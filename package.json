@@ -9,7 +9,9 @@
   "scripts": {
     "build": "tsc -w",
     "gramaticaXML": "jison ./Analizadores/gramaticaXML.jison && MOVE gramaticaXML.js build/Analizadores",
-    "gramaticaXPath": "jison ./Analizadores/gramaticaXPath.jison && MOVE gramaticaXPath.js build/Analizadores"
+    "gramaticaXMLD": "jison ./Analizadores/gramaticaXMLDSC.jison && MOVE gramaticaXMLDSC.js build/Analizadores",
+    "gramaticaXPath": "jison ./Analizadores/gramaticaXPath.jison && MOVE gramaticaXPath.js build/Analizadores",
+    "boundle": "browserify ./build/index.js --standalone myBundle >  ./docs/bundle.js"
   },
   "repository": {
     "type": "git",
