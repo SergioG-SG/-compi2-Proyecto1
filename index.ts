@@ -14,7 +14,6 @@ let ObjetosXML: any
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
 //Esta funcion es para mientras en lo que sincroniza con la pag
-function accionesEjecutables() {
 
     ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -22,7 +21,7 @@ function accionesEjecutables() {
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
-        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <autor>Julio& &amp;Tommy&amp; Garcia</autor>
         <fechaPublicacion ano="2001" mes="Enero"/>
     </libro>
 
@@ -38,16 +37,16 @@ function accionesEjecutables() {
 <hemeroteca dir="zona 21" prop="kev" estado="chilera">
     
 </hemeroteca>
-`);
+`)
     realizarGraficaAST()
     tablaErroresFicticia()
-}
 
-accionesEjecutables()
 
+//accionesEjecutables()
+//tablaErroresFicticia()
 
 function ejecutarXML(entrada: string) {
-
+    cadenaReporteTS=""
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
@@ -58,33 +57,34 @@ function ejecutarXML(entrada: string) {
             //Acciones para el prologo
         } else {
             cadenaReporteTS += `<tr>`
-            llenarTablaXML(objeto, entornoGlobal,null);
+            llenarTablaXML(objeto, entornoGlobal, null);
             cadenaReporteTS += `</tr>`
         }
     })
     //esta es solo para debug jaja
     const ent = entornoGlobal;
+    console.log(cadenaReporteTS)
 };
 
 function ejecutarXML_DSC(entrada: string) {
     const objetos = gramaticaXMLD.parse(entrada);
 };
 
-function llenarTablaXML(objeto: Objeto, entorno: Entorno,padre:Objeto|null) {
+function llenarTablaXML(objeto: Objeto, entorno: Entorno, padre: Objeto | null) {
 
     //Inicializamos los entornos del objeto
     const entornoObjeto: Entorno = new Entorno(null)
     //Verificamos si tiene atributos para asignarselos
     if (objeto.listaAtributos.length > 0) {
-        
+
         objeto.listaAtributos.forEach((atributo: Atributo) => {
-            
+
             //ESto para el llenada
             const simbolo: Simbolo = new Simbolo(Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor.replace(/['"]+/g, ''), entornoObjeto)
             entornoObjeto.agregar(simbolo.indentificador, simbolo)
             //Esto es para la graficada de la tabla de simbolos
             cadenaReporteTS += `<tr>`
-            cadenaReporteTS+=`<td>${simbolo.indentificador}</td><td>Atributo</td><td>${objeto.identificador1}</td><td>${atributo.linea}</td><td>${atributo.columna}</td>`
+            cadenaReporteTS += `<td>${simbolo.indentificador}</td><td>Atributo</td><td>${objeto.identificador1}</td><td>${atributo.linea}</td><td>${atributo.columna}</td>`
             cadenaReporteTS += `<tr>`
         })
     }
@@ -93,28 +93,28 @@ function llenarTablaXML(objeto: Objeto, entorno: Entorno,padre:Objeto|null) {
         const simbolo: Simbolo = new Simbolo(Tipo.ATRIBUTO, 'textoInterno', objeto.linea, objeto.columna, objeto.texto, entornoObjeto)
         entornoObjeto.agregar(simbolo.indentificador, simbolo)
         //Esto es para la graficada de la tabla de simbolos
-       // cadenaReporteTS+=`<td>${objeto.texto}</td><td>Atributo</td><td>${objeto.identificador1}</td><td>${objeto.linea}</td><td>${objeto.columna}</td>`
+        // cadenaReporteTS+=`<td>${objeto.texto}</td><td>Atributo</td><td>${objeto.identificador1}</td><td>${objeto.linea}</td><td>${objeto.columna}</td>`
     }
     //Agregamos al entorno global
     objeto.entorno = entornoObjeto
     const simbolo: Simbolo = new Simbolo(Tipo.ETIQUETA, objeto.identificador1, objeto.linea, objeto.columna, objeto, entornoObjeto)
     entorno.agregar(simbolo.indentificador, simbolo)
-      //Esto es para la graficada de la tabla de simbolos
-      let ambitoTS=""
-      if(ambitoTS!=null){
-        ambitoTS=objeto.identificador1
-      }else{
-        ambitoTS="Global"
-      }
-      cadenaReporteTS += `<tr>`
-      cadenaReporteTS+=`<td>${objeto.identificador1}</td><td>Objeto</td><td>${ambitoTS}</td><td>${objeto.linea}</td><td>${objeto.columna}</td>`
-      cadenaReporteTS += `</tr>`
-      //Verificamos si tiene mas hijos para recorrerlos recursivamente
+    //Esto es para la graficada de la tabla de simbolos
+    let ambitoTS = ""
+    if (padre != null) {
+        ambitoTS = padre.identificador1
+    } else {
+        ambitoTS = "Global"
+    }
+    cadenaReporteTS += `<tr>`
+    cadenaReporteTS += `<td>${objeto.identificador1}</td><td>Objeto</td><td>${ambitoTS}</td><td>${objeto.linea}</td><td>${objeto.columna}</td>`
+    cadenaReporteTS += `</tr>`
+    //Verificamos si tiene mas hijos para recorrerlos recursivamente
     if (objeto.listaObjetos.length > 0) {
         objeto.listaObjetos.forEach((objetoHijo: Objeto) => {
             const resultado = objetoHijo;
-          
-            llenarTablaXML(objetoHijo, entornoObjeto,objetoHijo);
+
+            llenarTablaXML(objetoHijo, entornoObjeto, objetoHijo);
         })
     }
 };
@@ -139,6 +139,28 @@ function tablaErroresFicticia() {
         todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion + ", Tipo:" + element.tipo + "\n";
     });
     console.log(todosErrores)
+}
+
+function reporteTablaErrores() {
+    let cadenaReporteTE = ` <thead><tr><th scope="col">Tipo</th><th scope="col">Descripcion</th><th scope="col">Archivo</th><th scope="col">Fila</th><th scope="col">Columna</th>
+                        </tr></thead>`
+    errorLex.forEach(element => {
+    cadenaReporteTE += `<tr>`
+    cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`
+    cadenaReporteTE += `</tr>`
+    });
+    errorSin.forEach(element => {
+        cadenaReporteTE += `<tr>`
+        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`
+        cadenaReporteTE += `</tr>`
+    });
+    errorSem.forEach(element => {
+        cadenaReporteTE += `<tr>`
+        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`
+        cadenaReporteTE += `</tr>`
+    });
+    return cadenaReporteTE    
+
 }
 
 ejecutarXML_DSC(`
@@ -167,4 +189,4 @@ ejecutarXML_DSC(`
 `);
 
 
-module.exports = { ejecutarXML, realizarGraficaAST, cadenaReporteTS };
+module.exports = { ejecutarXML, realizarGraficaAST, cadenaReporteTS,reporteTablaErrores };

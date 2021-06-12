@@ -59,7 +59,7 @@ const { Atributo } = require('../Interprete/Expresion/Atributo');
 %%
 
 /* Definición de la gramática */
-START: ROOTS EOF                                                                   { $$=$1; console.log($1); return $$; }                                 
+START: ROOTS EOF                                                                   { $$=$1; return $$; }                                 
      ;
 
 ROOTS: ROOTS ROOT                                                                   { $1.push($2); $$=$1; }                                                 

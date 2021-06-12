@@ -11,14 +11,13 @@ let ObjetosXML;
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
 //Esta funcion es para mientras en lo que sincroniza con la pag
-function accionesEjecutables() {
-    ejecutarXML(`
+ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
-        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <autor>Julio& &amp;Tommy&amp; Garcia</autor>
         <fechaPublicacion ano="2001" mes="Enero"/>
     </libro>
 
@@ -35,11 +34,12 @@ function accionesEjecutables() {
     
 </hemeroteca>
 `);
-    realizarGraficaAST();
-    tablaErroresFicticia();
-}
-accionesEjecutables();
+realizarGraficaAST();
+tablaErroresFicticia();
+//accionesEjecutables()
+//tablaErroresFicticia()
 function ejecutarXML(entrada) {
+    cadenaReporteTS = "";
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
@@ -57,6 +57,7 @@ function ejecutarXML(entrada) {
     });
     //esta es solo para debug jaja
     const ent = entornoGlobal;
+    console.log(cadenaReporteTS);
 }
 ;
 function ejecutarXML_DSC(entrada) {
@@ -91,8 +92,8 @@ function llenarTablaXML(objeto, entorno, padre) {
     entorno.agregar(simbolo.indentificador, simbolo);
     //Esto es para la graficada de la tabla de simbolos
     let ambitoTS = "";
-    if (ambitoTS != null) {
-        ambitoTS = objeto.identificador1;
+    if (padre != null) {
+        ambitoTS = padre.identificador1;
     }
     else {
         ambitoTS = "Global";
@@ -128,6 +129,26 @@ function tablaErroresFicticia() {
     });
     console.log(todosErrores);
 }
+function reporteTablaErrores() {
+    let cadenaReporteTE = ` <thead><tr><th scope="col">Tipo</th><th scope="col">Descripcion</th><th scope="col">Archivo</th><th scope="col">Fila</th><th scope="col">Columna</th>
+                        </tr></thead>`;
+    TError_js_1.errorLex.forEach(element => {
+        cadenaReporteTE += `<tr>`;
+        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
+        cadenaReporteTE += `</tr>`;
+    });
+    TError_js_1.errorSin.forEach(element => {
+        cadenaReporteTE += `<tr>`;
+        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
+        cadenaReporteTE += `</tr>`;
+    });
+    TError_js_1.errorSem.forEach(element => {
+        cadenaReporteTE += `<tr>`;
+        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
+        cadenaReporteTE += `</tr>`;
+    });
+    return cadenaReporteTE;
+}
 ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
@@ -152,4 +173,4 @@ ejecutarXML_DSC(`
     
 </hemeroteca>
 `);
-module.exports = { ejecutarXML, realizarGraficaAST, cadenaReporteTS };
+module.exports = { ejecutarXML, realizarGraficaAST, cadenaReporteTS, reporteTablaErrores };

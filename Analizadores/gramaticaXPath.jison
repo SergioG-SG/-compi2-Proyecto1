@@ -71,32 +71,34 @@
 %% /* Definición de la gramática */
 
 XPATH
-	: EXPR EOF
+	: EXPR EOF                                       {$$=$1;return $$;}
 ;
 
 EXPR
-	: EXPRSINGLE
+	: EXPRSINGLE                                     {$$=$1;}
 ;
 
 EXPRSINGLE
-    : OREXPR
+    : OREXPR                                         {$$=$1;}
 ;
 
 OREXPR
-    : OREXPR or ANDEXPR
-    | ANDEXPR
+    : OREXPR or ANDEXPR                                   { $1.push($3); $$=$1; } 
+    | ANDEXPR                                            {$$=[$1];}
 ;
 
 ANDEXPR
-    : ANDEXPR and COMPARISONXPR
-    | COMPARISONXPR
+    : ANDEXPR and COMPARISONXPR                          { $1.push($3); $$=$1; } 
+    | COMPARISONXPR                                     {$$=[$1];}
+
 ;
 
 COMPARISONXPR
-    : STRINGCONCATXPR GENERALCOMP STRINGCONCATXPR
-    | STRINGCONCATXPR
-;
+    : STRINGCONCATXPR GENERALCOMP STRINGCONCATXPR         
 
+    | STRINGCONCATXPR                                   {$$=$1;}
+
+;
 GENERALCOMP
     : '='
     | '!='
@@ -107,91 +109,91 @@ GENERALCOMP
 ;
 
 STRINGCONCATXPR
-    : RANGEXPR 
+    : RANGEXPR                                      { $$ = $1 ;} 
 ;
 
 RANGEXPR
-    : ADDITIVEEXPR
+    : ADDITIVEEXPR                                  { $$=$1; } 
 ;
 
 ADDITIVEEXPR
-    : ADDITIVEEXPR '+' MULTIPLICATIVEEXPR
-    | ADDITIVEEXPR '-' MULTIPLICATIVEEXPR
-    | MULTIPLICATIVEEXPR
+    : ADDITIVEEXPR '+' MULTIPLICATIVEEXPR       { $1.push($3); $$=$1; } 
+    | ADDITIVEEXPR '-' MULTIPLICATIVEEXPR       { $1.push($3); $$=$1; } 
+    | MULTIPLICATIVEEXPR                         {$$=[$1];}
 ;
 
 MULTIPLICATIVEEXPR
-    : UNIONEXPR
-    | MULTIPLICATIVEEXPR '*' UNIONEXPR
-    | MULTIPLICATIVEEXPR 'div' UNIONEXPR
-    | MULTIPLICATIVEEXPR 'mod' UNIONEXPR
+    : UNIONEXPR                                    {$$=[$1];}      
+    | MULTIPLICATIVEEXPR '*' UNIONEXPR       { $1.push($3); $$=$1; } 
+    | MULTIPLICATIVEEXPR 'div' UNIONEXPR     { $1.push($3); $$=$1; } 
+    | MULTIPLICATIVEEXPR 'mod' UNIONEXPR     { $1.push($3); $$=$1; } 
 ;
 
 UNIONEXPR
-    : UNIONEXPR '|' INTERSECTEXCEPTEXPR
-    | INTERSECTEXCEPTEXPR
+    : UNIONEXPR '|' INTERSECTEXCEPTEXPR   { $1.push($3); $$=$1; }            
+    | INTERSECTEXCEPTEXPR               {$$=[$1];}
 ;
 
 INTERSECTEXCEPTEXPR
-    : INSTANCEOFEXPR
+    : INSTANCEOFEXPR                    {$$=$1;}
 ;
 
 INSTANCEOFEXPR
-    : TREATEXPR
+    : TREATEXPR                         {$$=$1;}
 ;
 
 TREATEXPR
-    : CASTABLEEXPR
+    : CASTABLEEXPR                      {$$=$1;}
 ;
 
 CASTABLEEXPR
-    : CASTEXPR
+    : CASTEXPR                          {$$=$1;}
 ;
 
 CASTEXPR
-    : ARROWEXPR
+    : ARROWEXPR                         {$$=$1;}
 ;
 
 ARROWEXPR
-    : UNARYEXPR
+    : UNARYEXPR                         {$$=$1;}
 ;
 
 UNARYEXPR
     : '-' VAlUEEXPR
     | '+' VAlUEEXPR
-    | VAlUEEXPR
+    | VAlUEEXPR                         {$$=$1;}
 ;
 
 VAlUEEXPR
-    : SIMPLEMAPEXPR
+    : SIMPLEMAPEXPR                     {$$=$1;}
 ;
 
 SIMPLEMAPEXPR
-    : PATHEXPR
+    : PATHEXPR                          {$$=$1;}
 ;
 
 PATHEXPR
     : '/' '/' RELATIVEPATHEXPR 
-    | '/' RELATIVEPATHEXPR 
+    | '/' RELATIVEPATHEXPR              {$$=$1;}
     | RELATIVEPATHEXPR 
 ;
 
 RELATIVEPATHEXPR
-    : STEPEXPR
-    | RELATIVEPATHEXPR '/' STEPEXPR
-    | RELATIVEPATHEXPR '/' '/' STEPEXPR
+    : STEPEXPR                          {$$=[$1];}
+    | RELATIVEPATHEXPR '/' STEPEXPR       { $1.push($3); $$=$1; }            
+    | RELATIVEPATHEXPR '/' '/' STEPEXPR       { $1.push($4); $$=$1; }            
 ;
 
 STEPEXPR
-    : POSTFIXEXPR
-    | AXISTEP
+    : POSTFIXEXPR                        
+    | AXISTEP                           {$$=$1;}
 ;
 
 AXISTEP
     : REVERSESTEP PREDICATELIST
     | FORDWARDSTEP PREDICATELIST
     | REVERSESTEP
-    | FORDWARDSTEP
+    | FORDWARDSTEP                      {$$=$1;}
 ;
 
 PREDICATELIST
@@ -201,7 +203,7 @@ PREDICATELIST
 
 FORDWARDSTEP
     : FORDWARDAXIS NODETEST
-    | ABBREVFORDWARDSTEP
+    | ABBREVFORDWARDSTEP                {$$=$1;}
 ;
 
 FORDWARDAXIS
@@ -217,7 +219,7 @@ FORDWARDAXIS
 
 ABBREVFORDWARDSTEP
     : '@' NODETEST
-    | NODETEST
+    | NODETEST                      {$$=$1;}
 ;
 
 REVERSESTEP
@@ -240,7 +242,7 @@ ABBREVREVERSESTEP
 NODETEST
     : KINDTEST
     | '*'
-    | nodename {console.log($1);}
+    | nodename {console.log($1);$$=$1;}
 ;
 
 KINDTEST
@@ -250,12 +252,12 @@ KINDTEST
 
 
 POSTFIXEXPR
-    : PRIMARYEXPR
+    : PRIMARYEXPR               
     | POSTFIXEXPR '[' EXPR ']' {console.log("dio2");} //es posible que nunca se use
 ;
 
 PRIMARYEXPR
-    : LITERAL
+    : LITERAL                   
     | '.'
     | ARRAYCONSTRUCTOR
 ;
