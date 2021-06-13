@@ -1,4 +1,10 @@
 /* Definición Léxica */
+
+
+%{
+	const { Acceso, Tipo } = require('./Acceso');
+%}
+
 %lex
 
 %options case-insensitive
@@ -90,15 +96,14 @@ OREXPR
 ANDEXPR
     : ANDEXPR and COMPARISONXPR                          { $1.push($3); $$=$1; } 
     | COMPARISONXPR                                     {$$=[$1];}
-
 ;
 
 COMPARISONXPR
     : STRINGCONCATXPR GENERALCOMP STRINGCONCATXPR         
-
     | STRINGCONCATXPR                                   {$$=$1;}
 
 ;
+
 GENERALCOMP
     : '='
     | '!='
@@ -109,11 +114,7 @@ GENERALCOMP
 ;
 
 STRINGCONCATXPR
-    : RANGEXPR                                      { $$ = $1 ;} 
-;
-
-RANGEXPR
-    : ADDITIVEEXPR                                  { $$=$1; } 
+    : ADDITIVEEXPR                                     { $$ = $1 ;} 
 ;
 
 ADDITIVEEXPR
@@ -130,51 +131,19 @@ MULTIPLICATIVEEXPR
 ;
 
 UNIONEXPR
-    : UNIONEXPR '|' INTERSECTEXCEPTEXPR   { $1.push($3); $$=$1; }            
-    | INTERSECTEXCEPTEXPR               {$$=[$1];}
-;
-
-INTERSECTEXCEPTEXPR
-    : INSTANCEOFEXPR                    {$$=$1;}
-;
-
-INSTANCEOFEXPR
-    : TREATEXPR                         {$$=$1;}
-;
-
-TREATEXPR
-    : CASTABLEEXPR                      {$$=$1;}
-;
-
-CASTABLEEXPR
-    : CASTEXPR                          {$$=$1;}
-;
-
-CASTEXPR
-    : ARROWEXPR                         {$$=$1;}
-;
-
-ARROWEXPR
-    : UNARYEXPR                         {$$=$1;}
+    : UNIONEXPR '|' UNARYEXPR   { $1.push($3); $$=$1; }            
+    | UNARYEXPR               {$$=[$1];}
 ;
 
 UNARYEXPR
-    : '-' VAlUEEXPR
-    | '+' VAlUEEXPR
-    | VAlUEEXPR                         {$$=$1;}
-;
-
-VAlUEEXPR
-    : SIMPLEMAPEXPR                     {$$=$1;}
-;
-
-SIMPLEMAPEXPR
-    : PATHEXPR                          {$$=$1;}
+    : '-' PATHEXPR 
+    | '+' PATHEXPR 
+    | PATHEXPR                          {$$=$1;}
 ;
 
 PATHEXPR
     : '/' '/' RELATIVEPATHEXPR 
-    | '/' RELATIVEPATHEXPR              {$$=$1;}
+    | '/' RELATIVEPATHEXPR              {$$=$2;}
     | RELATIVEPATHEXPR 
 ;
 
@@ -218,13 +187,13 @@ FORDWARDAXIS
 ;
 
 ABBREVFORDWARDSTEP
-    : '@' NODETEST
+    : '@' NODETEST                  {$1.tipo=Tipo.ATRIBUTO; $$ = $1;}
     | NODETEST                      {$$=$1;}
 ;
 
 REVERSESTEP
     : REVERSEAXIS NODETEST
-    | ABBREVREVERSESTEP
+    | '..'
 ;
 
 REVERSEAXIS
@@ -235,25 +204,16 @@ REVERSEAXIS
     | 'ancestor-or-self' '::' 
 ;
 
-ABBREVREVERSESTEP
-    : '..'
-;
-
 NODETEST
-    : KINDTEST
-    | '*'
-    | nodename {console.log($1);$$=$1;}
+    : 'text()' {$$ = new Acceso($1,Tipo.TEST,@1.first_line,@1.first_column);}
+    | 'node()' {$$ = new Acceso($1,Tipo.TEST,@1.first_line,@1.first_column);}
+    | '*' {$$ = new Acceso($1,Tipo.SIGNO,@1.first_line,@1.first_column);}
+    | nodename {$$ = new Acceso($1,Tipo.ACCESO,@1.first_line,@1.first_column);}
 ;
-
-KINDTEST
-    : 'text()'
-    | 'node()'
-;
-
 
 POSTFIXEXPR
     : PRIMARYEXPR               
-    | POSTFIXEXPR '[' EXPR ']' {console.log("dio2");} //es posible que nunca se use
+    | POSTFIXEXPR '[' EXPR ']'  //es posible que nunca se use
 ;
 
 PRIMARYEXPR
@@ -264,7 +224,7 @@ PRIMARYEXPR
 
 ARRAYCONSTRUCTOR
     : '[' ']'
-    | '[' EXPRSINGLE ']' 
+    | '[' EXPRSINGLE ']'   //es posible que nunca se use
 ;
 
 LITERAL
