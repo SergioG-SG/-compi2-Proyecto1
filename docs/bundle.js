@@ -1683,7 +1683,8 @@ let ObjetosXML;
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
 //Esta funcion es para mientras en lo que sincroniza con la pag
-ejecutarXML(`
+/*
+    ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
@@ -1705,13 +1706,15 @@ ejecutarXML(`
 <hemeroteca dir="zona 21" prop="kev" estado="chilera">
     
 </hemeroteca>
-`);
-realizarGraficaAST();
-tablaErroresFicticia();
+`)
+    realizarGraficaAST()
+    tablaErroresFicticia()
+*/
 //accionesEjecutables()
 //tablaErroresFicticia()
 function ejecutarXML(entrada) {
-    cadenaReporteTS = "";
+    cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
+                        </tr></thead>`;
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
@@ -1730,6 +1733,7 @@ function ejecutarXML(entrada) {
     //esta es solo para debug jaja
     const ent = entornoGlobal;
     console.log(cadenaReporteTS);
+    return cadenaReporteTS;
 }
 ;
 function ejecutarXML_DSC(entrada) {
@@ -1777,7 +1781,7 @@ function llenarTablaXML(objeto, entorno, padre) {
     if (objeto.listaObjetos.length > 0) {
         objeto.listaObjetos.forEach((objetoHijo) => {
             const resultado = objetoHijo;
-            llenarTablaXML(objetoHijo, entornoObjeto, objetoHijo);
+            llenarTablaXML(objetoHijo, entornoObjeto, objeto);
         });
     }
 }
@@ -1821,6 +1825,7 @@ function reporteTablaErrores() {
     });
     return cadenaReporteTE;
 }
+/*
 ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
@@ -1845,7 +1850,8 @@ ejecutarXML_DSC(`
     
 </hemeroteca>
 `);
-module.exports = { ejecutarXML, realizarGraficaAST, cadenaReporteTS, reporteTablaErrores };
+*/
+module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores };
 
 },{"./Analizadores/gramaticaXML.js":1,"./Analizadores/gramaticaXMLDSC.js":2,"./Graficador/GraficarAST.js":3,"./Interprete/Util/TError.js":6,"./Simbolo/Entorno.js":7,"./Simbolo/Simbolo.js":8,"./Simbolo/Tipo.js":9}],11:[function(require,module,exports){
 

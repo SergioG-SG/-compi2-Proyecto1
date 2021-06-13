@@ -89,9 +89,12 @@ document.getElementById("btnGuardar").addEventListener("click", function () {
     descargar(activeName, texto);
 }, false);
 
+var cadenaReporteTablaS =""
+
 document.getElementById("btnCargarA").addEventListener('click', function() {
-    myBundle.ejecutarXML(document.getElementById(activeText).value);
-    console.log(myBundle.cadenaReporteTS)
+    cadenaReporteTablaS= myBundle.ejecutarXML(document.getElementById(activeText).value);
+    console.log(cadenaReporteTablaS)
+    alert("Se ha cargado el XML")
 });
 
 document.getElementById("btnGraficaAST").addEventListener('click', function() {
@@ -99,24 +102,30 @@ document.getElementById("btnGraficaAST").addEventListener('click', function() {
 });
 
 
-
+let tituloReporte="Tabla de Reporte"
 
 var valorTabla = 0
 
 function llenarTablaReportes() {
     valorTabla=1
    manejoTablas()
+   
 }
 function llenarTablaErrores() {
     valorTabla=2
    manejoTablas()
+
 }
 
 function manejoTablas() {
     if (valorTabla == 1) {
-        document.getElementById("tablasimbolos").innerHTML = myBundle.cadenaReporteTS
+        document.getElementById("tablasimbolos").innerHTML = cadenaReporteTablaS
+        tituloReporte = "Tabla de Simbolos"
+        document.getElementById("tituloRep").innerText = tituloReporte
     } else if (valorTabla == 2) {
         var cadenaError = myBundle.reporteTablaErrores()
         document.getElementById("tablasimbolos").innerHTML = cadenaError
+        tituloReporte = "Tabla de Errores"
+        document.getElementById("tituloRep").innerText = tituloReporte
     }
 }
