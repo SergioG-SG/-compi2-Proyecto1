@@ -66,6 +66,8 @@ function ejecutarXML(entrada) {
 ;
 function ejecutarXML_DSC(entrada) {
     const objetos = gramaticaXMLD.parse(entrada);
+    ObjetosXML = objetos;
+    const entornoGlobal = new Entorno_js_1.Entorno(null);
 }
 ;
 function llenarTablaXML(objeto, entorno, padre) {
@@ -118,21 +120,6 @@ function realizarGraficaAST() {
     const graficador = new GraficarAST_js_1.GraficarAST;
     graficador.graficar(ObjetosXML);
 }
-function tablaErroresFicticia() {
-    new TError_js_1.ELexico('Lexico', "Caracter inesperado \'@\'", 'XML', 1, 1);
-    new TError_js_1.ELexico('Lexico', "Caracter inesperado \'$\'", 'XML', 1, 1);
-    new TError_js_1.ELexico('Lexico', "Caracter inesperado \'%\'", 'XML', 1, 1);
-    new TError_js_1.ELexico('Lexico', "Caracter inesperado \'+\'", 'Xpath', 1, 1);
-    new TError_js_1.ESintactico('Sintactico', "No se esperaba \'@\'", 'XML', 1, 1);
-    let todosErrores = "";
-    TError_js_1.errorLex.forEach(element => {
-        todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion + ", Tipo:" + element.tipo + "\n";
-    });
-    TError_js_1.errorSin.forEach(element => {
-        todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion + ", Tipo:" + element.tipo + "\n";
-    });
-    console.log(todosErrores);
-}
 function reporteTablaErrores() {
     let cadenaReporteTE = ` <thead><tr><th scope="col">Tipo</th><th scope="col">Descripcion</th><th scope="col">Archivo</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
@@ -153,11 +140,10 @@ function reporteTablaErrores() {
     });
     return cadenaReporteTE;
 }
-/*
 ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<biblioteca dir="calle 3>5<5" prop="Sergio's">
+<biblioteca dir="calle 3>5<5" prop="Sergios">
     <libro>
         <titulo>Libro A</titulo>
         <autor>Julio &amp;Tommy&amp; Garcia</autor>
@@ -178,5 +164,4 @@ ejecutarXML_DSC(`
     
 </hemeroteca>
 `);
-*/
 module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores };

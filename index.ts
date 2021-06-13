@@ -70,6 +70,8 @@ function ejecutarXML(entrada: string) {
 
 function ejecutarXML_DSC(entrada: string) {
     const objetos = gramaticaXMLD.parse(entrada);
+    ObjetosXML = objetos;
+    const entornoGlobal: Entorno = new Entorno(null);
 };
 
 function llenarTablaXML(objeto: Objeto, entorno: Entorno, padre: Objeto | null) {
@@ -126,23 +128,6 @@ function realizarGraficaAST() {
     graficador.graficar(ObjetosXML)
 }
 
-function tablaErroresFicticia() {
-    new ELexico('Lexico', "Caracter inesperado \'@\'", 'XML', 1, 1)
-    new ELexico('Lexico', "Caracter inesperado \'$\'", 'XML', 1, 1)
-    new ELexico('Lexico', "Caracter inesperado \'%\'", 'XML', 1, 1)
-    new ELexico('Lexico', "Caracter inesperado \'+\'", 'Xpath', 1, 1)
-    new ESintactico('Sintactico', "No se esperaba \'@\'", 'XML', 1, 1)
-
-    let todosErrores = ""
-    errorLex.forEach(element => {
-        todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion + ", Tipo:" + element.tipo + "\n";
-    });
-    errorSin.forEach(element => {
-        todosErrores += "[error][ linea: " + element.linea + " columna: " + element.columna + " ] " + element.descripcion + ", Tipo:" + element.tipo + "\n";
-    });
-    console.log(todosErrores)
-}
-
 function reporteTablaErrores() {
     let cadenaReporteTE = ` <thead><tr><th scope="col">Tipo</th><th scope="col">Descripcion</th><th scope="col">Archivo</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
@@ -164,7 +149,7 @@ function reporteTablaErrores() {
     return cadenaReporteTE    
 
 }
-/*
+
 ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
@@ -180,7 +165,7 @@ ejecutarXML_DSC(`
         <autor>Autor 2 &amp; Autor 3</autor>
         <descripcion> holi </descripcion>
         <fechaPublicacion ano="2002" mes="Febrero"/>
-    </libro>
+    </libro>D
 
   
 </biblioteca>
@@ -189,6 +174,6 @@ ejecutarXML_DSC(`
     
 </hemeroteca>
 `);
-*/
+
 
 module.exports = { ejecutarXML, realizarGraficaAST,reporteTablaErrores };
