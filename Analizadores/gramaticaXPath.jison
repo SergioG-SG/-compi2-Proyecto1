@@ -1,4 +1,10 @@
 /* Definición Léxica */
+
+
+%{
+	const { Acceso, Tipo } = require('./Acceso');
+%}
+
 %lex
 
 %options case-insensitive
@@ -181,7 +187,7 @@ FORDWARDAXIS
 ;
 
 ABBREVFORDWARDSTEP
-    : '@' NODETEST
+    : '@' NODETEST                  {$1.tipo=Tipo.ATRIBUTO; $$ = $1;}
     | NODETEST                      {$$=$1;}
 ;
 
@@ -199,10 +205,10 @@ REVERSEAXIS
 ;
 
 NODETEST
-    : 'text()'
-    | 'node()'
-    | '*'
-    | nodename {$$=$1;}
+    : 'text()' {$$ = new Acceso($1,Tipo.TEST,@1.first_line,@1.first_column);}
+    | 'node()' {$$ = new Acceso($1,Tipo.TEST,@1.first_line,@1.first_column);}
+    | '*' {$$ = new Acceso($1,Tipo.SIGNO,@1.first_line,@1.first_column);}
+    | nodename {$$ = new Acceso($1,Tipo.ACCESO,@1.first_line,@1.first_column);}
 ;
 
 POSTFIXEXPR
