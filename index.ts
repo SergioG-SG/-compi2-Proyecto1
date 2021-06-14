@@ -71,20 +71,23 @@ function ejecutarXML(entrada: string) {
 };
 
 ejecutarXpath("/biblioteca")
+function recorrer(nodo: Objeto){
+
+}
 function ejecutarXpath(entrada: string){
     const objetos= gramaticaXpath.parse(entrada);
 
     objetos[0][0][0][0][0].forEach((objeto: Acceso ) => {
     
-        /*ObjetosXML.forEach((objeto: Objeto) => {
-            let cadenaInterna: string = ""
+        ObjetosXML.forEach((objeto: Objeto) => {
+            
             if (objeto.identificador1 == "?XML") {
                 
             } else {
                 
             }
             
-        })*/
+        })
 
     })
 };
