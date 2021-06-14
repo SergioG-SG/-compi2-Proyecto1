@@ -65,11 +65,10 @@ function ejecutarXML(entrada) {
     return cadenaReporteTS;
 }
 ;
-ejecutarXpath("libro");
+ejecutarXpath("/biblioteca");
 function ejecutarXpath(entrada) {
     const objetos = gramaticaXpath.parse(entrada);
     objetos[0][0][0][0][0].forEach((objeto) => {
-        console.log(objeto.valor);
         /*ObjetosXML.forEach((objeto: Objeto) => {
             let cadenaInterna: string = ""
             if (objeto.identificador1 == "?XML") {
@@ -157,7 +156,6 @@ function reporteTablaErrores() {
     });
     return cadenaReporteTE;
 }
-/*
 ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
@@ -182,6 +180,4 @@ ejecutarXML_DSC(`
     
 </hemeroteca>
 `);
-
-*/
 module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores };

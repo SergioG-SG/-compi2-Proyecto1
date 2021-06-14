@@ -11,7 +11,7 @@ const {ELexico, ESintactico} = require('../Interprete/Util/TError')
 
 %lex
 
-%s                              comment
+%s                                  comment
 
 %%
 "<!--"                              this.begin('comment');
