@@ -155,7 +155,7 @@ ejecutarXML_DSC(`
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
-        <titulo>Libro A</titulo>
+        <titulo>Libro Actual Nèvada</titulo>
         <autor>Julio &amp;Tommy&amp; Garcia</autor>
         <fechaPublicacion ano="2001" mes="Enero"/>
     </libro>
@@ -165,7 +165,7 @@ ejecutarXML_DSC(`
         <autor>Autor 2 &amp; Autor 3</autor>
         <descripcion> holi </descripcion>
         <fechaPublicacion ano="2002" mes="Febrero"/>
-    </libro>D
+    </libro>
 
   
 </biblioteca>

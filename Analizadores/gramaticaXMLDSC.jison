@@ -48,6 +48,7 @@ const {ELexico, ESintactico} = require('../Interprete/Util/TError')
 //error lexico
 .       {
             console.error('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);
+                 new ELexico("Lexico", "Caracter inesperado \'"+yytext+"\'", 'XML Asc', yylloc.first_line, yylloc.first_column)
         }
 
 <<EOF>>                             return 'EOF'
@@ -74,6 +75,9 @@ ROOT: prologo RVERSION asig StringLiteral1 RENCODING asig StringLiteral1 prologc
     | lt identifier LIST_ATRIBUTOS gt      CONTENTS      etiqca identifier gt       { $$ = new Objeto($2,$5,@1.first_line,@1.first_column,$3,[],$7); console.log('S' + $5 + 'G')} 
     | lt identifier LIST_ATRIBUTOS gt                    etiqca identifier gt       { $$ = new Objeto($2,'',@1.first_line,@1.first_column,$3,[],$7); }
     | lt identifier LIST_ATRIBUTOS etiqcc                                           { $$ = new Objeto($2,'',@1.first_line,@1.first_column,$3,[],''); }                                    
+    |error      {   console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
+					new ESintactico("Sintactico", "No se esperaba: "+yytext,"XML Asc", this._$.first_line , this._$.first_column);
+				}
     ;
 
 LIST_ATRIBUTOS: ATRIBUTOS                          {$$=$1;}
@@ -89,13 +93,16 @@ ATRIBUTOS_P: ATRIBUTO ATRIBUTOS_P                   {$$ = $2; $$.push($1);}
 
 ATRIBUTO: identifier asig StringLiteral1            { $$ = new Atributo($1,$3,@1.first_line,@1.first_column); }                                
         | identifier asig StringLiteral2            { $$ = new Atributo($1,$3,@1.first_line,@1.first_column); }                              
+        |error      {   console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
+					new ESintactico("Sintactico", "No se esperaba: "+yytext,"XML Asc", this._$.first_line , this._$.first_column);
+				}
         ;
 
-CONTENTS: BODY CONTENTS_P
+CONTENTS: BODY CONTENTS_P                           { $2 = $1 + ' ' + $2; $$=$2;}
         ;
 
-CONTENTS_P: BODY CONTENTS_P                         { ; }
-          |                                         { $$ = [] }
+CONTENTS_P: BODY CONTENTS_P                         {  $2 = $1 + ' ' + $2; $$=$2; }
+          |                                         { $$ = "" ;}
           ;
 
 BODY: identifier                                    { $$ = $1; }

@@ -143,9 +143,9 @@ function reporteTablaErrores() {
 ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<biblioteca dir="calle 3>5<5" prop="Sergios">
+<biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
-        <titulo>Libro A</titulo>
+        <titulo>Libro Actual Nèvada</titulo>
         <autor>Julio &amp;Tommy&amp; Garcia</autor>
         <fechaPublicacion ano="2001" mes="Enero"/>
     </libro>
