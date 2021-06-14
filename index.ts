@@ -14,6 +14,7 @@ const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
 let ObjetosXML: any
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
+                        
 //Esta funcion es para mientras en lo que sincroniza con la pag
 /*
     ejecutarXML(`
