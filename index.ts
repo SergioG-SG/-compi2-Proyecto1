@@ -3,13 +3,14 @@ import { Tipo } from './Simbolo/Tipo.js'
 import { Entorno } from "./Simbolo/Entorno.js";
 import { Instruccion } from "./Interfaces/Instruccion.js";
 import { Objeto } from "./Interprete/Expresion/Objeto.js";
+import { Acceso} from "./Interprete/Expresion/Acceso";
 import { Simbolo } from "./Simbolo/Simbolo.js";
 import { Atributo } from "./Interprete/Expresion/Atributo.js";
 import { GraficarAST } from "./Graficador/GraficarAST.js";
 import { ELexico, ESintactico, errorLex, errorSem, errorSin } from "./Interprete/Util/TError.js";
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
-
+const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
 let ObjetosXML: any
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
@@ -67,7 +68,24 @@ function ejecutarXML(entrada: string) {
     console.log(cadenaReporteTS)
     return cadenaReporteTS
 };
+ejecutarXpath("/biblioteca")
+function ejecutarXpath(entrada: string){
+    const objetos= gramaticaXpath.parse(entrada);
 
+    objetos[0][0][0][0][0].forEach((objeto: Acceso ) => {
+    
+        /*ObjetosXML.forEach((objeto: Objeto) => {
+            let cadenaInterna: string = ""
+            if (objeto.identificador1 == "?XML") {
+                
+            } else {
+                
+            }
+            
+        })*/
+
+    })
+}
 function ejecutarXML_DSC(entrada: string) {
     const objetos = gramaticaXMLD.parse(entrada);
     ObjetosXML = objetos;
@@ -149,7 +167,7 @@ function reporteTablaErrores() {
     return cadenaReporteTE    
 
 }
-
+/*
 ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
@@ -175,5 +193,5 @@ ejecutarXML_DSC(`
 </hemeroteca>
 `);
 
-
+*/
 module.exports = { ejecutarXML, realizarGraficaAST,reporteTablaErrores };

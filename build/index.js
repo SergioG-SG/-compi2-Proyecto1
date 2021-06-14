@@ -7,6 +7,7 @@ const GraficarAST_js_1 = require("./Graficador/GraficarAST.js");
 const TError_js_1 = require("./Interprete/Util/TError.js");
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
+const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
 let ObjetosXML;
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
@@ -64,6 +65,22 @@ function ejecutarXML(entrada) {
     return cadenaReporteTS;
 }
 ;
+ejecutarXpath("libro");
+function ejecutarXpath(entrada) {
+    const objetos = gramaticaXpath.parse(entrada);
+    objetos[0][0][0][0][0].forEach((objeto) => {
+        console.log(objeto.valor);
+        /*ObjetosXML.forEach((objeto: Objeto) => {
+            let cadenaInterna: string = ""
+            if (objeto.identificador1 == "?XML") {
+                
+            } else {
+                
+            }
+            
+        })*/
+    });
+}
 function ejecutarXML_DSC(entrada) {
     const objetos = gramaticaXMLD.parse(entrada);
     ObjetosXML = objetos;
@@ -140,10 +157,11 @@ function reporteTablaErrores() {
     });
     return cadenaReporteTE;
 }
+/*
 ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<biblioteca dir="calle 3>5<5" prop="Sergios">
+<biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
         <autor>Julio &amp;Tommy&amp; Garcia</autor>
@@ -155,7 +173,7 @@ ejecutarXML_DSC(`
         <autor>Autor 2 &amp; Autor 3</autor>
         <descripcion> holi </descripcion>
         <fechaPublicacion ano="2002" mes="Febrero"/>
-    </libro>
+    </libro>D
 
   
 </biblioteca>
@@ -164,4 +182,6 @@ ejecutarXML_DSC(`
     
 </hemeroteca>
 `);
+
+*/
 module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores };

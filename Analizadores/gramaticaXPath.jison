@@ -2,7 +2,7 @@
 
 
 %{
-	const { Acceso, Tipo } = require('./Acceso');
+	const { Acceso, Tipo } = require('../Interprete/Expresion/Acceso');
 %}
 
 %lex
