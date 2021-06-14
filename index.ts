@@ -12,37 +12,36 @@ const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
 const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
 let ObjetosXML: any
+let resultadoxpath: string=""
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
                         
 //Esta funcion es para mientras en lo que sincroniza con la pag
-/*
+
     ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
+  vs
     <libro>
+      trol
         <titulo>Libro A</titulo>
-        <autor>Julio& &amp;Tommy&amp; Garcia</autor>
-        <fechaPublicacion ano="2001" mes="Enero"/>
+        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <fechapublicacion ano="2001" mes="Enero"/>
     </libro>
 
     <libro>
         <titulo>Libro B</titulo>
         <autor>Autor 2 &amp; Autor 3</autor>
         <descripcion> holi </descripcion>
-        <fechaPublicacion ano="2002" mes="Febrero"/>
+        <fechapublicacion ano="2002" mes="Febrero"/>
     </libro>
 
 </biblioteca>
-
-<hemeroteca dir="zona 21" prop="kev" estado="chilera">
-    
-</hemeroteca>
 `)
     realizarGraficaAST()
-    tablaErroresFicticia()
-*/
+ //   tablaErroresFicticia()
+
 
 //accionesEjecutables()
 //tablaErroresFicticia()
@@ -53,6 +52,7 @@ function ejecutarXML(entrada: string) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
+    ejecutarXpath("/biblioteca")
     const entornoGlobal: Entorno = new Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto: Objeto) => {
@@ -70,26 +70,36 @@ function ejecutarXML(entrada: string) {
     return cadenaReporteTS
 };
 
-ejecutarXpath("/biblioteca")
+
 function recorrer(nodo: Objeto){
 
+    resultadoxpath+=nodo.identificador2+"2 \n"
+    console.log(resultadoxpath)
+    if (nodo.listaObjetos.length > 0) {
+        nodo.listaObjetos.forEach((objetoHijo: Objeto) => {
+            recorrer(objetoHijo);
+        })
+    }
+    
 }
+
 function ejecutarXpath(entrada: string){
     const objetos= gramaticaXpath.parse(entrada);
 
-    objetos[0][0][0][0][0].forEach((objeto: Acceso ) => {
+    objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
     
-        ObjetosXML.forEach((objeto: Objeto) => {
+        ObjetosXML.forEach((objeto2: Objeto) => {
             
-            if (objeto.identificador1 == "?XML") {
+            if (objeto2.identificador1 == "?XML") {
                 
-            } else {
-                
+            } else if (objeto1.valor==objeto2.identificador1) {
+                recorrer(objeto2)
             }
             
         })
 
     })
+    console.log(resultadoxpath)
 };
 
 function ejecutarXML_DSC(entrada: string) {
