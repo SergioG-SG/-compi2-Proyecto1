@@ -7,37 +7,33 @@ const GraficarAST_js_1 = require("./Graficador/GraficarAST.js");
 const TError_js_1 = require("./Interprete/Util/TError.js");
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
+const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
 let ObjetosXML;
+let resultadoxpath = "";
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
 //Esta funcion es para mientras en lo que sincroniza con la pag
-/*
-    ejecutarXML(`
+ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
-        <autor>Julio& &amp;Tommy&amp; Garcia</autor>
-        <fechaPublicacion ano="2001" mes="Enero"/>
+        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <fechapublicacion ano="2001" mes="Enero"/>
     </libro>
 
     <libro>
         <titulo>Libro B</titulo>
         <autor>Autor 2 &amp; Autor 3</autor>
         <descripcion> holi </descripcion>
-        <fechaPublicacion ano="2002" mes="Febrero"/>
+        <fechapublicacion ano="2002" mes="Febrero"/>
     </libro>
 
 </biblioteca>
-
-<hemeroteca dir="zona 21" prop="kev" estado="chilera">
-    
-</hemeroteca>
-`)
-    realizarGraficaAST()
-    tablaErroresFicticia()
-*/
+`);
+realizarGraficaAST();
+//   tablaErroresFicticia()
 //accionesEjecutables()
 //tablaErroresFicticia()
 function ejecutarXML(entrada) {
@@ -46,6 +42,7 @@ function ejecutarXML(entrada) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
+    ejecutarXpath("/biblioteca");
     const entornoGlobal = new Entorno_js_1.Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto) => {
@@ -62,6 +59,34 @@ function ejecutarXML(entrada) {
     const ent = entornoGlobal;
     console.log(cadenaReporteTS);
     return cadenaReporteTS;
+}
+;
+function recorrer(nodo) {
+    if (nodo.texto != '') {
+        resultadoxpath += nodo.texto + "\n";
+    }
+    //console.log(nodo.texto)
+    if (nodo.listaObjetos.length != undefined) {
+        if (nodo.listaObjetos.length > 0) {
+            nodo.listaObjetos.forEach((objetoHijo) => {
+                recorrer(objetoHijo);
+            });
+        }
+    }
+}
+function ejecutarXpath(entrada) {
+    const objetos = gramaticaXpath.parse(entrada);
+    objetos[0][0][0][0][0].forEach((objeto1) => {
+        console.log("el resultado de la consulta es: ");
+        ObjetosXML.forEach((objeto2) => {
+            if (objeto2.identificador1 == "?XML") {
+            }
+            else if (objeto1.valor == objeto2.identificador1) {
+                recorrer(objeto2);
+            }
+        });
+    });
+    console.log(resultadoxpath + "ver");
 }
 ;
 function ejecutarXML_DSC(entrada) {
@@ -120,6 +145,7 @@ function realizarGraficaAST() {
     const graficador = new GraficarAST_js_1.GraficarAST;
     graficador.graficar(ObjetosXML);
 }
+;
 function reporteTablaErrores() {
     let cadenaReporteTE = ` <thead><tr><th scope="col">Tipo</th><th scope="col">Descripcion</th><th scope="col">Archivo</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
@@ -140,7 +166,8 @@ function reporteTablaErrores() {
     });
     return cadenaReporteTE;
 }
-ejecutarXML_DSC(`
+;
+/*ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
@@ -163,5 +190,5 @@ ejecutarXML_DSC(`
 <hemeroteca dir="zona 21" prop="kev" estado="chilera">
     
 </hemeroteca>
-`);
+`);*/
 module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores };

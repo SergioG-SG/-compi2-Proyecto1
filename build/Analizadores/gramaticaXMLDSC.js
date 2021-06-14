@@ -86,13 +86,10 @@ switch (yystate) {
 case 1:
  this.$=$$[$0-1]; console.log($$[$0-1]); return this.$; 
 break;
-case 2:
-this.$ = $$[$0]; this.$.push($$[$0-1])
+case 2: case 3: case 12: case 13:
+ this.$ = $$[$0]; this.$.push($$[$0-1]); 
 break;
-case 3: case 14:
-this.$ = $$[$0]; this.$.push($$[$0-1]);
-break;
-case 4:
+case 4: case 11:
  this.$ = []; 
 break;
 case 5:
@@ -102,7 +99,7 @@ case 6:
  this.$ = new Objeto($$[$0-6],'',_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],$$[$0-3],$$[$0-1]); 
 break;
 case 7:
- this.$ = new Objeto($$[$0-6],$$[$0-3],_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],[],$$[$0-1]); console.log('S' + $$[$0-3] + 'G')
+ this.$ = new Objeto($$[$0-6],$$[$0-3],_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],[],$$[$0-1]); console.log('S' + $$[$0-3] + 'G'); 
 break;
 case 8:
  this.$ = new Objeto($$[$0-5],'',_$[$0-6].first_line,_$[$0-6].first_column,$$[$0-4],[],$$[$0]); 
@@ -110,21 +107,10 @@ break;
 case 9:
  this.$ = new Objeto($$[$0-2],'',_$[$0-3].first_line,_$[$0-3].first_column,$$[$0-1],[],''); 
 break;
-case 10: case 18:
-   console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
-					new ESintactico("Sintactico", "No se esperaba: "+yytext,"XML Asc", this._$.first_line , this._$.first_column);
-				
+case 10: case 20: case 21: case 27: case 28:
+ this.$ = $$[$0]; 
 break;
-case 11:
-this.$=$$[$0];
-break;
-case 12:
-this.$=[];
-break;
-case 13:
-this.$=$$[$0]; this.$.push($$[$0-1]);
-break;
-case 15:
+case 14:
  this.$ = [] ;
 break;
 case 16: case 17:
@@ -133,16 +119,7 @@ break;
 case 19:
  $$[$0] = $$[$0-1] + ' ' + $$[$0]; this.$=$$[$0];
 break;
-case 20:
-  $$[$0] = $$[$0-1] + ' ' + $$[$0]; this.$=$$[$0]; 
-break;
-case 21:
- this.$ = "" ;
-break;
-case 22: case 23: case 29: case 30:
- this.$ = $$[$0]; 
-break;
-case 24:
+case 22:
  this.$ = '<'; 
 break;
 case 25:
