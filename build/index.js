@@ -59,7 +59,6 @@ function ejecutarXML(entrada) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
-    ejecutarXpath("/app/biblioteca");
     const entornoGlobal = new Entorno_js_1.Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto) => {
@@ -74,15 +73,51 @@ function ejecutarXML(entrada) {
     });
     //esta es solo para debug jaja
     const ent = entornoGlobal;
+    ejecutarXpath("/app/biblioteca", entornoGlobal);
     console.log(cadenaReporteTS);
     return cadenaReporteTS;
 }
 ;
-function recorrer(nodo) {
-    if (nodo.texto != '') {
-        resultadoxpath += nodo.texto + "\n";
+/*
+function recorrer(nodo: Objeto){
+
+    if (nodo.texto!=''){
+        resultadoxpath+=nodo.texto+"\n"
     }
     //console.log(nodo.texto)
+    if (nodo.listaObjetos.length != undefined) {
+        if (nodo.listaObjetos.length >0) {
+            nodo.listaObjetos.forEach((objetoHijo: Objeto) => {
+                recorrer(objetoHijo);
+            })
+         }
+    }
+    
+}
+function avanzar(nodo: Objeto,ac: Acceso,acs: Array<Acceso>,conta:number){
+    conta=conta-1;
+    if(conta>0){
+        let nuevoac: Acceso
+        nuevoac=acs[acs.length-conta]
+
+        for(let ob2 of nodo.listaObjetos){
+
+            if(nuevoac.valor==ob2.identificador1){
+                avanzar(ob2,nuevoac,acs,conta)
+            }
+        }
+    }else{
+        recorrer(nodo);
+    }
+}*/
+function generarxml(nodo) {
+    let texto = "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">";
+    return texto;
+}
+function recorrer(nodo) {
+    if (nodo.texto != '') {
+        resultadoxpath += "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">\n";
+    }
     if (nodo.listaObjetos.length != undefined) {
         if (nodo.listaObjetos.length > 0) {
             nodo.listaObjetos.forEach((objetoHijo) => {
@@ -91,33 +126,55 @@ function recorrer(nodo) {
         }
     }
 }
-function avanzar(nodo, ac, acs, conta) {
-    conta = conta - 1;
-    if (conta > 0) {
-        let nuevoac;
-        nuevoac = acs[acs.length - conta];
-        for (let ob2 of nodo.listaObjetos) {
-            if (nuevoac.valor == ob2.identificador1) {
-                avanzar(ob2, nuevoac, acs, conta);
-            }
+function avanzar(en, listac) {
+    let llave = "";
+    llave = listac[listac.length - 1].valor;
+    listac.pop();
+    if (en.existe(llave)) {
+        let simbolos = [];
+        simbolos.push(en.getSimbolo(llave));
+        if (listac.length === 0) {
+            simbolos.forEach((ob) => {
+                let nodo = ob.valor;
+                recorrer(nodo);
+            });
         }
-    }
-    else {
-        recorrer(nodo);
+        else {
+            simbolos.forEach((ob) => {
+                let nodo = ob.valor;
+                let entornoNodo = nodo.entorno;
+                avanzar(entornoNodo, listac);
+            });
+        }
     }
 }
-function ejecutarXpath(entrada) {
+function ejecutarXpath(entrada, en) {
     const objetos = gramaticaXpath.parse(entrada);
-    contador = objetos[0][0][0][0][0].length;
-    for (let ob1 of objetos[0][0][0][0][0]) {
-        for (let ob2 of ObjetosXML) {
+    resultadoxpath = "";
+    if (en.existe(objetos[0][0][0][0][0][0].valor)) {
+        let listac = [];
+        for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
+            listac.push(objetos[0][0][0][0][0][i]);
+        }
+        avanzar(en, listac);
+    }
+    console.log("\n \n el resultado de la consulta es: ");
+    console.log(resultadoxpath + "Fin consulta");
+    /*
+    contador=objetos[0][0][0][0][0].length
+
+
+    for(let ob1 of objetos[0][0][0][0][0]){
+
+        for(let ob2 of ObjetosXML){
+
             if (ob2.identificador1 == "?XML") {
-            }
-            else if (ob1.valor == ob2.identificador1) {
-                avanzar(ob2, ob1, objetos[0][0][0][0][0], contador);
+
+            }else if(ob1.valor==ob2.identificador1){
+                avanzar(ob2,ob1,objetos[0][0][0][0][0],contador)
             }
         }
-    }
+    }*/
     /*
     objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
     
@@ -132,8 +189,6 @@ function ejecutarXpath(entrada) {
         })
 
     })*/
-    console.log("\n \n el resultado de la consulta es: ");
-    console.log(resultadoxpath + "Fin consulta");
 }
 ;
 function ejecutarXML_DSC(entrada) {

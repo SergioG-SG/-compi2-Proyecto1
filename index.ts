@@ -68,7 +68,6 @@ function ejecutarXML(entrada: string) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
-    ejecutarXpath("/app/biblioteca")
     const entornoGlobal: Entorno = new Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto: Objeto) => {
@@ -82,17 +81,19 @@ function ejecutarXML(entrada: string) {
     })
     //esta es solo para debug jaja
     const ent = entornoGlobal;
+    ejecutarXpath("/app/biblioteca",entornoGlobal);
     console.log(cadenaReporteTS)
     return cadenaReporteTS
 };
 
 
+
+
 function recorrer(nodo: Objeto){
 
     if (nodo.texto!=''){
-        resultadoxpath+=nodo.texto+"\n"
+        resultadoxpath+="<"+nodo.identificador1+">"+nodo.texto+"</"+nodo.identificador1+">\n";
     }
-    //console.log(nodo.texto)
     if (nodo.listaObjetos.length != undefined) {
         if (nodo.listaObjetos.length >0) {
             nodo.listaObjetos.forEach((objetoHijo: Objeto) => {
@@ -102,25 +103,53 @@ function recorrer(nodo: Objeto){
     }
     
 }
-function avanzar(nodo: Objeto,ac: Acceso,acs: Array<Acceso>,conta:number){
-    conta=conta-1;
-    if(conta>0){
-        let nuevoac: Acceso
-        nuevoac=acs[acs.length-conta]
+function avanzar(en: Entorno, listac: Array<Acceso>){
+    
+    let llave: string=""
+    
+    llave= listac[listac.length-1].valor
+    listac.pop()
+    
+    if(en.existe(llave)){
 
-        for(let ob2 of nodo.listaObjetos){
+        let simbolos :Array<Simbolo>=[] 
+        simbolos.push(en.getSimbolo(llave))
 
-            if(nuevoac.valor==ob2.identificador1){
-                avanzar(ob2,nuevoac,acs,conta)
-            }
+        if(listac.length===0){
+
+            simbolos.forEach((ob: Simbolo) => {
+
+                let nodo=ob.valor
+                recorrer(nodo);
+            })
+
+        }else{
+
+            simbolos.forEach((ob: Simbolo) => {
+                let nodo=ob.valor
+                let entornoNodo: Entorno =nodo.entorno
+                avanzar(entornoNodo,listac)
+            })
         }
-    }else{
-        recorrer(nodo);
     }
+    
 }
 
-function ejecutarXpath(entrada: string){
+function ejecutarXpath(entrada: string,en: Entorno){
     const objetos= gramaticaXpath.parse(entrada);
+    resultadoxpath=""
+    if (en.existe(objetos[0][0][0][0][0][0].valor)){
+        let listac: Array<Acceso>=[]
+        for (let i = objetos[0][0][0][0][0].length-1 ; i > -1; i--) {
+            listac.push(objetos[0][0][0][0][0][i])
+        }
+
+       avanzar(en,listac)
+
+    }
+    console.log("\n \n el resultado de la consulta es: ")
+    console.log(resultadoxpath+"Fin consulta")
+    /*
     contador=objetos[0][0][0][0][0].length
 
 
@@ -134,7 +163,7 @@ function ejecutarXpath(entrada: string){
                 avanzar(ob2,ob1,objetos[0][0][0][0][0],contador)
             }
         }
-    }
+    }*/
     /*
     objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
     
@@ -149,8 +178,7 @@ function ejecutarXpath(entrada: string){
         })
 
     })*/
-    console.log("\n \n el resultado de la consulta es: ")
-    console.log(resultadoxpath+"Fin consulta")
+    
 };
 
 function ejecutarXML_DSC(entrada: string) {
