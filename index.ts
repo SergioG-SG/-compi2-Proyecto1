@@ -22,9 +22,7 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
-  vs
     <libro>
-      trol
         <titulo>Libro A</titulo>
         <autor>Julio &amp;Tommy&amp; Garcia</autor>
         <fechapublicacion ano="2001" mes="Enero"/>
@@ -73,12 +71,16 @@ function ejecutarXML(entrada: string) {
 
 function recorrer(nodo: Objeto){
 
-    resultadoxpath+=nodo.identificador2+"2 \n"
-    console.log(resultadoxpath)
-    if (nodo.listaObjetos.length > 0) {
-        nodo.listaObjetos.forEach((objetoHijo: Objeto) => {
-            recorrer(objetoHijo);
-        })
+    if (nodo.texto!=''){
+        resultadoxpath+=nodo.texto+"\n"
+    }
+    //console.log(nodo.texto)
+    if (nodo.listaObjetos.length != undefined) {
+        if (nodo.listaObjetos.length >0) {
+            nodo.listaObjetos.forEach((objetoHijo: Objeto) => {
+                recorrer(objetoHijo);
+            })
+         }
     }
     
 }
@@ -87,7 +89,7 @@ function ejecutarXpath(entrada: string){
     const objetos= gramaticaXpath.parse(entrada);
 
     objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
-    
+    console.log("el resultado de la consulta es: ")
         ObjetosXML.forEach((objeto2: Objeto) => {
             
             if (objeto2.identificador1 == "?XML") {
@@ -99,7 +101,7 @@ function ejecutarXpath(entrada: string){
         })
 
     })
-    console.log(resultadoxpath)
+    console.log(resultadoxpath+"ver")
 };
 
 function ejecutarXML_DSC(entrada: string) {

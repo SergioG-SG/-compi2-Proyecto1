@@ -17,9 +17,7 @@ ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
-  vs
     <libro>
-      trol
         <titulo>Libro A</titulo>
         <autor>Julio &amp;Tommy&amp; Garcia</autor>
         <fechapublicacion ano="2001" mes="Enero"/>
@@ -64,17 +62,22 @@ function ejecutarXML(entrada) {
 }
 ;
 function recorrer(nodo) {
-    resultadoxpath += nodo.identificador2 + "2 \n";
-    console.log(resultadoxpath);
-    if (nodo.listaObjetos.length > 0) {
-        nodo.listaObjetos.forEach((objetoHijo) => {
-            recorrer(objetoHijo);
-        });
+    if (nodo.texto != '') {
+        resultadoxpath += nodo.texto + "\n";
+    }
+    //console.log(nodo.texto)
+    if (nodo.listaObjetos.length != undefined) {
+        if (nodo.listaObjetos.length > 0) {
+            nodo.listaObjetos.forEach((objetoHijo) => {
+                recorrer(objetoHijo);
+            });
+        }
     }
 }
 function ejecutarXpath(entrada) {
     const objetos = gramaticaXpath.parse(entrada);
     objetos[0][0][0][0][0].forEach((objeto1) => {
+        console.log("el resultado de la consulta es: ");
         ObjetosXML.forEach((objeto2) => {
             if (objeto2.identificador1 == "?XML") {
             }
@@ -83,7 +86,7 @@ function ejecutarXpath(entrada) {
             }
         });
     });
-    console.log(resultadoxpath);
+    console.log(resultadoxpath + "ver");
 }
 ;
 function ejecutarXML_DSC(entrada) {
