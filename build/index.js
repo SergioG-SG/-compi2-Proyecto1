@@ -10,12 +10,14 @@ const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
 const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
 let ObjetosXML;
 let resultadoxpath = "";
+let contador;
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
 //Esta funcion es para mientras en lo que sincroniza con la pag
 ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
+<app>
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
@@ -31,6 +33,21 @@ ejecutarXML(`
     </libro>
 
 </biblioteca>
+<hem>
+    <pdf>
+        <titulo>Libro 2</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </pdf>
+    <pdf2>
+        <titulo>Libro 3</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </pdf2>
+</hem>
+</app>
 `);
 realizarGraficaAST();
 //   tablaErroresFicticia()
@@ -42,7 +59,7 @@ function ejecutarXML(entrada) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
-    ejecutarXpath("/biblioteca");
+    ejecutarXpath("/app/biblioteca");
     const entornoGlobal = new Entorno_js_1.Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto) => {
@@ -74,19 +91,49 @@ function recorrer(nodo) {
         }
     }
 }
+function avanzar(nodo, ac, acs, conta) {
+    conta = conta - 1;
+    if (conta > 0) {
+        let nuevoac;
+        nuevoac = acs[acs.length - conta];
+        for (let ob2 of nodo.listaObjetos) {
+            if (nuevoac.valor == ob2.identificador1) {
+                avanzar(ob2, nuevoac, acs, conta);
+            }
+        }
+    }
+    else {
+        recorrer(nodo);
+    }
+}
 function ejecutarXpath(entrada) {
     const objetos = gramaticaXpath.parse(entrada);
-    objetos[0][0][0][0][0].forEach((objeto1) => {
-        console.log("el resultado de la consulta es: ");
-        ObjetosXML.forEach((objeto2) => {
+    contador = objetos[0][0][0][0][0].length;
+    for (let ob1 of objetos[0][0][0][0][0]) {
+        for (let ob2 of ObjetosXML) {
+            if (ob2.identificador1 == "?XML") {
+            }
+            else if (ob1.valor == ob2.identificador1) {
+                avanzar(ob2, ob1, objetos[0][0][0][0][0], contador);
+            }
+        }
+    }
+    /*
+    objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
+    
+        ObjetosXML.forEach((objeto2: Objeto) => {
+            
             if (objeto2.identificador1 == "?XML") {
+                
+            } else if (objeto1.valor==objeto2.identificador1) {
+                //avanzar(objeto2,contador)
             }
-            else if (objeto1.valor == objeto2.identificador1) {
-                recorrer(objeto2);
-            }
-        });
-    });
-    console.log(resultadoxpath + "ver");
+            
+        })
+
+    })*/
+    console.log("\n \n el resultado de la consulta es: ");
+    console.log(resultadoxpath + "Fin consulta");
 }
 ;
 function ejecutarXML_DSC(entrada) {
