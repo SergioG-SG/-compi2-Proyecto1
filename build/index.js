@@ -80,6 +80,7 @@ function ejecutarXpath(entrada) {
         })*/
     });
 }
+;
 function ejecutarXML_DSC(entrada) {
     const objetos = gramaticaXMLD.parse(entrada);
     ObjetosXML = objetos;
@@ -136,6 +137,7 @@ function realizarGraficaAST() {
     const graficador = new GraficarAST_js_1.GraficarAST;
     graficador.graficar(ObjetosXML);
 }
+;
 function reporteTablaErrores() {
     let cadenaReporteTE = ` <thead><tr><th scope="col">Tipo</th><th scope="col">Descripcion</th><th scope="col">Archivo</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
@@ -156,7 +158,8 @@ function reporteTablaErrores() {
     });
     return cadenaReporteTE;
 }
-ejecutarXML_DSC(`
+;
+/*ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
@@ -171,7 +174,7 @@ ejecutarXML_DSC(`
         <autor>Autor 2 &amp; Autor 3</autor>
         <descripcion> holi </descripcion>
         <fechaPublicacion ano="2002" mes="Febrero"/>
-    </libro>D
+    </libro>
 
   
 </biblioteca>
@@ -179,5 +182,5 @@ ejecutarXML_DSC(`
 <hemeroteca dir="zona 21" prop="kev" estado="chilera">
     
 </hemeroteca>
-`);
+`);*/
 module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores };
