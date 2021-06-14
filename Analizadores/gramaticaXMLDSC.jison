@@ -62,28 +62,28 @@ const {ELexico, ESintactico} = require('../Interprete/Util/TError')
 START: ROOTS EOF                                    { $$=$1; console.log($1); return $$; } 
      ;
 
-ROOTS: ROOT ROOTS_P                                 {$$ = $2; $$.push($1)}
+ROOTS: ROOT ROOTS_P                                 { $$ = $2; $$.push($1); }
      ;
 
-ROOTS_P: ROOT ROOTS_P                               {$$ = $2; $$.push($1);}
+ROOTS_P: ROOT ROOTS_P                               { $$ = $2; $$.push($1); }
        |                                            { $$ = []; }
        ;
 
 ROOT: prologo RVERSION asig StringLiteral1 RENCODING asig StringLiteral1 prologc    { $$ = new Objeto($1,'',@1.first_line,@1.first_column,[],[],$7); } 
     | lt identifier LIST_ATRIBUTOS gt      ROOTS         etiqca identifier gt       { $$ = new Objeto($2,'',@1.first_line,@1.first_column,$3,$5,$7); }
-    | lt identifier LIST_ATRIBUTOS gt      CONTENTS      etiqca identifier gt       { $$ = new Objeto($2,$5,@1.first_line,@1.first_column,$3,[],$7); console.log('S' + $5 + 'G')} 
+    | lt identifier LIST_ATRIBUTOS gt      CONTENTS      etiqca identifier gt       { $$ = new Objeto($2,$5,@1.first_line,@1.first_column,$3,[],$7); console.log('S' + $5 + 'G'); } 
     | lt identifier LIST_ATRIBUTOS gt                    etiqca identifier gt       { $$ = new Objeto($2,'',@1.first_line,@1.first_column,$3,[],$7); }
     | lt identifier LIST_ATRIBUTOS etiqcc                                           { $$ = new Objeto($2,'',@1.first_line,@1.first_column,$3,[],''); }                                    
     ;
 
-LIST_ATRIBUTOS: ATRIBUTOS                          {$$=$1;}
-                |                                  {$$=[];}
-                ;
+LIST_ATRIBUTOS: ATRIBUTOS                           { $$ = $1; }
+              |                                     { $$ = []; }
+              ;
 
-ATRIBUTOS: ATRIBUTO ATRIBUTOS_P                {$$=$2; $$.push($1);}                                         
+ATRIBUTOS: ATRIBUTO ATRIBUTOS_P                     { $$ = $2; $$.push($1); }                                         
          ;
 
-ATRIBUTOS_P: ATRIBUTO ATRIBUTOS_P                   {$$ = $2; $$.push($1);}
+ATRIBUTOS_P: ATRIBUTO ATRIBUTOS_P                   { $$ = $2; $$.push($1); }
            |                                        { $$ = [] ;}
            ;
 
