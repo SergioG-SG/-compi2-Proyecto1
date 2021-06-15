@@ -2,7 +2,7 @@
 
 
 %{
-	const { Acceso, Tipo } = require('../Interprete/Expresion/Acceso');
+	const { Acceso, Tipo2 } = require('../Interprete/Expresion/Acceso');
 %}
 
 %lex
@@ -187,7 +187,7 @@ FORDWARDAXIS
 ;
 
 ABBREVFORDWARDSTEP
-    : '@' NODETEST                  {$1.tipo=Tipo.ATRIBUTO; $$ = $1;}
+    : '@' NODETEST                  {$1.tipo=Tipo2.ATRIBUTO; $$ = $1;}
     | NODETEST                      {$$=$1;}
 ;
 
@@ -205,10 +205,10 @@ REVERSEAXIS
 ;
 
 NODETEST
-    : 'text()' {$$ = new Acceso($1,Tipo.TEST,@1.first_line,@1.first_column);}
-    | 'node()' {$$ = new Acceso($1,Tipo.TEST,@1.first_line,@1.first_column);}
-    | '*' {$$ = new Acceso($1,Tipo.SIGNO,@1.first_line,@1.first_column);}
-    | nodename {$$ = new Acceso($1,Tipo.ACCESO,@1.first_line,@1.first_column);}
+    : 'text()' {$$ = new Acceso($1,Tipo2.TEST,@1.first_line,@1.first_column);}
+    | 'node()' {$$ = new Acceso($1,Tipo2.TEST,@1.first_line,@1.first_column);}
+    | '*' {$$ = new Acceso($1,Tipo2.SIGNO,@1.first_line,@1.first_column);}
+    | nodename {$$ = new Acceso($1,Tipo2.ACCESO,@1.first_line,@1.first_column);}
 ;
 
 POSTFIXEXPR

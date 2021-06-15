@@ -3,7 +3,7 @@ import { Tipo } from './Simbolo/Tipo.js'
 import { Entorno } from "./Simbolo/Entorno.js";
 import { Instruccion } from "./Interfaces/Instruccion.js";
 import { Objeto } from "./Interprete/Expresion/Objeto.js";
-import { Acceso} from "./Interprete/Expresion/Acceso";
+import { Acceso, Tipo2} from "./Interprete/Expresion/Acceso";
 import { Simbolo } from "./Simbolo/Simbolo.js";
 import { Atributo } from "./Interprete/Expresion/Atributo.js";
 import { GraficarAST } from "./Graficador/GraficarAST.js";
@@ -22,38 +22,17 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
 
     ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
-
-<app>
-<biblioteca dir="calle 3>5<5" prop="Sergio's">
-    <libro>
-        <titulo>Libro A</titulo>
-        <autor>Julio &amp;Tommy&amp; Garcia</autor>
-        <fechapublicacion ano="2001" mes="Enero"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro B</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechapublicacion ano="2002" mes="Febrero"/>
-    </libro>
-
-</biblioteca>
-<hem>
-    <pdf>
-        <titulo>Libro 2</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechapublicacion ano="2002" mes="Febrero"/>
-    </pdf>
-    <pdf2>
-        <titulo>Libro 3</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechapublicacion ano="2002" mes="Febrero"/>
-    </pdf2>
-</hem>
-</app>
+<libros>
+  <libro>
+    <autor>Nombre</autor>
+  </libro>
+  <libro2>
+    <autor>Nombre2</autor>
+  </libro2>
+  <libro3>
+    <autor>Nombre3</autor>
+  </libro3>
+</libros>
 `)
     realizarGraficaAST()
  //   tablaErroresFicticia()
@@ -81,7 +60,7 @@ function ejecutarXML(entrada: string) {
     })
     //esta es solo para debug jaja
     const ent = entornoGlobal;
-    ejecutarXpath("/app/biblioteca",entornoGlobal);
+    ejecutarXpath("/libros/libro",entornoGlobal);
     console.log(cadenaReporteTS)
     return cadenaReporteTS
 };
@@ -104,12 +83,53 @@ function recorrer(nodo: Objeto){
     
 }
 function avanzar(en: Entorno, listac: Array<Acceso>){
-    
     let llave: string=""
     
+    if(listac[listac.length-1].tipo==Tipo2.ATRIBUTO){
+      /*  llave= listac[listac.length-1].valor
+        listac.pop()
+        if(en.existe(llave)){
+            resu
+        }*/
+    }else if(listac[listac.length-1].tipo==Tipo2.ACCESO){
+        
+    
+        llave= listac[listac.length-1].valor
+        listac.pop()
+        
+        if(en.existe(llave)){
+
+            let simbolos :Array<Simbolo>=[] 
+            simbolos.push(en.getSimbolo(llave))
+
+            if(listac.length===0){
+
+                simbolos.forEach((ob: Simbolo) => {
+
+                    let nodo=ob.valor
+                    recorrer(nodo);
+                })
+
+            }else{
+
+                simbolos.forEach((ob: Simbolo) => {
+                    let nodo=ob.valor
+                    let entornoNodo: Entorno =nodo.entorno
+                    avanzar(entornoNodo,listac)
+                })
+            }
+        }
+    }
+    
+}
+function generarxml(nodo: Objeto){
+    return  "<"+nodo.identificador1+">"+nodo.texto+"</"+nodo.identificador1+">\n";
+}
+function recursiva(en: Entorno, listac: Array<Acceso>){
+    let llave: string=""
     llave= listac[listac.length-1].valor
     listac.pop()
-    
+    let salida: string=""
     if(en.existe(llave)){
 
         let simbolos :Array<Simbolo>=[] 
@@ -120,7 +140,7 @@ function avanzar(en: Entorno, listac: Array<Acceso>){
             simbolos.forEach((ob: Simbolo) => {
 
                 let nodo=ob.valor
-                recorrer(nodo);
+                salida+=generarxml(nodo);
             })
 
         }else{
@@ -128,11 +148,11 @@ function avanzar(en: Entorno, listac: Array<Acceso>){
             simbolos.forEach((ob: Simbolo) => {
                 let nodo=ob.valor
                 let entornoNodo: Entorno =nodo.entorno
-                avanzar(entornoNodo,listac)
+                salida+=recursiva(entornoNodo,listac)
             })
         }
     }
-    
+    return salida
 }
 
 function ejecutarXpath(entrada: string,en: Entorno){
@@ -143,41 +163,16 @@ function ejecutarXpath(entrada: string,en: Entorno){
         for (let i = objetos[0][0][0][0][0].length-1 ; i > -1; i--) {
             listac.push(objetos[0][0][0][0][0][i])
         }
-
-       avanzar(en,listac)
-
+        /*console.log(en)
+        console.log(en.getSimbolo("app").entorno)*/
+       //avanzar(en,listac)
+       console.log(en.getSimbolo("libros").valor)
+       console.log(en.getSimbolo("libros").entorno.tabla)
+        console.log(recursiva(en,listac))
     }
-    console.log("\n \n el resultado de la consulta es: ")
-    console.log(resultadoxpath+"Fin consulta")
-    /*
-    contador=objetos[0][0][0][0][0].length
-
-
-    for(let ob1 of objetos[0][0][0][0][0]){
-
-        for(let ob2 of ObjetosXML){
-
-            if (ob2.identificador1 == "?XML") {
-
-            }else if(ob1.valor==ob2.identificador1){
-                avanzar(ob2,ob1,objetos[0][0][0][0][0],contador)
-            }
-        }
-    }*/
-    /*
-    objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
+    /*console.log("\n \n el resultado de la consulta es: ")
+    console.log(resultadoxpath+"Fin consulta")*/
     
-        ObjetosXML.forEach((objeto2: Objeto) => {
-            
-            if (objeto2.identificador1 == "?XML") {
-                
-            } else if (objeto1.valor==objeto2.identificador1) {
-                //avanzar(objeto2,contador)
-            }
-            
-        })
-
-    })*/
     
 };
 
