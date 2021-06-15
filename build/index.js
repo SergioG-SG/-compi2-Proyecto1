@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Tipo_js_1 = require("./Simbolo/Tipo.js");
 const Entorno_js_1 = require("./Simbolo/Entorno.js");
+const Acceso_1 = require("./Interprete/Expresion/Acceso");
 const Simbolo_js_1 = require("./Simbolo/Simbolo.js");
 const GraficarAST_js_1 = require("./Graficador/GraficarAST.js");
 const TError_js_1 = require("./Interprete/Util/TError.js");
@@ -16,6 +17,7 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
 //Esta funcion es para mientras en lo que sincroniza con la pag
 ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
+<<<<<<< HEAD
 
 <app>
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
@@ -62,6 +64,19 @@ ejecutarXML(`
     </pdf2>
 </hem>
 </app>
+=======
+<libros>
+  <libro>
+    <autor>Nombre</autor>
+  </libro>
+  <libro2>
+    <autor>Nombre2</autor>
+  </libro2>
+  <libro3>
+    <autor>Nombre3</autor>
+  </libro3>
+</libros>
+>>>>>>> master
 `);
 realizarGraficaAST();
 //   tablaErroresFicticia()
@@ -108,6 +123,40 @@ function recorrer(nodo) {
 }
 function avanzar(en, listac) {
     let llave = "";
+    if (listac[listac.length - 1].tipo == Acceso_1.Tipo2.ATRIBUTO) {
+        /*  llave= listac[listac.length-1].valor
+          listac.pop()
+          if(en.existe(llave)){
+              resu
+          }*/
+    }
+    else if (listac[listac.length - 1].tipo == Acceso_1.Tipo2.ACCESO) {
+        llave = listac[listac.length - 1].valor;
+        listac.pop();
+        if (en.existe(llave)) {
+            let simbolos = [];
+            simbolos.push(en.getSimbolo(llave));
+            if (listac.length === 0) {
+                simbolos.forEach((ob) => {
+                    let nodo = ob.valor;
+                    recorrer(nodo);
+                });
+            }
+            else {
+                simbolos.forEach((ob) => {
+                    let nodo = ob.valor;
+                    let entornoNodo = nodo.entorno;
+                    avanzar(entornoNodo, listac);
+                });
+            }
+        }
+    }
+}
+function generarxml(nodo) {
+    return "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">\n";
+}
+function recursiva(en, listac) {
+    let llave = "";
     llave = listac[listac.length - 1].valor;
     listac.pop();
     if (en.existeEnActual(llave)) {
@@ -116,17 +165,18 @@ function avanzar(en, listac) {
         if (listac.length === 0) {
             simbolos.forEach((ob) => {
                 let nodo = ob.valor;
-                recorrer(nodo);
+                salida += generarxml(nodo);
             });
         }
         else {
             simbolos.forEach((ob) => {
                 let nodo = ob.valor;
                 let entornoNodo = nodo.entorno;
-                avanzar(entornoNodo, listac);
+                salida += recursiva(entornoNodo, listac);
             });
         }
     }
+    return salida;
 }
 function ejecutarXpath(entrada, en) {
     const objetos = gramaticaXpath.parse(entrada);
@@ -136,39 +186,15 @@ function ejecutarXpath(entrada, en) {
         for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
             listac.push(objetos[0][0][0][0][0][i]);
         }
-        avanzar(en, listac);
+        /*console.log(en)
+        console.log(en.getSimbolo("app").entorno)*/
+        //avanzar(en,listac)
+        console.log(en.getSimbolo("libros").valor);
+        console.log(en.getSimbolo("libros").entorno.tabla);
+        console.log(recursiva(en, listac));
     }
-    console.log("\n \n el resultado de la consulta es: ");
-    console.log(resultadoxpath + "Fin consulta");
-    /*
-    contador=objetos[0][0][0][0][0].length
-
-
-    for(let ob1 of objetos[0][0][0][0][0]){
-
-        for(let ob2 of ObjetosXML){
-
-            if (ob2.identificador1 == "?XML") {
-
-            }else if(ob1.valor==ob2.identificador1){
-                avanzar(ob2,ob1,objetos[0][0][0][0][0],contador)
-            }
-        }
-    }*/
-    /*
-    objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
-    
-        ObjetosXML.forEach((objeto2: Objeto) => {
-            
-            if (objeto2.identificador1 == "?XML") {
-                
-            } else if (objeto1.valor==objeto2.identificador1) {
-                //avanzar(objeto2,contador)
-            }
-            
-        })
-
-    })*/
+    /*console.log("\n \n el resultado de la consulta es: ")
+    console.log(resultadoxpath+"Fin consulta")*/
 }
 ;
 function ejecutarXML_DSC(entrada) {
