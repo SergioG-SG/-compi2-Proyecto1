@@ -4,7 +4,7 @@ import { Simbolo } from "./Simbolo";
 export class Entorno{
     private anterior:Entorno;
     //private tabla:{[id:string] : Simbolo};    
-    private tablita:Array<Simbolo>;
+    public tablita:Array<Simbolo>;
 
     constructor(anterior:any){
         //this.tabla = {};
@@ -62,21 +62,33 @@ existe(id:string):boolean{
 
 existeEnActual(id:string):boolean{
     id= id.toLowerCase();
+    for(let i=0; i<this.tablita.length;i++){
+        if(this.tablita[i].indentificador==id){
+            return true;
+        }
+    }
+    /*
     this.tablita.forEach(simbol => {
         if(simbol.indentificador==id){
             return true;
         }
-    });
+    });*/
     return false;
 }
 
 getSimbolo(id:string):any{
     id = id.toLowerCase();
+    for(let i=0; i<this.tablita.length;i++){
+        if(this.tablita[i].indentificador==id){
+            return this.tablita[i];
+        }
+    }
+    /*
     this.tablita.forEach(simbol => {
         if(simbol.indentificador==id){
             return simbol;
         }
-    });
+    });*/
     return null;
 }
     /*

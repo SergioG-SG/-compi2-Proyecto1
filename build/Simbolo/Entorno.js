@@ -56,20 +56,32 @@ class Entorno {
     */
     existeEnActual(id) {
         id = id.toLowerCase();
-        this.tablita.forEach(simbol => {
-            if (simbol.indentificador == id) {
+        for (let i = 0; i < this.tablita.length; i++) {
+            if (this.tablita[i].indentificador == id) {
                 return true;
             }
-        });
+        }
+        /*
+        this.tablita.forEach(simbol => {
+            if(simbol.indentificador==id){
+                return true;
+            }
+        });*/
         return false;
     }
     getSimbolo(id) {
         id = id.toLowerCase();
+        for (let i = 0; i < this.tablita.length; i++) {
+            if (this.tablita[i].indentificador == id) {
+                return this.tablita[i];
+            }
+        }
+        /*
         this.tablita.forEach(simbol => {
-            if (simbol.indentificador == id) {
+            if(simbol.indentificador==id){
                 return simbol;
             }
-        });
+        });*/
         return null;
     }
 }

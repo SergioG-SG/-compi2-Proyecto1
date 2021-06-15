@@ -21,12 +21,12 @@ ejecutarXML(`
   <libro>
     <autor>Nombre</autor>
   </libro>
-  <libro2>
+  <libro>
     <autor>Nombre2</autor>
-  </libro2>
-  <libro3>
+  </libro>
+  <libro>
     <autor>Nombre3</autor>
-  </libro3>
+  </libro>
 </libros>
 `);
 realizarGraficaAST();
@@ -82,10 +82,10 @@ function avanzar(en, listac) {
     else if (listac[listac.length - 1].tipo == Acceso_1.Tipo2.ACCESO) {
         llave = listac[listac.length - 1].valor;
         listac.pop();
-        if (en.existe(llave)) {
+        if (en.existeEnActual(llave)) {
             let simbolos = [];
             simbolos.push(en.getSimbolo(llave));
-            if (listac.length === 0) {
+            if (listac.length == 0) {
                 simbolos.forEach((ob) => {
                     let nodo = ob.valor;
                     recorrer(nodo);
@@ -102,27 +102,55 @@ function avanzar(en, listac) {
     }
 }
 function generarxml(nodo) {
-    return "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">\n";
+    let result2 = "";
+    if (nodo.texto != "") {
+        let result = "";
+        result = "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">\n";
+        return result;
+    }
+    else {
+        if (nodo.listaObjetos.length > 0) {
+            let result3 = "";
+            nodo.listaObjetos.forEach((objetoHijo) => {
+                result3 += generarxml(objetoHijo);
+            });
+            result2 += "<" + nodo.identificador1 + ">\n" + result3 + "</" + nodo.identificador1 + ">\n";
+        }
+    }
+    return result2;
 }
 function recursiva(en, listac) {
     let llave = "";
     llave = listac[listac.length - 1].valor;
     listac.pop();
     let salida = "";
-    if (en.existe(llave)) {
+    if (en.existeEnActual(llave)) {
         let simbolos = [];
-        simbolos.push(en.getSimbolo(llave));
-        if (listac.length === 0) {
+        for (let i = 0; i < en.tablita.length; i++) {
+            if (en.tablita[i].indentificador == llave) {
+                simbolos.push(en.tablita[i]);
+            }
+        }
+        console.log(simbolos);
+        if (listac.length == 0) {
             simbolos.forEach((ob) => {
-                let nodo = ob.valor;
-                salida += generarxml(nodo);
+                if (ob != null) {
+                    let nodo = ob.valor;
+                    salida += generarxml(nodo);
+                }
             });
         }
         else {
             simbolos.forEach((ob) => {
-                let nodo = ob.valor;
-                let entornoNodo = nodo.entorno;
-                salida += recursiva(entornoNodo, listac);
+                if (ob != null) {
+                    let nodo = ob.valor;
+                    let entornoNodo = nodo.entorno;
+                    let listac2 = [];
+                    for (let i = 0; i < listac.length; i++) {
+                        listac2.push(listac[i]);
+                    }
+                    salida += recursiva(entornoNodo, listac2);
+                }
             });
         }
     }
@@ -131,17 +159,16 @@ function recursiva(en, listac) {
 function ejecutarXpath(entrada, en) {
     const objetos = gramaticaXpath.parse(entrada);
     resultadoxpath = "";
-    if (en.existe(objetos[0][0][0][0][0][0].valor)) {
-        let listac = [];
+    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
+        const listac = [];
         for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
             listac.push(objetos[0][0][0][0][0][i]);
         }
+        //console.log(en.getSimbolo("libros").entorno.tablita[1])
+        console.log(recursiva(en, listac));
         /*console.log(en)
         console.log(en.getSimbolo("app").entorno)*/
         //avanzar(en,listac)
-        console.log(en.getSimbolo("libros").valor);
-        console.log(en.getSimbolo("libros").entorno.tabla);
-        console.log(recursiva(en, listac));
     }
     /*console.log("\n \n el resultado de la consulta es: ")
     console.log(resultadoxpath+"Fin consulta")*/
