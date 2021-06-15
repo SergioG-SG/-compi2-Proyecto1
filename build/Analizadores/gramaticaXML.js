@@ -84,13 +84,13 @@ performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* actio
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
- this.$=$$[$0-1]; return this.$; 
+ this.$ = $$[$0-1]; return this.$; 
 break;
 case 2: case 12:
- $$[$0-1].push($$[$0]); this.$=$$[$0-1]; 
+ $$[$0-1].push($$[$0]); this.$ = $$[$0-1]; 
 break;
 case 3: case 13:
- this.$=[$$[$0]]; 
+ this.$ = [$$[$0]]; 
 break;
 case 4:
  this.$ = new Objeto($$[$0-7],'',_$[$0-7].first_line,_$[$0-7].first_column,[],[],$$[$0-1]); 
@@ -99,36 +99,35 @@ case 5:
  this.$ = new Objeto($$[$0-6],'',_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],$$[$0-3],$$[$0-1]); 
 break;
 case 6:
- this.$ = new Objeto($$[$0-6],$$[$0-3],_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],[],$$[$0-1]) ; console.log('S' + $$[$0-3] + 'G')
+ this.$ = new Objeto($$[$0-6],$$[$0-3],_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],[],$$[$0-1]); 
 break;
 case 7:
- this.$ = new Objeto($$[$0-5],'',_$[$0-6].first_line,_$[$0-6].first_column,$$[$0-4],[],$$[$0]) ; 
+ this.$ = new Objeto($$[$0-5],'',_$[$0-6].first_line,_$[$0-6].first_column,$$[$0-4],[],$$[$0]); 
 break;
 case 8:
  this.$ = new Objeto($$[$0-2],'',_$[$0-3].first_line,_$[$0-3].first_column,$$[$0-1],[],''); 
 break;
-case 9: case 16:
-   console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
-					new ESintactico("Sintactico", "No se esperaba: "+yytext,"XML Asc", this._$.first_line , this._$.first_column);
-				
+case 9:
+ console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
+                                                                                      new ESintactico("Sintactico", "No se esperaba: "+yytext,"XML Asc", this._$.first_line , this._$.first_column);
+                                                                                    
 break;
-case 10:
- this.$=$$[$0]; 
+case 10: case 18: case 19: case 20: case 26: case 27:
+ this.$ = $$[$0]; 
 break;
 case 11:
- this.$=[]; 
+ this.$ = []; 
 break;
 case 14: case 15:
  this.$ = new Atributo($$[$0-2],$$[$0],_$[$0-2].first_line,_$[$0-2].first_column); 
 break;
+case 16:
+ console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
+                                                      new ESintactico("Sintactico", "No se esperaba: "+yytext,"XML Asc", this._$.first_line , this._$.first_column);
+                                                    
+break;
 case 17:
- $$[$0-1] = $$[$0-1] + ' ' + $$[$0]; this.$=$$[$0-1];
-break;
-case 18:
- this.$ = $$[$0];
-break;
-case 19: case 20: case 26: case 27:
- this.$ = $$[$0]; 
+ $$[$0-1] = $$[$0-1] + ' ' + $$[$0]; this.$ = $$[$0-1];
 break;
 case 21:
  this.$ = '<'; 

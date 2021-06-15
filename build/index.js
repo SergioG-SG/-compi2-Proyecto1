@@ -78,42 +78,6 @@ function ejecutarXML(entrada) {
     return cadenaReporteTS;
 }
 ;
-/*
-function recorrer(nodo: Objeto){
-
-    if (nodo.texto!=''){
-        resultadoxpath+=nodo.texto+"\n"
-    }
-    //console.log(nodo.texto)
-    if (nodo.listaObjetos.length != undefined) {
-        if (nodo.listaObjetos.length >0) {
-            nodo.listaObjetos.forEach((objetoHijo: Objeto) => {
-                recorrer(objetoHijo);
-            })
-         }
-    }
-    
-}
-function avanzar(nodo: Objeto,ac: Acceso,acs: Array<Acceso>,conta:number){
-    conta=conta-1;
-    if(conta>0){
-        let nuevoac: Acceso
-        nuevoac=acs[acs.length-conta]
-
-        for(let ob2 of nodo.listaObjetos){
-
-            if(nuevoac.valor==ob2.identificador1){
-                avanzar(ob2,nuevoac,acs,conta)
-            }
-        }
-    }else{
-        recorrer(nodo);
-    }
-}*/
-function generarxml(nodo) {
-    let texto = "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">";
-    return texto;
-}
 function recorrer(nodo) {
     if (nodo.texto != '') {
         resultadoxpath += "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">\n";
