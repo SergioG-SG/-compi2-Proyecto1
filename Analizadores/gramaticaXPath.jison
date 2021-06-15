@@ -89,7 +89,7 @@ EXPRSINGLE
 ;
 
 OREXPR
-    : OREXPR or ANDEXPR                                   { $1.push($3); $$=$1; } 
+    : OREXPR or ANDEXPR                                  { $1.push($3); $$=$1; } 
     | ANDEXPR                                            {$$=[$1];}
 ;
 

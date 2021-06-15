@@ -82,7 +82,7 @@ function ejecutarXML(entrada: string) {
     })
     //esta es solo para debug jaja
     const ent = entornoGlobal;
-    console.log(cadenaReporteTS)
+    console.log(entornoGlobal)
     return cadenaReporteTS
 };
 
