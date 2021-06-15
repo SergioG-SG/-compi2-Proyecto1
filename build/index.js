@@ -32,6 +32,20 @@ ejecutarXML(`
         <fechapublicacion ano="2002" mes="Febrero"/>
     </libro>
 
+    <libro>
+        <titulo>Libro C</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro D</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
 </biblioteca>
 <hem>
     <pdf>
@@ -57,7 +71,9 @@ function ejecutarXML(entrada) {
     cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
     //Parseo para obtener la raiz o raices  
-    const objetos = gramaticaXML.parse(entrada);
+    const resultado = gramaticaXML.parse(entrada);
+    const objetos = resultado.result;
+    const reporteGramatical = resultado.reporteGram;
     ObjetosXML = objetos;
     const entornoGlobal = new Entorno_js_1.Entorno(null);
     //funcion recursiva para manejo de entornos
@@ -74,7 +90,7 @@ function ejecutarXML(entrada) {
     //esta es solo para debug jaja
     const ent = entornoGlobal;
     ejecutarXpath("/app/biblioteca", entornoGlobal);
-    console.log(cadenaReporteTS);
+    console.log();
     return cadenaReporteTS;
 }
 ;
@@ -94,7 +110,7 @@ function avanzar(en, listac) {
     let llave = "";
     llave = listac[listac.length - 1].valor;
     listac.pop();
-    if (en.existe(llave)) {
+    if (en.existeEnActual(llave)) {
         let simbolos = [];
         simbolos.push(en.getSimbolo(llave));
         if (listac.length === 0) {
@@ -115,7 +131,7 @@ function avanzar(en, listac) {
 function ejecutarXpath(entrada, en) {
     const objetos = gramaticaXpath.parse(entrada);
     resultadoxpath = "";
-    if (en.existe(objetos[0][0][0][0][0][0].valor)) {
+    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
         let listac = [];
         for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
             listac.push(objetos[0][0][0][0][0][i]);

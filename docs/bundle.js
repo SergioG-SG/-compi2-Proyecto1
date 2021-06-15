@@ -86,13 +86,13 @@ performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* actio
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
- this.$=$$[$0-1]; return this.$; 
+ this.$ = $$[$0-1]; return this.$; 
 break;
 case 2: case 12:
- $$[$0-1].push($$[$0]); this.$=$$[$0-1]; 
+ $$[$0-1].push($$[$0]); this.$ = $$[$0-1]; 
 break;
 case 3: case 13:
- this.$=[$$[$0]]; 
+ this.$ = [$$[$0]]; 
 break;
 case 4:
  this.$ = new Objeto($$[$0-7],'',_$[$0-7].first_line,_$[$0-7].first_column,[],[],$$[$0-1]); 
@@ -101,36 +101,35 @@ case 5:
  this.$ = new Objeto($$[$0-6],'',_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],$$[$0-3],$$[$0-1]); 
 break;
 case 6:
- this.$ = new Objeto($$[$0-6],$$[$0-3],_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],[],$$[$0-1]) ; console.log('S' + $$[$0-3] + 'G')
+ this.$ = new Objeto($$[$0-6],$$[$0-3],_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],[],$$[$0-1]); 
 break;
 case 7:
- this.$ = new Objeto($$[$0-5],'',_$[$0-6].first_line,_$[$0-6].first_column,$$[$0-4],[],$$[$0]) ; 
+ this.$ = new Objeto($$[$0-5],'',_$[$0-6].first_line,_$[$0-6].first_column,$$[$0-4],[],$$[$0]); 
 break;
 case 8:
  this.$ = new Objeto($$[$0-2],'',_$[$0-3].first_line,_$[$0-3].first_column,$$[$0-1],[],''); 
 break;
-case 9: case 16:
-   console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
-					new ESintactico("Sintactico", "No se esperaba: "+yytext,"XML Asc", this._$.first_line , this._$.first_column);
-				
+case 9:
+ console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
+                                                                                      new ESintactico("Sintactico", "No se esperaba: "+yytext,"XML Asc", this._$.first_line , this._$.first_column);
+                                                                                    
 break;
-case 10:
- this.$=$$[$0]; 
+case 10: case 18: case 19: case 20: case 26: case 27:
+ this.$ = $$[$0]; 
 break;
 case 11:
- this.$=[]; 
+ this.$ = []; 
 break;
 case 14: case 15:
  this.$ = new Atributo($$[$0-2],$$[$0],_$[$0-2].first_line,_$[$0-2].first_column); 
 break;
+case 16:
+ console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
+                                                      new ESintactico("Sintactico", "No se esperaba: "+yytext,"XML Asc", this._$.first_line , this._$.first_column);
+                                                    
+break;
 case 17:
- $$[$0-1] = $$[$0-1] + ' ' + $$[$0]; this.$=$$[$0-1];
-break;
-case 18:
- this.$ = $$[$0];
-break;
-case 19: case 20: case 26: case 27:
- this.$ = $$[$0]; 
+ $$[$0-1] = $$[$0-1] + ' ' + $$[$0]; this.$ = $$[$0-1];
 break;
 case 21:
  this.$ = '<'; 
@@ -2684,6 +2683,20 @@ ejecutarXML(`
         <fechapublicacion ano="2002" mes="Febrero"/>
     </libro>
 
+    <libro>
+        <titulo>Libro C</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro D</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
 </biblioteca>
 <hem>
     <pdf>
@@ -2711,7 +2724,6 @@ function ejecutarXML(entrada) {
     //Parseo para obtener la raiz o raices  
     const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
-    ejecutarXpath("/app/biblioteca");
     const entornoGlobal = new Entorno_js_1.Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto) => {
@@ -2726,15 +2738,15 @@ function ejecutarXML(entrada) {
     });
     //esta es solo para debug jaja
     const ent = entornoGlobal;
-    console.log(entornoGlobal);
+    ejecutarXpath("/app/biblioteca", entornoGlobal);
+    console.log(cadenaReporteTS);
     return cadenaReporteTS;
 }
 ;
 function recorrer(nodo) {
     if (nodo.texto != '') {
-        resultadoxpath += nodo.texto + "\n";
+        resultadoxpath += "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">\n";
     }
-    //console.log(nodo.texto)
     if (nodo.listaObjetos.length != undefined) {
         if (nodo.listaObjetos.length > 0) {
             nodo.listaObjetos.forEach((objetoHijo) => {
@@ -2743,33 +2755,55 @@ function recorrer(nodo) {
         }
     }
 }
-function avanzar(nodo, ac, acs, conta) {
-    conta = conta - 1;
-    if (conta > 0) {
-        let nuevoac;
-        nuevoac = acs[acs.length - conta];
-        for (let ob2 of nodo.listaObjetos) {
-            if (nuevoac.valor == ob2.identificador1) {
-                avanzar(ob2, nuevoac, acs, conta);
-            }
+function avanzar(en, listac) {
+    let llave = "";
+    llave = listac[listac.length - 1].valor;
+    listac.pop();
+    if (en.existeEnActual(llave)) {
+        let simbolos = [];
+        simbolos.push(en.getSimbolo(llave));
+        if (listac.length === 0) {
+            simbolos.forEach((ob) => {
+                let nodo = ob.valor;
+                recorrer(nodo);
+            });
         }
-    }
-    else {
-        recorrer(nodo);
+        else {
+            simbolos.forEach((ob) => {
+                let nodo = ob.valor;
+                let entornoNodo = nodo.entorno;
+                avanzar(entornoNodo, listac);
+            });
+        }
     }
 }
-function ejecutarXpath(entrada) {
+function ejecutarXpath(entrada, en) {
     const objetos = gramaticaXpath.parse(entrada);
-    contador = objetos[0][0][0][0][0].length;
-    for (let ob1 of objetos[0][0][0][0][0]) {
-        for (let ob2 of ObjetosXML) {
+    resultadoxpath = "";
+    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
+        let listac = [];
+        for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
+            listac.push(objetos[0][0][0][0][0][i]);
+        }
+        avanzar(en, listac);
+    }
+    console.log("\n \n el resultado de la consulta es: ");
+    console.log(resultadoxpath + "Fin consulta");
+    /*
+    contador=objetos[0][0][0][0][0].length
+
+
+    for(let ob1 of objetos[0][0][0][0][0]){
+
+        for(let ob2 of ObjetosXML){
+
             if (ob2.identificador1 == "?XML") {
-            }
-            else if (ob1.valor == ob2.identificador1) {
-                avanzar(ob2, ob1, objetos[0][0][0][0][0], contador);
+
+            }else if(ob1.valor==ob2.identificador1){
+                avanzar(ob2,ob1,objetos[0][0][0][0][0],contador)
             }
         }
-    }
+    }*/
     /*
     objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
     
@@ -2784,8 +2818,6 @@ function ejecutarXpath(entrada) {
         })
 
     })*/
-    console.log("\n \n el resultado de la consulta es: ");
-    console.log(resultadoxpath + "Fin consulta");
 }
 ;
 function ejecutarXML_DSC(entrada) {

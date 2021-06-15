@@ -19,7 +19,6 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
                         </tr></thead>`
                         
 //Esta funcion es para mientras en lo que sincroniza con la pag
-
     ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
@@ -33,6 +32,20 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
 
     <libro>
         <titulo>Libro B</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro C</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro D</titulo>
         <autor>Autor 2 &amp; Autor 3</autor>
         <descripcion> holi </descripcion>
         <fechapublicacion ano="2002" mes="Febrero"/>
@@ -55,6 +68,7 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
 </hem>
 </app>
 `)
+
     realizarGraficaAST()
  //   tablaErroresFicticia()
 
@@ -66,7 +80,10 @@ function ejecutarXML(entrada: string) {
     cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
     //Parseo para obtener la raiz o raices  
-    const objetos = gramaticaXML.parse(entrada);
+    const resultado = gramaticaXML.parse(entrada);
+    const objetos = resultado.result;
+    const reporteGramatical = resultado.reporteGram;
+
     ObjetosXML = objetos;
     const entornoGlobal: Entorno = new Entorno(null);
     //funcion recursiva para manejo de entornos
@@ -82,7 +99,7 @@ function ejecutarXML(entrada: string) {
     //esta es solo para debug jaja
     const ent = entornoGlobal;
     ejecutarXpath("/app/biblioteca",entornoGlobal);
-    console.log(cadenaReporteTS)
+    console.log(    )
     return cadenaReporteTS
 };
 
@@ -110,7 +127,7 @@ function avanzar(en: Entorno, listac: Array<Acceso>){
     llave= listac[listac.length-1].valor
     listac.pop()
     
-    if(en.existe(llave)){
+    if(en.existeEnActual(llave)){
 
         let simbolos :Array<Simbolo>=[] 
         simbolos.push(en.getSimbolo(llave))
@@ -138,7 +155,7 @@ function avanzar(en: Entorno, listac: Array<Acceso>){
 function ejecutarXpath(entrada: string,en: Entorno){
     const objetos= gramaticaXpath.parse(entrada);
     resultadoxpath=""
-    if (en.existe(objetos[0][0][0][0][0][0].valor)){
+    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)){
         let listac: Array<Acceso>=[]
         for (let i = objetos[0][0][0][0][0].length-1 ; i > -1; i--) {
             listac.push(objetos[0][0][0][0][0][i])
