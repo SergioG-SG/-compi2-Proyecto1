@@ -19,7 +19,7 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
                         </tr></thead>`
                         
 //Esta funcion es para mientras en lo que sincroniza con la pag
-    ejecutarXML(`
+ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 <libros>
   <libro>
@@ -32,9 +32,9 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
     <autor>Nombre3</autor>
   </libro>
 </libros>
-`)
+`);
 
-    realizarGraficaAST()
+realizarGraficaAST()
  //   tablaErroresFicticia()
 
 
@@ -68,9 +68,6 @@ function ejecutarXML(entrada: string) {
     return cadenaReporteTS
 };
 
-
-
-
 function recorrer(nodo: Objeto){
 
     if (nodo.texto!=''){
@@ -84,7 +81,8 @@ function recorrer(nodo: Objeto){
          }
     }
     
-}
+};
+
 function avanzar(en: Entorno, listac: Array<Acceso>){
     let llave: string=""
     
@@ -124,7 +122,8 @@ function avanzar(en: Entorno, listac: Array<Acceso>){
         }
     }
     
-}
+};
+
 function generarxml(nodo: Objeto){
     let result2:string=""
     if(nodo.texto!=""){
@@ -142,13 +141,13 @@ function generarxml(nodo: Objeto){
     }
     return result2
     
-}
+};
+
 function recursiva(en: Entorno, listac: Array<Acceso>){
     let llave: string=""
     llave= listac[listac.length-1].valor
     listac.pop()
     let salida: string=""
-    if(en.existeEnActual(llave)){
     
     if(en.existeEnActual(llave)){
 
@@ -186,13 +185,11 @@ function recursiva(en: Entorno, listac: Array<Acceso>){
         }
     }
     return salida
-}
+};
 
 function ejecutarXpath(entrada: string,en: Entorno){
     const objetos= gramaticaXpath.parse(entrada);
     resultadoxpath=""
-    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)){
-        const listac: Array<Acceso>=[]
     if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)){
         let listac: Array<Acceso>=[]
         for (let i = objetos[0][0][0][0][0].length-1 ; i > -1; i--) {
