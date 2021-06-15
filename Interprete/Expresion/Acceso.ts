@@ -1,4 +1,4 @@
-export enum Tipo{
+export enum Tipo2{
     ACCESO,
     ATRIBUTO,
     TEST,
@@ -7,11 +7,11 @@ export enum Tipo{
 
 export class Acceso{
     valor : string;
-    tipo: Tipo;
+    tipo: Tipo2;
     linea : number;
     columna : number;
 
-    constructor(valor:string, tipo:Tipo,linea:number,columna:number){
+    constructor(valor:string, tipo:Tipo2,linea:number,columna:number){
         this.valor=valor;
         this.tipo=tipo;
         this.linea=linea;
