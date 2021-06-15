@@ -17,54 +17,6 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
 //Esta funcion es para mientras en lo que sincroniza con la pag
 ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
-<<<<<<< HEAD
-
-<app>
-<biblioteca dir="calle 3>5<5" prop="Sergio's">
-    <libro>
-        <titulo>Libro A</titulo>
-        <autor>Julio &amp;Tommy&amp; Garcia</autor>
-        <fechapublicacion ano="2001" mes="Enero"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro B</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechapublicacion ano="2002" mes="Febrero"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro C</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechapublicacion ano="2002" mes="Febrero"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro D</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechapublicacion ano="2002" mes="Febrero"/>
-    </libro>
-
-</biblioteca>
-<hem>
-    <pdf>
-        <titulo>Libro 2</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechapublicacion ano="2002" mes="Febrero"/>
-    </pdf>
-    <pdf2>
-        <titulo>Libro 3</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechapublicacion ano="2002" mes="Febrero"/>
-    </pdf2>
-</hem>
-</app>
-=======
 <libros>
   <libro>
     <autor>Nombre</autor>
@@ -76,7 +28,6 @@ ejecutarXML(`
     <autor>Nombre3</autor>
   </libro>
 </libros>
->>>>>>> master
 `);
 realizarGraficaAST();
 //   tablaErroresFicticia()
@@ -174,164 +125,162 @@ function recursiva(en, listac) {
     let llave = "";
     llave = listac[listac.length - 1].valor;
     listac.pop();
-<<<<<<< HEAD
-=======
     let salida = "";
->>>>>>> cambio6
     if (en.existeEnActual(llave)) {
-        let simbolos = [];
-        for (let i = 0; i < en.tablita.length; i++) {
-            if (en.tablita[i].indentificador == llave) {
-                simbolos.push(en.tablita[i]);
+        if (en.existeEnActual(llave)) {
+            let simbolos = [];
+            for (let i = 0; i < en.tablita.length; i++) {
+                if (en.tablita[i].indentificador == llave) {
+                    simbolos.push(en.tablita[i]);
+                }
+            }
+            console.log(simbolos);
+            if (listac.length == 0) {
+                simbolos.forEach((ob) => {
+                    if (ob != null) {
+                        let nodo = ob.valor;
+                        salida += generarxml(nodo);
+                    }
+                });
+            }
+            else {
+                simbolos.forEach((ob) => {
+                    if (ob != null) {
+                        let nodo = ob.valor;
+                        let entornoNodo = nodo.entorno;
+                        let listac2 = [];
+                        for (let i = 0; i < listac.length; i++) {
+                            listac2.push(listac[i]);
+                        }
+                        salida += recursiva(entornoNodo, listac2);
+                    }
+                });
             }
         }
-        console.log(simbolos);
-        if (listac.length == 0) {
-            simbolos.forEach((ob) => {
-                if (ob != null) {
-                    let nodo = ob.valor;
-                    salida += generarxml(nodo);
-                }
-            });
-        }
-        else {
-            simbolos.forEach((ob) => {
-                if (ob != null) {
-                    let nodo = ob.valor;
-                    let entornoNodo = nodo.entorno;
-                    let listac2 = [];
-                    for (let i = 0; i < listac.length; i++) {
-                        listac2.push(listac[i]);
-                    }
-                    salida += recursiva(entornoNodo, listac2);
-                }
-            });
-        }
+        return salida;
     }
-    return salida;
-}
-function ejecutarXpath(entrada, en) {
-    const objetos = gramaticaXpath.parse(entrada);
-    resultadoxpath = "";
-    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
-<<<<<<< HEAD
-        let listac = [];
-=======
-        const listac = [];
->>>>>>> cambio6
-        for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
-            listac.push(objetos[0][0][0][0][0][i]);
+    function ejecutarXpath(entrada, en) {
+        const objetos = gramaticaXpath.parse(entrada);
+        resultadoxpath = "";
+        if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
+            const listac = [];
+            if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
+                let listac = [];
+                for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
+                    listac.push(objetos[0][0][0][0][0][i]);
+                }
+                //console.log(en.getSimbolo("libros").entorno.tablita[1])
+                console.log(recursiva(en, listac));
+                /*console.log(en)
+                console.log(en.getSimbolo("app").entorno)*/
+                //avanzar(en,listac)
+            }
+            /*console.log("\n \n el resultado de la consulta es: ")
+            console.log(resultadoxpath+"Fin consulta")*/
         }
-        //console.log(en.getSimbolo("libros").entorno.tablita[1])
-        console.log(recursiva(en, listac));
-        /*console.log(en)
-        console.log(en.getSimbolo("app").entorno)*/
-        //avanzar(en,listac)
-    }
-    /*console.log("\n \n el resultado de la consulta es: ")
-    console.log(resultadoxpath+"Fin consulta")*/
-}
-;
-function ejecutarXML_DSC(entrada) {
-    const objetos = gramaticaXMLD.parse(entrada);
-    ObjetosXML = objetos;
-    const entornoGlobal = new Entorno_js_1.Entorno(null);
-}
-;
-function llenarTablaXML(objeto, entorno, padre) {
-    //Inicializamos los entornos del objeto
-    const entornoObjeto = new Entorno_js_1.Entorno(null);
-    //Verificamos si tiene atributos para asignarselos
-    if (objeto.listaAtributos.length > 0) {
-        objeto.listaAtributos.forEach((atributo) => {
-            //ESto para el llenada
-            const simbolo = new Simbolo_js_1.Simbolo(Tipo_js_1.Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor.replace(/['"]+/g, ''), entornoObjeto);
-            entornoObjeto.agregar(simbolo.indentificador, simbolo);
+        ;
+        function ejecutarXML_DSC(entrada) {
+            const objetos = gramaticaXMLD.parse(entrada);
+            ObjetosXML = objetos;
+            const entornoGlobal = new Entorno_js_1.Entorno(null);
+        }
+        ;
+        function llenarTablaXML(objeto, entorno, padre) {
+            //Inicializamos los entornos del objeto
+            const entornoObjeto = new Entorno_js_1.Entorno(null);
+            //Verificamos si tiene atributos para asignarselos
+            if (objeto.listaAtributos.length > 0) {
+                objeto.listaAtributos.forEach((atributo) => {
+                    //ESto para el llenada
+                    const simbolo = new Simbolo_js_1.Simbolo(Tipo_js_1.Tipo.ATRIBUTO, atributo.identificador, atributo.linea, atributo.columna, atributo.valor.replace(/['"]+/g, ''), entornoObjeto);
+                    entornoObjeto.agregar(simbolo.indentificador, simbolo);
+                    //Esto es para la graficada de la tabla de simbolos
+                    cadenaReporteTS += `<tr>`;
+                    cadenaReporteTS += `<td>${simbolo.indentificador}</td><td>Atributo</td><td>${objeto.identificador1}</td><td>${atributo.linea}</td><td>${atributo.columna}</td>`;
+                    cadenaReporteTS += `<tr>`;
+                });
+            }
+            //Verificamos si tiene texto para agregarselo
+            if (objeto.texto != '') {
+                const simbolo = new Simbolo_js_1.Simbolo(Tipo_js_1.Tipo.ATRIBUTO, 'textoInterno', objeto.linea, objeto.columna, objeto.texto, entornoObjeto);
+                entornoObjeto.agregar(simbolo.indentificador, simbolo);
+                //Esto es para la graficada de la tabla de simbolos
+                // cadenaReporteTS+=`<td>${objeto.texto}</td><td>Atributo</td><td>${objeto.identificador1}</td><td>${objeto.linea}</td><td>${objeto.columna}</td>`
+            }
+            //Agregamos al entorno global
+            objeto.entorno = entornoObjeto;
+            const simbolo = new Simbolo_js_1.Simbolo(Tipo_js_1.Tipo.ETIQUETA, objeto.identificador1, objeto.linea, objeto.columna, objeto, entornoObjeto);
+            entorno.agregar(simbolo.indentificador, simbolo);
             //Esto es para la graficada de la tabla de simbolos
+            let ambitoTS = "";
+            if (padre != null) {
+                ambitoTS = padre.identificador1;
+            }
+            else {
+                ambitoTS = "Global";
+            }
             cadenaReporteTS += `<tr>`;
-            cadenaReporteTS += `<td>${simbolo.indentificador}</td><td>Atributo</td><td>${objeto.identificador1}</td><td>${atributo.linea}</td><td>${atributo.columna}</td>`;
-            cadenaReporteTS += `<tr>`;
-        });
-    }
-    //Verificamos si tiene texto para agregarselo
-    if (objeto.texto != '') {
-        const simbolo = new Simbolo_js_1.Simbolo(Tipo_js_1.Tipo.ATRIBUTO, 'textoInterno', objeto.linea, objeto.columna, objeto.texto, entornoObjeto);
-        entornoObjeto.agregar(simbolo.indentificador, simbolo);
-        //Esto es para la graficada de la tabla de simbolos
-        // cadenaReporteTS+=`<td>${objeto.texto}</td><td>Atributo</td><td>${objeto.identificador1}</td><td>${objeto.linea}</td><td>${objeto.columna}</td>`
-    }
-    //Agregamos al entorno global
-    objeto.entorno = entornoObjeto;
-    const simbolo = new Simbolo_js_1.Simbolo(Tipo_js_1.Tipo.ETIQUETA, objeto.identificador1, objeto.linea, objeto.columna, objeto, entornoObjeto);
-    entorno.agregar(simbolo.indentificador, simbolo);
-    //Esto es para la graficada de la tabla de simbolos
-    let ambitoTS = "";
-    if (padre != null) {
-        ambitoTS = padre.identificador1;
-    }
-    else {
-        ambitoTS = "Global";
-    }
-    cadenaReporteTS += `<tr>`;
-    cadenaReporteTS += `<td>${objeto.identificador1}</td><td>Objeto</td><td>${ambitoTS}</td><td>${objeto.linea}</td><td>${objeto.columna}</td>`;
-    cadenaReporteTS += `</tr>`;
-    //Verificamos si tiene mas hijos para recorrerlos recursivamente
-    if (objeto.listaObjetos.length > 0) {
-        objeto.listaObjetos.forEach((objetoHijo) => {
-            const resultado = objetoHijo;
-            llenarTablaXML(objetoHijo, entornoObjeto, objeto);
-        });
-    }
-}
-;
-function realizarGraficaAST() {
-    const graficador = new GraficarAST_js_1.GraficarAST;
-    graficador.graficar(ObjetosXML);
-}
-;
-function reporteTablaErrores() {
-    let cadenaReporteTE = ` <thead><tr><th scope="col">Tipo</th><th scope="col">Descripcion</th><th scope="col">Archivo</th><th scope="col">Fila</th><th scope="col">Columna</th>
+            cadenaReporteTS += `<td>${objeto.identificador1}</td><td>Objeto</td><td>${ambitoTS}</td><td>${objeto.linea}</td><td>${objeto.columna}</td>`;
+            cadenaReporteTS += `</tr>`;
+            //Verificamos si tiene mas hijos para recorrerlos recursivamente
+            if (objeto.listaObjetos.length > 0) {
+                objeto.listaObjetos.forEach((objetoHijo) => {
+                    const resultado = objetoHijo;
+                    llenarTablaXML(objetoHijo, entornoObjeto, objeto);
+                });
+            }
+        }
+        ;
+        function realizarGraficaAST() {
+            const graficador = new GraficarAST_js_1.GraficarAST;
+            graficador.graficar(ObjetosXML);
+        }
+        ;
+        function reporteTablaErrores() {
+            let cadenaReporteTE = ` <thead><tr><th scope="col">Tipo</th><th scope="col">Descripcion</th><th scope="col">Archivo</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
-    TError_js_1.errorLex.forEach(element => {
-        cadenaReporteTE += `<tr>`;
-        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
-        cadenaReporteTE += `</tr>`;
-    });
-    TError_js_1.errorSin.forEach(element => {
-        cadenaReporteTE += `<tr>`;
-        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
-        cadenaReporteTE += `</tr>`;
-    });
-    TError_js_1.errorSem.forEach(element => {
-        cadenaReporteTE += `<tr>`;
-        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
-        cadenaReporteTE += `</tr>`;
-    });
-    return cadenaReporteTE;
+            TError_js_1.errorLex.forEach(element => {
+                cadenaReporteTE += `<tr>`;
+                cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
+                cadenaReporteTE += `</tr>`;
+            });
+            TError_js_1.errorSin.forEach(element => {
+                cadenaReporteTE += `<tr>`;
+                cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
+                cadenaReporteTE += `</tr>`;
+            });
+            TError_js_1.errorSem.forEach(element => {
+                cadenaReporteTE += `<tr>`;
+                cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
+                cadenaReporteTE += `</tr>`;
+            });
+            return cadenaReporteTE;
+        }
+        ;
+        /*ejecutarXML_DSC(`
+        <?xml version="1.0" encoding="UTF-8" ?>
+        
+        <biblioteca dir="calle 3>5<5" prop="Sergio's">
+            <libro>
+                <titulo>Libro Actual Nèvada</titulo>
+                <autor>Julio &amp;Tommy&amp; Garcia</autor>
+                <fechaPublicacion ano="2001" mes="Enero"/>
+            </libro>
+        
+            <libro>
+                <titulo>Libro B</titulo>
+                <autor>Autor 2 &amp; Autor 3</autor>
+                <descripcion> holi </descripcion>
+                <fechaPublicacion ano="2002" mes="Febrero"/>
+            </libro>
+        
+          
+        </biblioteca>
+        
+        <hemeroteca dir="zona 21" prop="kev" estado="chilera">
+            
+        </hemeroteca>
+        `);*/
+        module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores };
+    }
 }
-;
-/*ejecutarXML_DSC(`
-<?xml version="1.0" encoding="UTF-8" ?>
-
-<biblioteca dir="calle 3>5<5" prop="Sergio's">
-    <libro>
-        <titulo>Libro Actual Nèvada</titulo>
-        <autor>Julio &amp;Tommy&amp; Garcia</autor>
-        <fechaPublicacion ano="2001" mes="Enero"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro B</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechaPublicacion ano="2002" mes="Febrero"/>
-    </libro>
-
-  
-</biblioteca>
-
-<hemeroteca dir="zona 21" prop="kev" estado="chilera">
-    
-</hemeroteca>
-`);*/
-module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores };
