@@ -2,15 +2,21 @@
  /* aca podemos importar los módulos que vamos a utilizar, crear funciones, etc */
 %{
 
-const { GraficarCST_XML } = require('../Graficador/GraficarCST_XML');
-const { NodoCST } = require('../Graficador/NodoCST');
-var cst = new GraficarCST_XML();
-var raiz = new NodoCST;
+const { Objeto } = require('../Interprete/Expresion/Objeto');
+const { Atributo } = require('../Interprete/Expresion/Atributo');
+const {ELexico, ESintactico} = require('../Interprete/Util/TError')
 
 %}
 
 
 %lex
+
+%{
+if (!('cont' in yy)) {
+  yy.cont = 0;
+  yy.codigo = 'graph{'+'\n';
+}
+%}
 
 %s                                  comment
 
@@ -49,6 +55,7 @@ var raiz = new NodoCST;
 //error lexico
 .       {
             console.error('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);
+            new ELexico("Lexico", "Caracter inesperado \'"+yytext+"\'", 'XML Asc', yylloc.first_line, yylloc.first_column)
         }
 
 <<EOF>>                             return 'EOF'
@@ -61,19 +68,29 @@ var raiz = new NodoCST;
 %%
 
 /* Definición de la gramática */
-START: ROOTS EOF                                                                    { var padre = new NodoCST('START', '');
-                                                                                      padre.agregarHijo($1);
-                                                                                      $$ = padre;
-                                                                                      return $$; } 
+START: ROOTS EOF                                                                    { ++yy.cont;
+                                                                                      yy.codigo += yy.cont + ' [label="ROOTS"];\n';
+                                                                                      yy.codigo += yy.cont + '--' + $1 + ';\n';
+                                                                                      ++yy.cont;
+                                                                                      yy.codigo += yy.cont + ' [label="S"];\n';
+                                                                                      yy.codigo += yy.cont + '--' + yy.cont-1 + ';\n';
+                                                                                      $$ = yy.codigo + '\n}'; return $$; }                                 
      ;
 
-ROOTS: ROOTS ROOT                                                                   { var padre = new NodoCST('ROOTS', '');
-                                                                                      padre.agregarHijo($1);
-                                                                                      $$ = padre; 
+ROOTS: ROOTS ROOT                                                                   {// yy.cont = yy.cont+3;
+                                                                                      ++yy.cont;
+                                                                                      yy.codigo += yy.cont + ' [label="ROOTS"];\n';
+                                                                                      yy.codigo += yy.cont + '--' + $1 + ';\n';
+                                                                                      ++yy.cont;
+                                                                                      yy.codigo += yy.cont + ' [label="ROOT"];\n';
+                                                                                      yy.codigo += yy.cont + '--' + $2 + ';\n';
+                                                                                      $$ = yy.cont;
                                                                                     }                                                 
-     | ROOT                                                                         { var padre = new NodoCST('ROOTS', '');
-                                                                                      padre.agregarHijo($1);
-                                                                                      $$ = padre; }
+     | ROOT                                                                         { ++yy.cont;
+                                                                                      yy.codigo += yy.cont + ' [label="ROOT1"];\n';
+                                                                                      yy.codigo += yy.cont + '--' + $1 + ';\n';
+                                                                                      $$ = yy.cont;
+                                                                                    }
      ;
 
 ROOT: prologo RVERSION asig StringLiteral1 RENCODING asig StringLiteral1 prologc    { /*$$ = ++yy.cont;*/ } 
@@ -98,7 +115,7 @@ ROOT: prologo RVERSION asig StringLiteral1 RENCODING asig StringLiteral1 prologc
                                                                                       yy.codigo += yy.cont + '--' + $8 + ';' + '\n';*/
                                                                                     }
     | lt identifier LIST_ATRIBUTOS gt      CONTENTS      etiqca identifier gt       { /*$$ = ++yy.cont;*/ } 
-    | lt identifier LIST_ATRIBUTOS gt                    etiqca identifier gt       { var padre = new NodoCST('Root', ''); $$ = padre; }
+    | lt identifier LIST_ATRIBUTOS gt                    etiqca identifier gt       { $$ = ++yy.cont; console.log(yy.cont)}
     | lt identifier LIST_ATRIBUTOS etiqcc                                           { /*$$ = ++yy.cont;*/ }                                    
     | error                                                                         { console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
                                                                                       

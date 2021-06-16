@@ -71,73 +71,90 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-var gramaticaXMLDSC = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,6],$V1=[1,4],$V2=[1,5],$V3=[5,18],$V4=[2,4],$V5=[2,5,8,14,18],$V6=[17,20],$V7=[1,18],$V8=[1,17],$V9=[2,15],$Va=[2,15,17,20],$Vb=[1,38],$Vc=[1,30],$Vd=[1,31],$Ve=[1,32],$Vf=[1,33],$Vg=[1,34],$Vh=[1,35],$Vi=[1,36],$Vj=[1,37],$Vk=[2,21],$Vl=[10,15,18,27,28,29,30,31,32,33];
+var CSTXML = (function(){
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,6],$V1=[1,4],$V2=[1,5],$V3=[2,5,7,13,17],$V4=[16,19],$V5=[1,16],$V6=[1,15],$V7=[2,14,16,19],$V8=[1,35],$V9=[1,27],$Va=[1,28],$Vb=[1,29],$Vc=[1,30],$Vd=[1,31],$Ve=[1,32],$Vf=[1,33],$Vg=[1,34],$Vh=[9,14,17,24,25,26,27,28,29,30];
 var parser = {trace: function trace () { },
 yy: {},
-symbols_: {"error":2,"START":3,"ROOTS":4,"EOF":5,"ROOT":6,"ROOTS_P":7,"prologo":8,"RVERSION":9,"asig":10,"StringLiteral1":11,"RENCODING":12,"prologc":13,"lt":14,"identifier":15,"LIST_ATRIBUTOS":16,"gt":17,"etiqca":18,"CONTENTS":19,"etiqcc":20,"ATRIBUTOS":21,"ATRIBUTO":22,"ATRIBUTOS_P":23,"StringLiteral2":24,"BODY":25,"CONTENTS_P":26,"DoubleLiteral":27,"less":28,"greater":29,"ampersand":30,"apostrophe":31,"quotation":32,"simbolos1":33,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",8:"prologo",9:"RVERSION",10:"asig",11:"StringLiteral1",12:"RENCODING",13:"prologc",14:"lt",15:"identifier",17:"gt",18:"etiqca",20:"etiqcc",24:"StringLiteral2",27:"DoubleLiteral",28:"less",29:"greater",30:"ampersand",31:"apostrophe",32:"quotation",33:"simbolos1"},
-productions_: [0,[3,2],[4,2],[7,2],[7,0],[6,8],[6,8],[6,8],[6,7],[6,4],[6,1],[16,1],[16,0],[21,2],[23,2],[23,0],[22,3],[22,3],[22,1],[19,2],[26,2],[26,0],[25,1],[25,1],[25,1],[25,1],[25,1],[25,1],[25,1],[25,1],[25,1]],
+symbols_: {"error":2,"START":3,"ROOTS":4,"EOF":5,"ROOT":6,"prologo":7,"RVERSION":8,"asig":9,"StringLiteral1":10,"RENCODING":11,"prologc":12,"lt":13,"identifier":14,"LIST_ATRIBUTOS":15,"gt":16,"etiqca":17,"CONTENTS":18,"etiqcc":19,"ATRIBUTOS":20,"ATRIBUTO":21,"StringLiteral2":22,"BODY":23,"DoubleLiteral":24,"less":25,"greater":26,"ampersand":27,"apostrophe":28,"quotation":29,"simbolos1":30,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",7:"prologo",8:"RVERSION",9:"asig",10:"StringLiteral1",11:"RENCODING",12:"prologc",13:"lt",14:"identifier",16:"gt",17:"etiqca",19:"etiqcc",22:"StringLiteral2",24:"DoubleLiteral",25:"less",26:"greater",27:"ampersand",28:"apostrophe",29:"quotation",30:"simbolos1"},
+productions_: [0,[3,2],[4,2],[4,1],[6,8],[6,8],[6,8],[6,7],[6,4],[6,1],[15,1],[15,0],[20,2],[20,1],[21,3],[21,3],[21,1],[18,2],[18,1],[23,1],[23,1],[23,1],[23,1],[23,1],[23,1],[23,1],[23,1],[23,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
- this.$=$$[$0-1]; console.log($$[$0-1]); return this.$; 
+ ++yy.cont;
+                                                                                      yy.codigo += yy.cont + ' [label="ROOTS"];\n';
+                                                                                      yy.codigo += yy.cont + '--' + $$[$0-1] + ';\n';
+                                                                                      ++yy.cont;
+                                                                                      yy.codigo += yy.cont + ' [label="S"];\n';
+                                                                                      yy.codigo += yy.cont + '--' + (yy.cont)-1 + ';\n';
+                                                                                      this.$ = yy.codigo + '\n}'; return this.$; 
 break;
-case 2: case 3: case 12: case 13:
- this.$ = $$[$0]; this.$.push($$[$0-1]); 
+case 2:
+// yy.cont = yy.cont+3;
+                                                                                      ++yy.cont;
+                                                                                      yy.codigo += yy.cont + ' [label="ROOTS"];\n';
+                                                                                      yy.codigo += yy.cont + '--' + $$[$0-1] + ';\n';
+                                                                                      ++yy.cont;
+                                                                                      yy.codigo += yy.cont + ' [label="ROOT"];\n';
+                                                                                      yy.codigo += yy.cont + '--' + $$[$0] + ';\n';
+                                                                                      this.$ = yy.cont;
+                                                                                    
 break;
-case 4: case 11:
- this.$ = []; 
+case 3:
+ ++yy.cont;
+                                                                                      yy.codigo += yy.cont + ' [label="ROOT1"];\n';
+                                                                                      yy.codigo += yy.cont + '--' + $$[$0] + ';\n';
+                                                                                      this.$ = yy.cont;
+                                                                                    
+break;
+case 4: case 6: case 8: case 10: case 11: case 12: case 13: case 14: case 15:
+ /*this.$ = ++yy.cont;*/ 
 break;
 case 5:
- this.$ = new Objeto($$[$0-7],'',_$[$0-7].first_line,_$[$0-7].first_column,[],[],$$[$0-1]); 
-break;
-case 6:
- this.$ = new Objeto($$[$0-6],'',_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],$$[$0-3],$$[$0-1]); 
+/* yy.cont = yy.cont+8;
+                                                                                      this.$ = ++yy.cont;
+                                                                                      /*yy.codigo += yy.cont + ' [label="<"];'+'\n';
+                                                                                      yy.codigo += yy.cont + ' [label="' + $$[$0-6] + '"];'+'\n';
+                                                                                      yy.codigo += yy.cont + ' [label="LIST_ATRIBUTOS"];'+'\n';
+                                                                                      yy.codigo += yy.cont + ' [label=">"];'+'\n';*/
+                                                                                      /*yy.codigo += yy.cont-5 + ' [label="ROOTS"];'+'\n';
+                                                                                      /*yy.codigo += yy.cont + ' [label="</"];'+'\n';
+                                                                                      yy.codigo += yy.cont + ' [label="' + $$[$0-1] + '"];'+'\n';
+                                                                                      yy.codigo += yy.cont + ' [label=">"];'+'\n';
+                                                                                      
+                                                                                      yy.codigo += yy.cont + '--' + $$[$0-7] + ';' + '\n';
+                                                                                      yy.codigo += yy.cont + '--' + $$[$0-6] + ';' + '\n';
+                                                                                      yy.codigo += yy.cont + '--' + $$[$0-5] + ';' + '\n';
+                                                                                      yy.codigo += yy.cont + '--' + $$[$0-4] + ';' + '\n';*/
+                                                                                     /* yy.codigo += yy.cont + '--' + $$[$0-3] + ';' + '\n';
+                                                                                      /*yy.codigo += yy.cont + '--' + $$[$0-2] + ';' + '\n';
+                                                                                      //yy.codigo += yy.cont + '--' + $$[$0-1] + ';' + '\n';
+                                                                                      yy.codigo += yy.cont + '--' + $$[$0] + ';' + '\n';*/
+                                                                                    
 break;
 case 7:
- this.$ = new Objeto($$[$0-6],$$[$0-3],_$[$0-7].first_line,_$[$0-7].first_column,$$[$0-5],[],$$[$0-1]); console.log('S' + $$[$0-3] + 'G'); 
-break;
-case 8:
- this.$ = new Objeto($$[$0-5],'',_$[$0-6].first_line,_$[$0-6].first_column,$$[$0-4],[],$$[$0]); 
+ this.$ = ++yy.cont; console.log(yy.cont)
 break;
 case 9:
- this.$ = new Objeto($$[$0-2],'',_$[$0-3].first_line,_$[$0-3].first_column,$$[$0-1],[],''); 
+ console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
+                                                                                      
+                                                                                    
 break;
-case 10: case 20: case 21: case 27: case 28:
- this.$ = $$[$0]; 
+case 16:
+ console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
+                                                      
+                                                    
 break;
-case 14:
- this.$ = [] ;
-break;
-case 16: case 17:
- this.$ = new Atributo($$[$0-2],$$[$0],_$[$0-2].first_line,_$[$0-2].first_column); 
-break;
-case 19:
- $$[$0] = $$[$0-1] + ' ' + $$[$0]; this.$=$$[$0];
-break;
-case 22:
- this.$ = '<'; 
-break;
-case 25:
- this.$ = '>'; 
-break;
-case 26:
- this.$ = '&'; 
-break;
-case 27:
- this.$ = "'"; 
-break;
-case 28:
- this.$ = '"'; 
+case 17: case 18: case 19: case 20: case 21: case 22: case 23: case 24: case 25: case 26: case 27:
+  
 break;
 }
 },
-table: [{2:$V0,3:1,4:2,6:3,8:$V1,14:$V2},{1:[3]},{5:[1,7]},o($V3,$V4,{7:8,6:9,2:$V0,8:$V1,14:$V2}),{9:[1,10]},{15:[1,11]},o($V5,[2,10]),{1:[2,1]},o($V3,[2,2]),o($V3,$V4,{6:9,7:12,2:$V0,8:$V1,14:$V2}),{10:[1,13]},o($V6,[2,12],{16:14,21:15,22:16,2:$V7,15:$V8}),o($V3,[2,3]),{11:[1,19]},{17:[1,20],20:[1,21]},o($V6,[2,11]),o($V6,$V9,{23:22,22:23,2:$V7,15:$V8}),{10:[1,24]},o($Va,[2,18]),{12:[1,25]},{2:$V0,4:26,6:3,8:$V1,10:$Vb,14:$V2,15:$Vc,18:[1,28],19:27,25:29,27:$Vd,28:$Ve,29:$Vf,30:$Vg,31:$Vh,32:$Vi,33:$Vj},o($V5,[2,9]),o($V6,[2,13]),o($V6,$V9,{22:23,23:39,2:$V7,15:$V8}),{11:[1,40],24:[1,41]},{10:[1,42]},{18:[1,43]},{18:[1,44]},{15:[1,45]},{10:$Vb,15:$Vc,18:$Vk,25:47,26:46,27:$Vd,28:$Ve,29:$Vf,30:$Vg,31:$Vh,32:$Vi,33:$Vj},o($Vl,[2,22]),o($Vl,[2,23]),o($Vl,[2,24]),o($Vl,[2,25]),o($Vl,[2,26]),o($Vl,[2,27]),o($Vl,[2,28]),o($Vl,[2,29]),o($Vl,[2,30]),o($V6,[2,14]),o($Va,[2,16]),o($Va,[2,17]),{11:[1,48]},{15:[1,49]},{15:[1,50]},{17:[1,51]},{18:[2,19]},{10:$Vb,15:$Vc,18:$Vk,25:47,26:52,27:$Vd,28:$Ve,29:$Vf,30:$Vg,31:$Vh,32:$Vi,33:$Vj},{13:[1,53]},{17:[1,54]},{17:[1,55]},o($V5,[2,8]),{18:[2,20]},o($V5,[2,5]),o($V5,[2,6]),o($V5,[2,7])],
-defaultActions: {7:[2,1],46:[2,19],52:[2,20]},
+table: [{2:$V0,3:1,4:2,6:3,7:$V1,13:$V2},{1:[3]},{2:$V0,5:[1,7],6:8,7:$V1,13:$V2},o($V3,[2,3]),{8:[1,9]},{14:[1,10]},o($V3,[2,9]),{1:[2,1]},o($V3,[2,2]),{9:[1,11]},o($V4,[2,11],{15:12,20:13,21:14,2:$V5,14:$V6}),{10:[1,17]},{16:[1,18],19:[1,19]},o($V4,[2,10],{21:20,2:$V5,14:$V6}),o($V7,[2,13]),{9:[1,21]},o($V7,[2,16]),{11:[1,22]},{2:$V0,4:23,6:3,7:$V1,9:$V8,13:$V2,14:$V9,17:[1,25],18:24,23:26,24:$Va,25:$Vb,26:$Vc,27:$Vd,28:$Ve,29:$Vf,30:$Vg},o($V3,[2,8]),o($V7,[2,12]),{10:[1,36],22:[1,37]},{9:[1,38]},{2:$V0,6:8,7:$V1,13:$V2,17:[1,39]},{9:$V8,14:$V9,17:[1,40],23:41,24:$Va,25:$Vb,26:$Vc,27:$Vd,28:$Ve,29:$Vf,30:$Vg},{14:[1,42]},o($Vh,[2,18]),o($Vh,[2,19]),o($Vh,[2,20]),o($Vh,[2,21]),o($Vh,[2,22]),o($Vh,[2,23]),o($Vh,[2,24]),o($Vh,[2,25]),o($Vh,[2,26]),o($Vh,[2,27]),o($V7,[2,14]),o($V7,[2,15]),{10:[1,43]},{14:[1,44]},{14:[1,45]},o($Vh,[2,17]),{16:[1,46]},{12:[1,47]},{16:[1,48]},{16:[1,49]},o($V3,[2,7]),o($V3,[2,4]),o($V3,[2,5]),o($V3,[2,6])],
+defaultActions: {7:[2,1]},
 parseError: function parseError (str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -717,6 +734,11 @@ stateStackSize:function stateStackSize() {
     },
 options: {},
 performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START) {
+if (!('cont' in yy)) {
+  yy.cont = 0;
+  yy.codigo = 'graph{'+'\n';
+}
+
 var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:this.begin('comment');
@@ -727,47 +749,47 @@ case 2:/* ignora contenido de los comentarios*/
 break;
 case 3:// ignora los espacios en blanco
 break;
-case 4:return 8;
+case 4:return 7;
 break;
-case 5:return 13;
+case 5:return 12;
 break;
-case 6:return 18;
+case 6:return 17;
 break;
-case 7:return 20;
+case 7:return 19;
 break;
-case 8:return 9;
+case 8:return 8;
 break;
-case 9:return 12
+case 9:return 11
 break;
-case 10:return 28;
+case 10:return 25;
 break;
-case 11:return 29;
+case 11:return 26;
 break;
-case 12:return 30;
+case 12:return 27;
 break;
-case 13:return 31;
+case 13:return 28;
 break;
-case 14:return 32;
+case 14:return 29;
 break;
-case 15:return 14;
+case 15:return 13;
 break;
-case 16:return 17;
+case 16:return 16;
 break;
-case 17:return 10;
+case 17:return 9;
 break;
-case 18:return 27;
+case 18:return 24;
 break;
-case 19:return 11
+case 19:return 10
 break;
-case 20:return 24
+case 20:return 22
 break;
-case 21:return 15;
+case 21:return 14;
 break;
-case 22:return 33;
+case 22:return 30;
 break;
 case 23:
             console.error('Este es un error léxico: ' + yy_.yytext + ', en la linea: ' + yy_.yylloc.first_line + ', en la columna: ' + yy_.yylloc.first_column);
-                 new ELexico("Lexico", "Caracter inesperado \'"+yy_.yytext+"\'", 'XML Asc', yy_.yylloc.first_line, yy_.yylloc.first_column)
+            new ELexico("Lexico", "Caracter inesperado \'"+yy_.yytext+"\'", 'XML Asc', yy_.yylloc.first_line, yy_.yylloc.first_column)
         
 break;
 case 24:return 5
@@ -789,9 +811,9 @@ return new Parser;
 
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-exports.parser = gramaticaXMLDSC;
-exports.Parser = gramaticaXMLDSC.Parser;
-exports.parse = function () { return gramaticaXMLDSC.parse.apply(gramaticaXMLDSC, arguments); };
+exports.parser = CSTXML;
+exports.Parser = CSTXML.Parser;
+exports.parse = function () { return CSTXML.parse.apply(CSTXML, arguments); };
 exports.main = function commonjsMain (args) {
     if (!args[1]) {
         console.log('Usage: '+args[0]+' FILE');
