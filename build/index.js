@@ -17,6 +17,54 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
 //Esta funcion es para mientras en lo que sincroniza con la pag
 ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
+<<<<<<< HEAD
+
+<app>
+<biblioteca dir="calle 3>5<5" prop="Sergio's">
+    <libro>
+        <titulo>Libro A</titulo>
+        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <fechapublicacion ano="2001" mes="Enero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro B</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro C</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro D</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+</biblioteca>
+<hem>
+    <pdf>
+        <titulo>Libro 2</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </pdf>
+    <pdf2>
+        <titulo>Libro 3</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechapublicacion ano="2002" mes="Febrero"/>
+    </pdf2>
+</hem>
+</app>
+=======
 <libros>
   <libro>
     <autor>Nombre</autor>
@@ -28,6 +76,7 @@ ejecutarXML(`
     <autor>Nombre3</autor>
   </libro>
 </libros>
+>>>>>>> master
 `);
 realizarGraficaAST();
 //   tablaErroresFicticia()
@@ -72,7 +121,6 @@ function recorrer(nodo) {
         }
     }
 }
-;
 function avanzar(en, listac) {
     let llave = "";
     if (listac[listac.length - 1].tipo == Acceso_1.Tipo2.ATRIBUTO) {
@@ -104,7 +152,6 @@ function avanzar(en, listac) {
         }
     }
 }
-;
 function generarxml(nodo) {
     let result2 = "";
     if (nodo.texto != "") {
@@ -123,12 +170,14 @@ function generarxml(nodo) {
     }
     return result2;
 }
-;
 function recursiva(en, listac) {
     let llave = "";
     llave = listac[listac.length - 1].valor;
     listac.pop();
+<<<<<<< HEAD
+=======
     let salida = "";
+>>>>>>> cambio6
     if (en.existeEnActual(llave)) {
         let simbolos = [];
         for (let i = 0; i < en.tablita.length; i++) {
@@ -161,12 +210,15 @@ function recursiva(en, listac) {
     }
     return salida;
 }
-;
 function ejecutarXpath(entrada, en) {
     const objetos = gramaticaXpath.parse(entrada);
     resultadoxpath = "";
     if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
+<<<<<<< HEAD
         let listac = [];
+=======
+        const listac = [];
+>>>>>>> cambio6
         for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
             listac.push(objetos[0][0][0][0][0][i]);
         }

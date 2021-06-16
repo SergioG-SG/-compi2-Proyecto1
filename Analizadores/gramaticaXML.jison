@@ -75,7 +75,7 @@ ROOTS: ROOTS ROOT        { $1.push($2);
                          gramatical.agregar('Roots->Roots Root','$1.push($2)');
                          $$ = $1; }         
 
-     | ROOT              { $$ = [$1]; 
+     | ROOT             { $$ = [$1]; 
                           gramatical.agregar('Roots->Root','$$=Array($1)');
                          }
      ;
