@@ -1,15 +1,13 @@
 const CST_XML = require('./Analizadores/CSTXML.js');
+let ObjetosNode: any;
 
 function ejecutarXML(entrada: string) {
     //Parseo para obtener la raiz o raices  
-    const cadena = CST_XML.parse(entrada);
-    console.log(cadena);
+    ObjetosNode = CST_XML.parse(entrada);
+    console.log(ObjetosNode);
 };
 
 ejecutarXML(`
 <app>
 </app>
-
-<appp>
-</appp>
 `);

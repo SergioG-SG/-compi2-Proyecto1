@@ -86,10 +86,10 @@ switch (yystate) {
 case 1:
  this.$=$$[$0-1]; console.log($$[$0-1]); return this.$; 
 break;
-case 2: case 3: case 12: case 13:
+case 2: case 3: case 13: case 14:
  this.$ = $$[$0]; this.$.push($$[$0-1]); 
 break;
-case 4: case 11:
+case 4: case 12:
  this.$ = []; 
 break;
 case 5:
@@ -107,10 +107,15 @@ break;
 case 9:
  this.$ = new Objeto($$[$0-2],'',_$[$0-3].first_line,_$[$0-3].first_column,$$[$0-1],[],''); 
 break;
-case 10: case 20: case 21: case 27: case 28:
+case 10: case 18:
+   console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
+					new ESintactico("Sintactico", "No se esperaba: "+yytext,"XML Asc", this._$.first_line , this._$.first_column);
+				
+break;
+case 11: case 22: case 23: case 29: case 30:
  this.$ = $$[$0]; 
 break;
-case 14:
+case 15:
  this.$ = [] ;
 break;
 case 16: case 17:
@@ -119,7 +124,13 @@ break;
 case 19:
  $$[$0] = $$[$0-1] + ' ' + $$[$0]; this.$=$$[$0];
 break;
-case 22:
+case 20:
+  $$[$0] = $$[$0-1] + ' ' + $$[$0]; this.$=$$[$0]; 
+break;
+case 21:
+ this.$ = "" ;
+break;
+case 24:
  this.$ = '<'; 
 break;
 case 25:
