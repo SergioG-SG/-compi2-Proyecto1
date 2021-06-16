@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Tipo_js_1 = require("./Simbolo/Tipo.js");
 const Entorno_js_1 = require("./Simbolo/Entorno.js");
-const Acceso_1 = require("./Interprete/Expresion/Acceso");
 const Simbolo_js_1 = require("./Simbolo/Simbolo.js");
 const GraficarAST_js_1 = require("./Graficador/GraficarAST.js");
 const TError_js_1 = require("./Interprete/Util/TError.js");
@@ -17,7 +16,6 @@ let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Ti
 //Esta funcion es para mientras en lo que sincroniza con la pag
 ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
-<<<<<<< HEAD
 
 <app>
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
@@ -29,20 +27,6 @@ ejecutarXML(`
 
     <libro>
         <titulo>Libro B</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechapublicacion ano="2002" mes="Febrero"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro C</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechapublicacion ano="2002" mes="Febrero"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro D</titulo>
         <autor>Autor 2 &amp; Autor 3</autor>
         <descripcion> holi </descripcion>
         <fechapublicacion ano="2002" mes="Febrero"/>
@@ -64,19 +48,6 @@ ejecutarXML(`
     </pdf2>
 </hem>
 </app>
-=======
-<libros>
-  <libro>
-    <autor>Nombre</autor>
-  </libro>
-  <libro>
-    <autor>Nombre2</autor>
-  </libro>
-  <libro>
-    <autor>Nombre3</autor>
-  </libro>
-</libros>
->>>>>>> master
 `);
 realizarGraficaAST();
 //   tablaErroresFicticia()
@@ -86,9 +57,7 @@ function ejecutarXML(entrada) {
     cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
     //Parseo para obtener la raiz o raices  
-    const resultado = gramaticaXML.parse(entrada);
-    const objetos = resultado.result;
-    const reporteGramatical = resultado.reporteGram;
+    const objetos = gramaticaXML.parse(entrada);
     ObjetosXML = objetos;
     const entornoGlobal = new Entorno_js_1.Entorno(null);
     //funcion recursiva para manejo de entornos
@@ -105,7 +74,7 @@ function ejecutarXML(entrada) {
     //esta es solo para debug jaja
     const ent = entornoGlobal;
     ejecutarXpath("/app/biblioteca", entornoGlobal);
-    console.log();
+    console.log(cadenaReporteTS);
     return cadenaReporteTS;
 }
 ;
@@ -123,113 +92,67 @@ function recorrer(nodo) {
 }
 function avanzar(en, listac) {
     let llave = "";
-    if (listac[listac.length - 1].tipo == Acceso_1.Tipo2.ATRIBUTO) {
-        /*  llave= listac[listac.length-1].valor
-          listac.pop()
-          if(en.existe(llave)){
-              resu
-          }*/
-    }
-    else if (listac[listac.length - 1].tipo == Acceso_1.Tipo2.ACCESO) {
-        llave = listac[listac.length - 1].valor;
-        listac.pop();
-        if (en.existeEnActual(llave)) {
-            let simbolos = [];
-            simbolos.push(en.getSimbolo(llave));
-            if (listac.length == 0) {
-                simbolos.forEach((ob) => {
-                    let nodo = ob.valor;
-                    recorrer(nodo);
-                });
-            }
-            else {
-                simbolos.forEach((ob) => {
-                    let nodo = ob.valor;
-                    let entornoNodo = nodo.entorno;
-                    avanzar(entornoNodo, listac);
-                });
-            }
-        }
-    }
-}
-function generarxml(nodo) {
-    let result2 = "";
-    if (nodo.texto != "") {
-        let result = "";
-        result = "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">\n";
-        return result;
-    }
-    else {
-        if (nodo.listaObjetos.length > 0) {
-            let result3 = "";
-            nodo.listaObjetos.forEach((objetoHijo) => {
-                result3 += generarxml(objetoHijo);
-            });
-            result2 += "<" + nodo.identificador1 + ">\n" + result3 + "</" + nodo.identificador1 + ">\n";
-        }
-    }
-    return result2;
-}
-function recursiva(en, listac) {
-    let llave = "";
     llave = listac[listac.length - 1].valor;
     listac.pop();
-<<<<<<< HEAD
-=======
-    let salida = "";
->>>>>>> cambio6
-    if (en.existeEnActual(llave)) {
+    if (en.existe(llave)) {
         let simbolos = [];
-        for (let i = 0; i < en.tablita.length; i++) {
-            if (en.tablita[i].indentificador == llave) {
-                simbolos.push(en.tablita[i]);
-            }
-        }
-        console.log(simbolos);
-        if (listac.length == 0) {
+        simbolos.push(en.getSimbolo(llave));
+        if (listac.length === 0) {
             simbolos.forEach((ob) => {
-                if (ob != null) {
-                    let nodo = ob.valor;
-                    salida += generarxml(nodo);
-                }
+                let nodo = ob.valor;
+                recorrer(nodo);
             });
         }
         else {
             simbolos.forEach((ob) => {
-                if (ob != null) {
-                    let nodo = ob.valor;
-                    let entornoNodo = nodo.entorno;
-                    let listac2 = [];
-                    for (let i = 0; i < listac.length; i++) {
-                        listac2.push(listac[i]);
-                    }
-                    salida += recursiva(entornoNodo, listac2);
-                }
+                let nodo = ob.valor;
+                let entornoNodo = nodo.entorno;
+                avanzar(entornoNodo, listac);
             });
         }
     }
-    return salida;
 }
 function ejecutarXpath(entrada, en) {
     const objetos = gramaticaXpath.parse(entrada);
     resultadoxpath = "";
-    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
-<<<<<<< HEAD
+    if (en.existe(objetos[0][0][0][0][0][0].valor)) {
         let listac = [];
-=======
-        const listac = [];
->>>>>>> cambio6
         for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
             listac.push(objetos[0][0][0][0][0][i]);
         }
-        //console.log(en.getSimbolo("libros").entorno.tablita[1])
-        console.log(recursiva(en, listac));
-        /*console.log(en)
-        console.log(en.getSimbolo("app").entorno)*/
-        //avanzar(en,listac)
+        avanzar(en, listac);
     }
-    /*console.log("\n \n el resultado de la consulta es: ")
-    console.log(resultadoxpath+"Fin consulta")*/
+    console.log("\n \n el resultado de la consulta es: ");
+    console.log(resultadoxpath + "Fin consulta");
+    /*
+    contador=objetos[0][0][0][0][0].length
+
+
+    for(let ob1 of objetos[0][0][0][0][0]){
+
+        for(let ob2 of ObjetosXML){
+
+            if (ob2.identificador1 == "?XML") {
+
+            }else if(ob1.valor==ob2.identificador1){
+                avanzar(ob2,ob1,objetos[0][0][0][0][0],contador)
+            }
+        }
+    }*/
+    /*
+    objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
+    
+        ObjetosXML.forEach((objeto2: Objeto) => {
+            
+            if (objeto2.identificador1 == "?XML") {
+                
+            } else if (objeto1.valor==objeto2.identificador1) {
+                //avanzar(objeto2,contador)
+            }
+            
+        })
+
+    })*/
 }
 ;
 function ejecutarXML_DSC(entrada) {
