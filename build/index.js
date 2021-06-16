@@ -80,52 +80,121 @@ function ejecutarXML(entrada) {
     return cadenaReporteTS;
 }
 ;
-function recorrer(nodo) {
-    if (nodo.texto != '') {
-        resultadoxpath += "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">\n";
+/*
+
+function recorrer(nodo: Objeto){
+
+    if (nodo.texto!=''){
+        resultadoxpath+="<"+nodo.identificador1+">"+nodo.texto+"</"+nodo.identificador1+">\n";
     }
     if (nodo.listaObjetos.length != undefined) {
-        if (nodo.listaObjetos.length > 0) {
-            nodo.listaObjetos.forEach((objetoHijo) => {
+        if (nodo.listaObjetos.length >0) {
+            nodo.listaObjetos.forEach((objetoHijo: Objeto) => {
                 recorrer(objetoHijo);
-            });
+            })
+         }
+    }
+    
+}
+function avanzar(en: Entorno, listac: Array<Acceso>){
+    
+    let llave: string=""
+    
+    llave= listac[listac.length-1].valor
+    listac.pop()
+    
+    if(en.existe(llave)){
+
+        let simbolos :Array<Simbolo>=[]
+        simbolos.push(en.getSimbolo(llave))
+
+        if(listac.length===0){
+
+            simbolos.forEach((ob: Simbolo) => {
+
+                let nodo=ob.valor
+                recorrer(nodo);
+            })
+
+        }else{
+
+            simbolos.forEach((ob: Simbolo) => {
+                let nodo=ob.valor
+                let entornoNodo: Entorno =nodo.entorno
+                avanzar(entornoNodo,listac)
+            })
         }
     }
+    
 }
-function avanzar(en, listac) {
+*/
+function generarxml(nodo) {
+    let result2 = "";
+    if (nodo.texto != "") {
+        let result = "";
+        result = "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">\n";
+        return result;
+    }
+    else {
+        if (nodo.listaObjetos.length > 0) {
+            let result3 = "";
+            nodo.listaObjetos.forEach((objetoHijo) => {
+                result3 += generarxml(objetoHijo);
+            });
+            result2 += "<" + nodo.identificador1 + ">\n" + result3 + "</" + nodo.identificador1 + ">\n";
+        }
+    }
+    return result2;
+}
+;
+function recursiva(en, listac) {
     let llave = "";
     llave = listac[listac.length - 1].valor;
     listac.pop();
-    if (en.existe(llave)) {
+    let salida = "";
+    if (en.existeEnActual(llave)) {
         let simbolos = [];
-        simbolos.push(en.getSimbolo(llave));
-        if (listac.length === 0) {
+        for (let i = 0; i < en.tablita.length; i++) {
+            if (en.tablita[i].indentificador == llave) {
+                simbolos.push(en.tablita[i]);
+            }
+        }
+        console.log(simbolos);
+        if (listac.length == 0) {
             simbolos.forEach((ob) => {
-                let nodo = ob.valor;
-                recorrer(nodo);
+                if (ob != null) {
+                    let nodo = ob.valor;
+                    salida += generarxml(nodo);
+                }
             });
         }
         else {
             simbolos.forEach((ob) => {
-                let nodo = ob.valor;
-                let entornoNodo = nodo.entorno;
-                avanzar(entornoNodo, listac);
+                if (ob != null) {
+                    let nodo = ob.valor;
+                    let entornoNodo = nodo.entorno;
+                    let listac2 = [];
+                    for (let i = 0; i < listac.length; i++) {
+                        listac2.push(listac[i]);
+                    }
+                    salida += recursiva(entornoNodo, listac2);
+                }
             });
         }
     }
+    return salida;
 }
+;
 function ejecutarXpath(entrada, en) {
     const objetos = gramaticaXpath.parse(entrada);
     resultadoxpath = "";
-    if (en.existe(objetos[0][0][0][0][0][0].valor)) {
+    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
         let listac = [];
         for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
             listac.push(objetos[0][0][0][0][0][i]);
         }
-        avanzar(en, listac);
+        console.log(recursiva(en, listac));
     }
-    console.log("\n \n el resultado de la consulta es: ");
-    console.log(resultadoxpath + "Fin consulta");
     /*
     contador=objetos[0][0][0][0][0].length
 

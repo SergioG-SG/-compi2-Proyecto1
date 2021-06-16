@@ -89,7 +89,7 @@ function ejecutarXML(entrada: string) {
 };
 
 
-
+/*
 
 function recorrer(nodo: Objeto){
 
@@ -136,21 +136,85 @@ function avanzar(en: Entorno, listac: Array<Acceso>){
     }
     
 }
+*/
+
+
+function generarxml(nodo: Objeto){
+    let result2:string=""
+    if(nodo.texto!=""){
+        let result:string=""
+        result="<"+nodo.identificador1+">"+nodo.texto+"</"+nodo.identificador1+">\n";
+        return  result
+    }else{
+        if(nodo.listaObjetos.length>0){
+            let result3:string=""
+            nodo.listaObjetos.forEach((objetoHijo: Objeto) => {
+                result3+=generarxml(objetoHijo);
+            })
+            result2+="<"+nodo.identificador1+">\n"+result3+"</"+nodo.identificador1+">\n";
+        }
+    }
+    return result2
+    
+};
+
+function recursiva(en: Entorno, listac: Array<Acceso>){
+    let llave: string=""
+    llave= listac[listac.length-1].valor
+    listac.pop()
+    let salida: string=""
+    
+    if(en.existeEnActual(llave)){
+
+        let simbolos :Array<Simbolo>=[]
+        for(let i=0; i<en.tablita.length;i++){
+            if(en.tablita[i].indentificador==llave){
+                simbolos.push(en.tablita[i]);
+            }
+        } 
+        console.log(simbolos)
+
+        if(listac.length==0){
+
+            simbolos.forEach((ob: Simbolo) => {
+                if(ob!=null){
+                    let nodo=ob.valor
+                    salida+=generarxml(nodo);
+                }
+                
+            })
+
+        }else{
+
+            simbolos.forEach((ob: Simbolo) => {
+                if(ob!=null){
+                    let nodo=ob.valor
+                    let entornoNodo: Entorno =nodo.entorno
+                    let listac2: Array<Acceso>=[]
+                    for(let i=0; i<listac.length;i++){
+                        listac2.push(listac[i])
+                    }
+                    salida+=recursiva(entornoNodo,listac2)
+                }
+            })
+        }
+    }
+    return salida
+};
 
 function ejecutarXpath(entrada: string,en: Entorno){
     const objetos= gramaticaXpath.parse(entrada);
     resultadoxpath=""
-    if (en.existe(objetos[0][0][0][0][0][0].valor)){
+    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)){
         let listac: Array<Acceso>=[]
         for (let i = objetos[0][0][0][0][0].length-1 ; i > -1; i--) {
             listac.push(objetos[0][0][0][0][0][i])
         }
 
-       avanzar(en,listac)
+        console.log(recursiva(en,listac))
 
     }
-    console.log("\n \n el resultado de la consulta es: ")
-    console.log(resultadoxpath+"Fin consulta")
+    
     /*
     contador=objetos[0][0][0][0][0].length
 
