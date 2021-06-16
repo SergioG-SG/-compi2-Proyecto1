@@ -17,7 +17,7 @@ let resultadoxpath: string=""
 let contador: number
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
-                        
+let algo: any        
 //Esta funcion es para mientras en lo que sincroniza con la pag
 
     ejecutarXML(`
@@ -83,8 +83,8 @@ function ejecutarXML(entrada: string) {
     })
     //esta es solo para debug jaja
     const ent = entornoGlobal;
-    ejecutarXpath("/app/biblioteca",entornoGlobal);
-    console.log(cadenaReporteTS)
+    algo=entornoGlobal
+   // console.log(cadenaReporteTS)
     return cadenaReporteTS
 };
 
@@ -202,7 +202,8 @@ function recursiva(en: Entorno, listac: Array<Acceso>){
     return salida
 };
 
-function ejecutarXpath(entrada: string,en: Entorno){
+function ejecutarXpath(entrada: string){
+    const en: Entorno= algo
     const objetos= gramaticaXpath.parse(entrada);
     resultadoxpath=""
     if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)){
@@ -211,9 +212,10 @@ function ejecutarXpath(entrada: string,en: Entorno){
             listac.push(objetos[0][0][0][0][0][i])
         }
 
-        console.log(recursiva(en,listac))
+        return recursiva(en,listac)
 
     }
+    return "no dio"
     
     /*
     contador=objetos[0][0][0][0][0].length
@@ -354,4 +356,4 @@ function reporteTablaErrores() {
 </hemeroteca>
 `);*/
 
-module.exports = { ejecutarXML, realizarGraficaAST,reporteTablaErrores };
+module.exports = { ejecutarXML, realizarGraficaAST,reporteTablaErrores,ejecutarXpath };
