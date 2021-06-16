@@ -66,7 +66,9 @@ function ejecutarXML(entrada: string) {
     cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
     //Parseo para obtener la raiz o raices  
-    const objetos = gramaticaXML.parse(entrada);
+    const resultado = gramaticaXML.parse(entrada);
+    const objetos = resultado.result;
+    const reporteG = resultado.reporteGram;
     ObjetosXML = objetos;
     const entornoGlobal: Entorno = new Entorno(null);
     //funcion recursiva para manejo de entornos
