@@ -9,7 +9,6 @@ import { Simbolo } from "./Simbolo/Simbolo.js";
 import { Atributo } from "./Interprete/Expresion/Atributo.js";
 import { GraficarAST } from "./Graficador/GraficarAST.js";
 import { GraficarCST_XML } from "./Graficador/GraficarCST_XML";
-import { ELexico, ESintactico, errorLex, errorSem, errorSin } from "./Interprete/Util/TError.js";
 import { ELexico, ESintactico, ESemantico, errorLex, errorSem, errorSin } from "./Interprete/Util/TError.js";
 import { access } from "fs";
 const CST_XML = require('./Analizadores/CSTXML.js');
@@ -17,16 +16,14 @@ import { Gramatical } from "./Simbolo/Gramatical.js";
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
 const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
-let ObjetosXML: any;
 let ObjetosNode: any;
 var graficador = new GraficarCST_XML();
 let resultadoxpath: string="";
 let contador: number;
+
 import { resetTE } from './Interprete/Util/TError';
 
 let ObjetosXML: any
-let resultadoxpath: string = ""
-let contador: number
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
 
@@ -542,5 +539,4 @@ function vaciarTodo(){
 </hemeroteca>
 `);*/
 
-module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores, ejecutarXpath, realizarGraficaCST_XML };
-module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores, ejecutarXpath , llenarReporteG, ejecutarXML_DSC};
+module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores, ejecutarXpath, realizarGraficaCST_XML,llenarReporteG,ejecutarXML_DSC };

@@ -4,14 +4,18 @@ const Tipo_js_1 = require("./Simbolo/Tipo.js");
 const Entorno_js_1 = require("./Simbolo/Entorno.js");
 const Simbolo_js_1 = require("./Simbolo/Simbolo.js");
 const GraficarAST_js_1 = require("./Graficador/GraficarAST.js");
+const GraficarCST_XML_1 = require("./Graficador/GraficarCST_XML");
 const TError_js_1 = require("./Interprete/Util/TError.js");
+const CST_XML = require('./Analizadores/CSTXML.js');
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
 const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
-const TError_1 = require("./Interprete/Util/TError");
-let ObjetosXML;
+let ObjetosNode;
+var graficador = new GraficarCST_XML_1.GraficarCST_XML();
 let resultadoxpath = "";
 let contador;
+const TError_1 = require("./Interprete/Util/TError");
+let ObjetosXML;
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
 let algo;
@@ -82,8 +86,8 @@ function ejecutarXML(entrada) {
     //esta es solo para debug jaja
     const ent = entornoGlobal;
     algo = entornoGlobal;
+    // ejecutarXpath("//libro")
     // console.log(cadenaReporteTS)
-    console.log(imprimirTablaErrores());
     return cadenaReporteTS;
 }
 ;
@@ -168,21 +172,96 @@ function generarxml(nodo) {
 function recursiva(en, listac) {
     let llave = "";
     llave = listac[listac.length - 1].valor;
-    listac.pop();
     let salida = "";
-    if (en.existeEnActual(llave)) {
+    let tiposlash = listac[listac.length - 1].tiposlash;
+    listac.pop();
+    if (tiposlash == "/" || tiposlash == "") {
+        if (en.existeEnActual(llave)) {
+            let simbolos = [];
+            for (let i = 0; i < en.tablita.length; i++) {
+                if (en.tablita[i].indentificador == llave) {
+                    simbolos.push(en.tablita[i]);
+                }
+            }
+            //console.log(simbolos)
+            if (listac.length == 0) {
+                simbolos.forEach((ob) => {
+                    if (ob != null) {
+                        let nodo = ob.valor;
+                        salida += generarxml(nodo);
+                    }
+                });
+            }
+            else {
+                simbolos.forEach((ob) => {
+                    if (ob != null) {
+                        let nodo = ob.valor;
+                        let entornoNodo = nodo.entorno;
+                        let listac2 = [];
+                        for (let i = 0; i < listac.length; i++) {
+                            listac2.push(listac[i]);
+                        }
+                        salida += recursiva(entornoNodo, listac2);
+                    }
+                });
+            }
+        }
+    }
+    else if (tiposlash == "//") {
+        if (en.existeEnActual(llave)) {
+            let simbolos = [];
+            for (let i = 0; i < en.tablita.length; i++) {
+                if (en.tablita[i].indentificador == llave) {
+                    simbolos.push(en.tablita[i]);
+                }
+            }
+            if (listac.length == 0) {
+                simbolos.forEach((ob) => {
+                    if (ob != null) {
+                        let nodo = ob.valor;
+                        salida += generarxml(nodo);
+                    }
+                });
+            }
+            else {
+                simbolos.forEach((ob) => {
+                    if (ob != null) {
+                        let nodo = ob.valor;
+                        let entornoNodo = nodo.entorno;
+                        let listac2 = [];
+                        for (let i = 0; i < listac.length; i++) {
+                            listac2.push(listac[i]);
+                        }
+                        salida += recursiva(entornoNodo, listac2);
+                    }
+                });
+            }
+        }
+        else {
+            let listac2 = [];
+            for (let i = 0; i < listac.length; i++) {
+                listac2.push(listac[i]);
+            }
+            salida += recursiva2(en, llave, listac2);
+        }
+    }
+    return salida;
+}
+;
+function recursiva2(en, nombre, listap) {
+    let bo = "";
+    if (en.existeEnActual(nombre)) {
         let simbolos = [];
         for (let i = 0; i < en.tablita.length; i++) {
-            if (en.tablita[i].indentificador == llave) {
+            if (en.tablita[i].indentificador == nombre) {
                 simbolos.push(en.tablita[i]);
             }
         }
-        console.log(simbolos);
-        if (listac.length == 0) {
+        if (listap.length == 0) {
             simbolos.forEach((ob) => {
                 if (ob != null) {
                     let nodo = ob.valor;
-                    salida += generarxml(nodo);
+                    bo += generarxml(nodo);
                 }
             });
         }
@@ -191,11 +270,11 @@ function recursiva(en, listac) {
                 if (ob != null) {
                     let nodo = ob.valor;
                     let entornoNodo = nodo.entorno;
-                    let listac2 = [];
-                    for (let i = 0; i < listac.length; i++) {
-                        listac2.push(listac[i]);
+                    let listac3 = [];
+                    for (let i = 0; i < listap.length; i++) {
+                        listac3.push(listap[i]);
                     }
-                    salida += recursiva(entornoNodo, listac2);
+                    bo += recursiva(entornoNodo, listac3);
                 }
             });
         }
@@ -212,14 +291,43 @@ function ejecutarXpath(entrada) {
     const en = algo;
     const objetos = gramaticaXpath.parse(entrada);
     resultadoxpath = "";
-    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
-        let listac = [];
-        for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
-            listac.push(objetos[0][0][0][0][0][i]);
-        }
-        return recursiva(en, listac);
+    //console.log(objetos[0][0][0][0][0].Nacceso[0])
+    let listac = [];
+    for (let i = objetos[0][0][0][0][0].Nacceso.length - 1; i > -1; i--) {
+        listac.push(objetos[0][0][0][0][0].Nacceso[i]);
     }
-    return "no dio";
+    //console.log(en)
+    //console.log(en.tablita[1])
+    return recursiva(en, listac);
+    /*
+    contador=objetos[0][0][0][0][0].length
+
+
+    for(let ob1 of objetos[0][0][0][0][0]){
+
+        for(let ob2 of ObjetosXML){
+
+            if (ob2.identificador1 == "?XML") {
+
+            }else if(ob1.valor==ob2.identificador1){
+                avanzar(ob2,ob1,objetos[0][0][0][0][0],contador)
+            }
+        }
+    }*/
+    /*
+    objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
+    
+        ObjetosXML.forEach((objeto2: Objeto) => {
+            
+            if (objeto2.identificador1 == "?XML") {
+                
+            } else if (objeto1.valor==objeto2.identificador1) {
+                //avanzar(objeto2,contador)
+            }
+            
+        })
+
+    })*/
 }
 ;
 function ejecutarXML_DSC(entrada) {
@@ -326,6 +434,13 @@ function reporteTablaErrores() {
     return cadenaReporteTE;
 }
 ;
+function realizarGraficaCST_XML(entrada) {
+    ObjetosNode = CST_XML.parse(entrada);
+    var cadena = graficador.graficar(ObjetosNode);
+    var direccion = encodeURI("https://dreampuf.github.io/GraphvizOnline/#" + cadena);
+    window.open(direccion, '_blank');
+}
+;
 function llenarReporteG() {
     let cadena;
     // console.log(reporteGramatical.listaReporte)
@@ -356,4 +471,28 @@ function imprimirTablaErrores() {
 function vaciarTodo() {
     cadenaReporteTS = '';
 }
-module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores, ejecutarXpath, llenarReporteG, ejecutarXML_DSC };
+/*ejecutarXML_DSC(`
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<biblioteca dir="calle 3>5<5" prop="Sergio's">
+    <libro>
+        <titulo>Libro Actual Nèvada</titulo>
+        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <fechaPublicacion ano="2001" mes="Enero"/>
+    </libro>
+
+    <libro>
+        <titulo>Libro B</titulo>
+        <autor>Autor 2 &amp; Autor 3</autor>
+        <descripcion> holi </descripcion>
+        <fechaPublicacion ano="2002" mes="Febrero"/>
+    </libro>
+
+  
+</biblioteca>
+
+<hemeroteca dir="zona 21" prop="kev" estado="chilera">
+    
+</hemeroteca>
+`);*/
+module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores, ejecutarXpath, realizarGraficaCST_XML, llenarReporteG, ejecutarXML_DSC };
