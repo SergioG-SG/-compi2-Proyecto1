@@ -45,12 +45,12 @@ ejecutarXML(`
         <descripcion> holi </descripcion>
         <fechapublicacion ano="2002" mes="Febrero"/>
     </pdf>
-    <pdf2>
+    <libro>
         <titulo>Libro 3</titulo>
         <autor>Autor 2 &amp; Autor 3</autor>
         <descripcion> holi </descripcion>
         <fechapublicacion ano="2002" mes="Febrero"/>
-    </pdf2>
+    </libro>
 </hem>
 </app>
 `);
@@ -199,10 +199,15 @@ function recursiva(en, listac) {
                 }
             });
         }
+        return bo;
     }
-    return salida;
+    else {
+        for (let i = 0; i < en.tablita.length; i++) {
+            bo += recursiva2(en.tablita[i].valor.entorno, nombre, listap);
+        }
+        return bo;
+    }
 }
-;
 function ejecutarXpath(entrada) {
     const en = algo;
     const objetos = gramaticaXpath.parse(entrada);
@@ -215,35 +220,6 @@ function ejecutarXpath(entrada) {
         return recursiva(en, listac);
     }
     return "no dio";
-    /*
-    contador=objetos[0][0][0][0][0].length
-
-
-    for(let ob1 of objetos[0][0][0][0][0]){
-
-        for(let ob2 of ObjetosXML){
-
-            if (ob2.identificador1 == "?XML") {
-
-            }else if(ob1.valor==ob2.identificador1){
-                avanzar(ob2,ob1,objetos[0][0][0][0][0],contador)
-            }
-        }
-    }*/
-    /*
-    objetos[0][0][0][0][0].forEach((objeto1: Acceso ) => {
-    
-        ObjetosXML.forEach((objeto2: Objeto) => {
-            
-            if (objeto2.identificador1 == "?XML") {
-                
-            } else if (objeto1.valor==objeto2.identificador1) {
-                //avanzar(objeto2,contador)
-            }
-            
-        })
-
-    })*/
 }
 ;
 function ejecutarXML_DSC(entrada) {
@@ -380,28 +356,4 @@ function imprimirTablaErrores() {
 function vaciarTodo() {
     cadenaReporteTS = '';
 }
-/*ejecutarXML_DSC(`
-<?xml version="1.0" encoding="UTF-8" ?>
-
-<biblioteca dir="calle 3>5<5" prop="Sergio's">
-    <libro>
-        <titulo>Libro Actual Nèvada</titulo>
-        <autor>Julio &amp;Tommy&amp; Garcia</autor>
-        <fechaPublicacion ano="2001" mes="Enero"/>
-    </libro>
-
-    <libro>
-        <titulo>Libro B</titulo>
-        <autor>Autor 2 &amp; Autor 3</autor>
-        <descripcion> holi </descripcion>
-        <fechaPublicacion ano="2002" mes="Febrero"/>
-    </libro>
-
-  
-</biblioteca>
-
-<hemeroteca dir="zona 21" prop="kev" estado="chilera">
-    
-</hemeroteca>
-`);*/
 module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores, ejecutarXpath, llenarReporteG, ejecutarXML_DSC };
