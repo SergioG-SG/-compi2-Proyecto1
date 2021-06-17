@@ -2,7 +2,8 @@
 
 
 %{
-	const { Acceso, Tipo } = require('../Interprete/Expresion/Acceso');
+	const { Acceso, Tipo2 } = require('../Interprete/Expresion/Acceso');
+    const { Sacceso } = require('../Interprete/Expresion/Sacceso');
 %}
 
 %lex
@@ -142,15 +143,15 @@ UNARYEXPR
 ;
 
 PATHEXPR
-    : '/' '/' RELATIVEPATHEXPR 
-    | '/' RELATIVEPATHEXPR              {$$=$2;}
-    | RELATIVEPATHEXPR 
+    : '/' '/' RELATIVEPATHEXPR          {$3[0].tiposlash="//"; $$= new Sacceso("//",$3,@1.first_line,@1.first_column);}
+    | '/' RELATIVEPATHEXPR              {$$= new Sacceso("/",$2,@1.first_line,@1.first_column);}
+    | RELATIVEPATHEXPR                  {$$= new Sacceso("",$1,@1.first_line,@1.first_column);}
 ;
 
 RELATIVEPATHEXPR
-    : STEPEXPR                          {$$=[$1];}
-    | RELATIVEPATHEXPR '/' STEPEXPR       { $1.push($3); $$=$1; }            
-    | RELATIVEPATHEXPR '/' '/' STEPEXPR       { $1.push($4); $$=$1; }            
+    : STEPEXPR                                  {$$=[$1];}
+    | RELATIVEPATHEXPR '/' STEPEXPR             { $3.tiposlash="/";$1.push($3); $$=$1; }            
+    | RELATIVEPATHEXPR '/' '/' STEPEXPR         { $4.tiposlash="//";$1.push($4); $$=$1; }            
 ;
 
 STEPEXPR
@@ -187,7 +188,7 @@ FORDWARDAXIS
 ;
 
 ABBREVFORDWARDSTEP
-    : '@' NODETEST                  {$1.tipo=Tipo.ATRIBUTO; $$ = $1;}
+    : '@' NODETEST                  {$1.tipo=Tipo2.ATRIBUTO; $$ = $1;}
     | NODETEST                      {$$=$1;}
 ;
 
@@ -205,10 +206,10 @@ REVERSEAXIS
 ;
 
 NODETEST
-    : 'text()' {$$ = new Acceso($1,Tipo.TEST,@1.first_line,@1.first_column);}
-    | 'node()' {$$ = new Acceso($1,Tipo.TEST,@1.first_line,@1.first_column);}
-    | '*' {$$ = new Acceso($1,Tipo.SIGNO,@1.first_line,@1.first_column);}
-    | nodename {$$ = new Acceso($1,Tipo.ACCESO,@1.first_line,@1.first_column);}
+    : 'text()' {$$ = new Acceso("",$1,Tipo2.TEST,@1.first_line,@1.first_column);}
+    | 'node()' {$$ = new Acceso("",$1,Tipo2.TEST,@1.first_line,@1.first_column);}
+    | '*' {$$ = new Acceso("",$1,Tipo2.SIGNO,@1.first_line,@1.first_column);}
+    | nodename {$$ = new Acceso("",$1,Tipo2.ACCESO,@1.first_line,@1.first_column);}
 ;
 
 POSTFIXEXPR
