@@ -3,7 +3,8 @@ import { Tipo } from './Simbolo/Tipo.js'
 import { Entorno } from "./Simbolo/Entorno.js";
 import { Instruccion } from "./Interfaces/Instruccion.js";
 import { Objeto } from "./Interprete/Expresion/Objeto.js";
-import { Acceso} from "./Interprete/Expresion/Acceso";
+import { Acceso,Tipo2} from "./Interprete/Expresion/Acceso";
+import { Sacceso} from "./Interprete/Expresion/Sacceso";
 import { Simbolo } from "./Simbolo/Simbolo.js";
 import { Atributo } from "./Interprete/Expresion/Atributo.js";
 import { GraficarAST } from "./Graficador/GraficarAST.js";
@@ -46,12 +47,12 @@ let algo: any
         <descripcion> holi </descripcion>
         <fechapublicacion ano="2002" mes="Febrero"/>
     </pdf>
-    <pdf2>
+    <libro>
         <titulo>Libro 3</titulo>
         <autor>Autor 2 &amp; Autor 3</autor>
         <descripcion> holi </descripcion>
         <fechapublicacion ano="2002" mes="Febrero"/>
-    </pdf2>
+    </libro>
 </hem>
 </app>
 `)
@@ -84,6 +85,7 @@ function ejecutarXML(entrada: string) {
     //esta es solo para debug jaja
     const ent = entornoGlobal;
     algo=entornoGlobal
+   // ejecutarXpath("//libro")
    // console.log(cadenaReporteTS)
     return cadenaReporteTS
 };
@@ -161,25 +163,111 @@ function generarxml(nodo: Objeto){
 function recursiva(en: Entorno, listac: Array<Acceso>){
     let llave: string=""
     llave= listac[listac.length-1].valor
-    listac.pop()
-    let salida: string=""
     
-    if(en.existeEnActual(llave)){
+    let salida: string=""
+    let tiposlash:string=listac[listac.length-1].tiposlash
+    listac.pop()
+    
+    if(tiposlash=="/" || tiposlash==""){
+        if(en.existeEnActual(llave)){
+            let simbolos :Array<Simbolo>=[]
+            for(let i=0; i<en.tablita.length;i++){
+                if(en.tablita[i].indentificador==llave){
+                    simbolos.push(en.tablita[i]);
+                }
+            } 
+            //console.log(simbolos)
 
+            if(listac.length==0){
+
+                simbolos.forEach((ob: Simbolo) => {
+                    if(ob!=null){
+                        let nodo=ob.valor
+                        salida+=generarxml(nodo);
+                    }
+                    
+                })
+
+            }else{
+
+                simbolos.forEach((ob: Simbolo) => {
+                    if(ob!=null){
+                        let nodo=ob.valor
+                        let entornoNodo: Entorno =nodo.entorno
+                        let listac2: Array<Acceso>=[]
+                        for(let i=0; i<listac.length;i++){
+                            listac2.push(listac[i])
+                        }
+                        salida+=recursiva(entornoNodo,listac2)
+                    }
+                })
+            }
+        }
+    }else if(tiposlash=="//"){
+        if(en.existeEnActual(llave)){
+
+            let simbolos :Array<Simbolo>=[]
+            for(let i=0; i<en.tablita.length;i++){
+                if(en.tablita[i].indentificador==llave){
+                    simbolos.push(en.tablita[i]);
+                }
+            }   
+
+            if(listac.length==0){
+
+                simbolos.forEach((ob: Simbolo) => {
+                    if(ob!=null){
+                        let nodo=ob.valor
+                        salida+=generarxml(nodo);
+                    }
+                    
+                })
+
+            }else{
+
+                simbolos.forEach((ob: Simbolo) => {
+                    if(ob!=null){
+                        let nodo=ob.valor
+                        let entornoNodo: Entorno =nodo.entorno
+                        let listac2: Array<Acceso>=[]
+                        for(let i=0; i<listac.length;i++){
+                            listac2.push(listac[i])
+                        }
+                        salida+=recursiva(entornoNodo,listac2)
+                    }
+                })
+            }
+
+        }else{
+            let listac2: Array<Acceso>=[]
+            for(let i=0; i<listac.length;i++){
+                listac2.push(listac[i])
+            }
+            salida+=recursiva2(en,llave,listac2)
+        }
+
+    }
+    
+    return salida
+};
+
+function recursiva2(en: Entorno, nombre: string, listap: Array<Acceso>){
+    let bo:string=""
+    if(en.existeEnActual(nombre)){
+    
         let simbolos :Array<Simbolo>=[]
         for(let i=0; i<en.tablita.length;i++){
-            if(en.tablita[i].indentificador==llave){
+            if(en.tablita[i].indentificador==nombre){
                 simbolos.push(en.tablita[i]);
             }
-        } 
-        console.log(simbolos)
+        }  
 
-        if(listac.length==0){
+        if(listap.length==0){
 
             simbolos.forEach((ob: Simbolo) => {
                 if(ob!=null){
                     let nodo=ob.valor
-                    salida+=generarxml(nodo);
+                    bo+=generarxml(nodo);
                 }
                 
             })
@@ -190,32 +278,39 @@ function recursiva(en: Entorno, listac: Array<Acceso>){
                 if(ob!=null){
                     let nodo=ob.valor
                     let entornoNodo: Entorno =nodo.entorno
-                    let listac2: Array<Acceso>=[]
-                    for(let i=0; i<listac.length;i++){
-                        listac2.push(listac[i])
+                    let listac3: Array<Acceso>=[]
+                    for(let i=0; i<listap.length;i++){
+                        listac3.push(listap[i])
                     }
-                    salida+=recursiva(entornoNodo,listac2)
+                    bo+=recursiva(entornoNodo,listac3)
                 }
             })
         }
+        return bo
+        
+    }else{
+        for(let i=0;i< en.tablita.length;i++){
+            bo+=recursiva2(en.tablita[i].valor.entorno,nombre,listap)
+        }
+        return bo
     }
-    return salida
-};
+}
 
 function ejecutarXpath(entrada: string){
     const en: Entorno= algo
     const objetos= gramaticaXpath.parse(entrada);
     resultadoxpath=""
-    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)){
-        let listac: Array<Acceso>=[]
-        for (let i = objetos[0][0][0][0][0].length-1 ; i > -1; i--) {
-            listac.push(objetos[0][0][0][0][0][i])
-        }
-
-        return recursiva(en,listac)
-
+    //console.log(objetos[0][0][0][0][0].Nacceso[0])
+   
+    let listac: Array<Acceso>=[]
+    for (let i = objetos[0][0][0][0][0].Nacceso.length-1 ; i > -1; i--) {
+        listac.push(objetos[0][0][0][0][0].Nacceso[i])
     }
-    return "no dio"
+    //console.log(en)
+    //console.log(en.tablita[1])
+    return recursiva(en,listac)
+    
+    
     
     /*
     contador=objetos[0][0][0][0][0].length
