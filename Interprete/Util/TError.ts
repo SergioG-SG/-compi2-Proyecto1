@@ -51,6 +51,14 @@ export class ELexico {
     }
 }
 
+export class ESemantico {
+    constructor(tipo:string, descripcion:string, analizador: string,linea:number, columna:number){
+        const result = Error(tipo, descripcion,analizador ,linea, columna);
+        errorSem.push(result);
+    }
+
+}
+
 export function resetTE() {
     errorSem = [];
     errorSin = [];

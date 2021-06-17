@@ -8,12 +8,16 @@ const TError_js_1 = require("./Interprete/Util/TError.js");
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
 const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
+const TError_1 = require("./Interprete/Util/TError");
 let ObjetosXML;
 let resultadoxpath = "";
 let contador;
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
 let algo;
+let cadenaErrores;
+let reporteGramatical;
+let cadenaReporteGram;
 //Esta funcion es para mientras en lo que sincroniza con la pag
 ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -22,7 +26,7 @@ ejecutarXML(`
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
-        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <autor>&Julio &amp;Tommy&amp; Garcia</autor>
         <fechapublicacion ano="2001" mes="Enero"/>
     </libro>
 
@@ -55,17 +59,18 @@ realizarGraficaAST();
 //accionesEjecutables()
 //tablaErroresFicticia()
 function ejecutarXML(entrada) {
+    TError_1.resetTE(); // Metodo para resetear la tabla de errores
     cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`;
     //Parseo para obtener la raiz o raices  
     const resultado = gramaticaXML.parse(entrada);
     const objetos = resultado.result;
-    const reporteG = resultado.reporteGram;
+    reporteGramatical = resultado.reporteGram;
     ObjetosXML = objetos;
     const entornoGlobal = new Entorno_js_1.Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto) => {
-        if (objeto.identificador1 == "?XML") {
+        if (objeto.identificador1 == "<?xml") {
             //Acciones para el prologo
         }
         else {
@@ -78,9 +83,21 @@ function ejecutarXML(entrada) {
     const ent = entornoGlobal;
     algo = entornoGlobal;
     // console.log(cadenaReporteTS)
+    console.log(imprimirTablaErrores());
     return cadenaReporteTS;
 }
 ;
+function validarEtiqueta(cadena1, cadena2) {
+    if (cadena2 === "") { //si solo es 1 etiqueta de abrir
+        return true;
+    }
+    if (cadena1 === cadena2) { //si vienen las 2 cadenas
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 /*
 
 function recorrer(nodo: Objeto){
@@ -230,12 +247,38 @@ function ejecutarXpath(entrada) {
 }
 ;
 function ejecutarXML_DSC(entrada) {
-    const objetos = gramaticaXMLD.parse(entrada);
+    cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
+                        </tr></thead>`;
+    //Parseo para obtener la raiz o raices  
+    const resultado = gramaticaXMLD.parse(entrada);
+    const objetos = resultado.result;
+    const reporteG = resultado.reporteGram;
     ObjetosXML = objetos;
     const entornoGlobal = new Entorno_js_1.Entorno(null);
+    //funcion recursiva para manejo de entornos
+    objetos.forEach((objeto) => {
+        if (objeto.identificador1 == "<?xml") {
+            //Acciones para el prologo
+        }
+        else {
+            cadenaReporteTS += `<tr>`;
+            llenarTablaXML(objeto, entornoGlobal, null);
+            cadenaReporteTS += `</tr>`;
+        }
+    });
+    //esta es solo para debug jaja
+    const ent = entornoGlobal;
+    algo = entornoGlobal;
+    // console.log(cadenaReporteTS)
+    console.log(imprimirTablaErrores());
+    return cadenaReporteTS;
 }
 ;
 function llenarTablaXML(objeto, entorno, padre) {
+    if (!validarEtiqueta(objeto.identificador1, objeto.identificador2)) { //verificamos que las etiquetas sean iguales
+        new TError_js_1.ESemantico("Semantico", "No coinciden las etiquetas: '" + objeto.identificador1 + "' y '" + objeto.identificador2 + "'", "XML Asc", objeto.linea, objeto.columna);
+        return;
+    }
     //Inicializamos los entornos del objeto
     const entornoObjeto = new Entorno_js_1.Entorno(null);
     //Verificamos si tiene atributos para asignarselos
@@ -291,22 +334,52 @@ function reporteTablaErrores() {
                         </tr></thead>`;
     TError_js_1.errorLex.forEach(element => {
         cadenaReporteTE += `<tr>`;
-        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
+        cadenaReporteTE += `<td>${element.tipo}</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
         cadenaReporteTE += `</tr>`;
     });
     TError_js_1.errorSin.forEach(element => {
         cadenaReporteTE += `<tr>`;
-        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
+        cadenaReporteTE += `<td>${element.tipo}</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
         cadenaReporteTE += `</tr>`;
     });
     TError_js_1.errorSem.forEach(element => {
         cadenaReporteTE += `<tr>`;
-        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
+        cadenaReporteTE += `<td>${element.tipo}</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`;
         cadenaReporteTE += `</tr>`;
     });
     return cadenaReporteTE;
 }
 ;
+function llenarReporteG() {
+    let cadena;
+    // console.log(reporteGramatical.listaReporte)
+    cadena = ` <thead><tr><th scope="col">Produccion</th><th scope="col">Regla Semántica</th>
+    </tr></thead>`;
+    reporteGramatical.listaReporte.forEach((element) => {
+        cadena += `<tr>`;
+        cadena += `<td>${element.produccion}</td><td>${element.regla}</td>`;
+        cadena += `</tr>`;
+    });
+    // console.log(cadena)
+    return cadena;
+}
+function imprimirTablaErrores() {
+    let cadenaR = ``;
+    TError_js_1.errorLex.forEach(element => {
+        cadenaR += `Tipo:${element.tipo} Descripcion: ${element.descripcion} Analizador: ${element.analizador} Linea: ${element.linea} Columna: ${element.columna}\n`;
+    });
+    TError_js_1.errorSin.forEach(element => {
+        cadenaR += `Tipo:${element.tipo} Descripcion: ${element.descripcion} Analizador: ${element.analizador} Linea: ${element.linea} Columna: ${element.columna}\n`;
+    });
+    TError_js_1.errorSem.forEach(element => {
+        cadenaR += `Tipo:${element.tipo} Descripcion: ${element.descripcion} Analizador: ${element.analizador} Linea: ${element.linea} Columna: ${element.columna}\n`;
+    });
+    return cadenaR;
+}
+;
+function vaciarTodo() {
+    cadenaReporteTS = '';
+}
 /*ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
@@ -331,4 +404,4 @@ function reporteTablaErrores() {
     
 </hemeroteca>
 `);*/
-module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores, ejecutarXpath };
+module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores, ejecutarXpath, llenarReporteG, ejecutarXML_DSC };

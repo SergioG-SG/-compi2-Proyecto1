@@ -3,31 +3,38 @@ import { Tipo } from './Simbolo/Tipo.js'
 import { Entorno } from "./Simbolo/Entorno.js";
 import { Instruccion } from "./Interfaces/Instruccion.js";
 import { Objeto } from "./Interprete/Expresion/Objeto.js";
-import { Acceso} from "./Interprete/Expresion/Acceso";
+import { Acceso } from "./Interprete/Expresion/Acceso";
 import { Simbolo } from "./Simbolo/Simbolo.js";
 import { Atributo } from "./Interprete/Expresion/Atributo.js";
 import { GraficarAST } from "./Graficador/GraficarAST.js";
-import { ELexico, ESintactico, errorLex, errorSem, errorSin } from "./Interprete/Util/TError.js";
+import { ELexico, ESintactico, ESemantico, errorLex, errorSem, errorSin } from "./Interprete/Util/TError.js";
 import { access } from "fs";
+import { Gramatical } from "./Simbolo/Gramatical.js";
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
 const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
+import { resetTE } from './Interprete/Util/TError';
+
 let ObjetosXML: any
-let resultadoxpath: string=""
+let resultadoxpath: string = ""
 let contador: number
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
-let algo: any        
+
+let algo: any
+let cadenaErrores: any
+let reporteGramatical : any
+let cadenaReporteGram : any
 //Esta funcion es para mientras en lo que sincroniza con la pag
 
-    ejecutarXML(`
+ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <app>
 <biblioteca dir="calle 3>5<5" prop="Sergio's">
     <libro>
         <titulo>Libro A</titulo>
-        <autor>Julio &amp;Tommy&amp; Garcia</autor>
+        <autor>&Julio &amp;Tommy&amp; Garcia</autor>
         <fechapublicacion ano="2001" mes="Enero"/>
     </libro>
 
@@ -55,25 +62,27 @@ let algo: any
 </hem>
 </app>
 `)
-    realizarGraficaAST()
- //   tablaErroresFicticia()
+realizarGraficaAST()
+//   tablaErroresFicticia()
 
 
 //accionesEjecutables()
 //tablaErroresFicticia()
 
 function ejecutarXML(entrada: string) {
+    resetTE() // Metodo para resetear la tabla de errores
+    
     cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
     //Parseo para obtener la raiz o raices  
     const resultado = gramaticaXML.parse(entrada);
     const objetos = resultado.result;
-    const reporteG = resultado.reporteGram;
+    reporteGramatical = resultado.reporteGram;
     ObjetosXML = objetos;
     const entornoGlobal: Entorno = new Entorno(null);
     //funcion recursiva para manejo de entornos
     objetos.forEach((objeto: Objeto) => {
-        if (objeto.identificador1 == "?XML") {
+        if (objeto.identificador1 == "<?xml") {
             //Acciones para el prologo
         } else {
             cadenaReporteTS += `<tr>`
@@ -83,11 +92,24 @@ function ejecutarXML(entrada: string) {
     })
     //esta es solo para debug jaja
     const ent = entornoGlobal;
-    algo=entornoGlobal
-   // console.log(cadenaReporteTS)
+    algo = entornoGlobal
+    // console.log(cadenaReporteTS)
+    console.log(imprimirTablaErrores())
+  
     return cadenaReporteTS
 };
 
+function validarEtiqueta(cadena1: string, cadena2: string): boolean {
+    if (cadena2 === "") {//si solo es 1 etiqueta de abrir
+        return true
+    }
+    if (cadena1 === cadena2) {//si vienen las 2 cadenas
+        return true
+    } else {
+        return false
+    }
+
+}
 
 /*
 
@@ -139,62 +161,62 @@ function avanzar(en: Entorno, listac: Array<Acceso>){
 */
 
 
-function generarxml(nodo: Objeto){
-    let result2:string=""
-    if(nodo.texto!=""){
-        let result:string=""
-        result="<"+nodo.identificador1+">"+nodo.texto+"</"+nodo.identificador1+">\n";
-        return  result
-    }else{
-        if(nodo.listaObjetos.length>0){
-            let result3:string=""
+function generarxml(nodo: Objeto) {
+    let result2: string = ""
+    if (nodo.texto != "") {
+        let result: string = ""
+        result = "<" + nodo.identificador1 + ">" + nodo.texto + "</" + nodo.identificador1 + ">\n";
+        return result
+    } else {
+        if (nodo.listaObjetos.length > 0) {
+            let result3: string = ""
             nodo.listaObjetos.forEach((objetoHijo: Objeto) => {
-                result3+=generarxml(objetoHijo);
+                result3 += generarxml(objetoHijo);
             })
-            result2+="<"+nodo.identificador1+">\n"+result3+"</"+nodo.identificador1+">\n";
+            result2 += "<" + nodo.identificador1 + ">\n" + result3 + "</" + nodo.identificador1 + ">\n";
         }
     }
     return result2
-    
+
 };
 
-function recursiva(en: Entorno, listac: Array<Acceso>){
-    let llave: string=""
-    llave= listac[listac.length-1].valor
+function recursiva(en: Entorno, listac: Array<Acceso>) {
+    let llave: string = ""
+    llave = listac[listac.length - 1].valor
     listac.pop()
-    let salida: string=""
-    
-    if(en.existeEnActual(llave)){
+    let salida: string = ""
 
-        let simbolos :Array<Simbolo>=[]
-        for(let i=0; i<en.tablita.length;i++){
-            if(en.tablita[i].indentificador==llave){
+    if (en.existeEnActual(llave)) {
+
+        let simbolos: Array<Simbolo> = []
+        for (let i = 0; i < en.tablita.length; i++) {
+            if (en.tablita[i].indentificador == llave) {
                 simbolos.push(en.tablita[i]);
             }
-        } 
+        }
         console.log(simbolos)
 
-        if(listac.length==0){
+        if (listac.length == 0) {
 
             simbolos.forEach((ob: Simbolo) => {
-                if(ob!=null){
-                    let nodo=ob.valor
-                    salida+=generarxml(nodo);
+                if (ob != null) {
+                    let nodo = ob.valor
+                    salida += generarxml(nodo);
                 }
-                
+
             })
 
-        }else{
+        } else {
 
             simbolos.forEach((ob: Simbolo) => {
-                if(ob!=null){
-                    let nodo=ob.valor
-                    let entornoNodo: Entorno =nodo.entorno
-                    let listac2: Array<Acceso>=[]
-                    for(let i=0; i<listac.length;i++){
+                if (ob != null) {
+                    let nodo = ob.valor
+                    let entornoNodo: Entorno = nodo.entorno
+                    let listac2: Array<Acceso> = []
+                    for (let i = 0; i < listac.length; i++) {
                         listac2.push(listac[i])
                     }
-                    salida+=recursiva(entornoNodo,listac2)
+                    salida += recursiva(entornoNodo, listac2)
                 }
             })
         }
@@ -202,21 +224,21 @@ function recursiva(en: Entorno, listac: Array<Acceso>){
     return salida
 };
 
-function ejecutarXpath(entrada: string){
-    const en: Entorno= algo
-    const objetos= gramaticaXpath.parse(entrada);
-    resultadoxpath=""
-    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)){
-        let listac: Array<Acceso>=[]
-        for (let i = objetos[0][0][0][0][0].length-1 ; i > -1; i--) {
+function ejecutarXpath(entrada: string) {
+    const en: Entorno = algo
+    const objetos = gramaticaXpath.parse(entrada);
+    resultadoxpath = ""
+    if (en.existeEnActual(objetos[0][0][0][0][0][0].valor)) {
+        let listac: Array<Acceso> = []
+        for (let i = objetos[0][0][0][0][0].length - 1; i > -1; i--) {
             listac.push(objetos[0][0][0][0][0][i])
         }
 
-        return recursiva(en,listac)
+        return recursiva(en, listac)
 
     }
     return "no dio"
-    
+
     /*
     contador=objetos[0][0][0][0][0].length
 
@@ -246,17 +268,41 @@ function ejecutarXpath(entrada: string){
         })
 
     })*/
-    
+
 };
 
 function ejecutarXML_DSC(entrada: string) {
-    const objetos = gramaticaXMLD.parse(entrada);
+    cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
+                        </tr></thead>`
+    //Parseo para obtener la raiz o raices  
+    const resultado = gramaticaXMLD.parse(entrada);
+    const objetos = resultado.result;
+    const reporteG = resultado.reporteGram;
     ObjetosXML = objetos;
     const entornoGlobal: Entorno = new Entorno(null);
+    //funcion recursiva para manejo de entornos
+    objetos.forEach((objeto: Objeto) => {
+        if (objeto.identificador1 == "<?xml") {
+            //Acciones para el prologo
+        } else {
+            cadenaReporteTS += `<tr>`
+            llenarTablaXML(objeto, entornoGlobal, null);
+            cadenaReporteTS += `</tr>`
+        }
+    })
+    //esta es solo para debug jaja
+    const ent = entornoGlobal;
+    algo = entornoGlobal
+    // console.log(cadenaReporteTS)
+    console.log(imprimirTablaErrores())
+    return cadenaReporteTS
 };
 
 function llenarTablaXML(objeto: Objeto, entorno: Entorno, padre: Objeto | null) {
-
+    if (!validarEtiqueta(objeto.identificador1, objeto.identificador2)) { //verificamos que las etiquetas sean iguales
+        new ESemantico("Semantico", "No coinciden las etiquetas: '" + objeto.identificador1 + "' y '" + objeto.identificador2 + "'", "XML Asc", objeto.linea, objeto.columna);
+        return
+    }
     //Inicializamos los entornos del objeto
     const entornoObjeto: Entorno = new Entorno(null)
     //Verificamos si tiene atributos para asignarselos
@@ -313,24 +359,56 @@ function reporteTablaErrores() {
     let cadenaReporteTE = ` <thead><tr><th scope="col">Tipo</th><th scope="col">Descripcion</th><th scope="col">Archivo</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
     errorLex.forEach(element => {
-    cadenaReporteTE += `<tr>`
-    cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`
-    cadenaReporteTE += `</tr>`
+        cadenaReporteTE += `<tr>`
+        cadenaReporteTE += `<td>${element.tipo}</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`
+        cadenaReporteTE += `</tr>`
     });
     errorSin.forEach(element => {
         cadenaReporteTE += `<tr>`
-        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`
+        cadenaReporteTE += `<td>${element.tipo}</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`
         cadenaReporteTE += `</tr>`
     });
     errorSem.forEach(element => {
         cadenaReporteTE += `<tr>`
-        cadenaReporteTE += `<td>${element.tipo}</td><td>Objeto</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`
+        cadenaReporteTE += `<td>${element.tipo}</td><td>${element.descripcion}</td><td>${element.analizador}</td><td>${element.linea}</td><td>${element.columna}</td>`
         cadenaReporteTE += `</tr>`
     });
-    return cadenaReporteTE    
+    return cadenaReporteTE
 
 };
 
+function llenarReporteG() {
+    let cadena :string;
+   // console.log(reporteGramatical.listaReporte)
+    cadena =  ` <thead><tr><th scope="col">Produccion</th><th scope="col">Regla Semántica</th>
+    </tr></thead>`
+    reporteGramatical.listaReporte.forEach((element: { produccion: any; regla: any; }) => {
+        cadena += `<tr>`
+        cadena += `<td>${element.produccion}</td><td>${element.regla}</td>`
+        cadena += `</tr>`
+    });
+   // console.log(cadena)
+    return cadena
+}
+
+function imprimirTablaErrores() {
+    let cadenaR = ``
+    errorLex.forEach(element => {
+        cadenaR += `Tipo:${element.tipo} Descripcion: ${element.descripcion} Analizador: ${element.analizador} Linea: ${element.linea} Columna: ${element.columna}\n`
+    });
+    errorSin.forEach(element => {
+        cadenaR += `Tipo:${element.tipo} Descripcion: ${element.descripcion} Analizador: ${element.analizador} Linea: ${element.linea} Columna: ${element.columna}\n`
+    });
+    errorSem.forEach(element => {
+        cadenaR += `Tipo:${element.tipo} Descripcion: ${element.descripcion} Analizador: ${element.analizador} Linea: ${element.linea} Columna: ${element.columna}\n`
+    });
+    return cadenaR
+
+};
+
+function vaciarTodo(){
+    cadenaReporteTS = ''
+}
 /*ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
@@ -356,4 +434,4 @@ function reporteTablaErrores() {
 </hemeroteca>
 `);*/
 
-module.exports = { ejecutarXML, realizarGraficaAST,reporteTablaErrores,ejecutarXpath };
+module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores, ejecutarXpath , llenarReporteG, ejecutarXML_DSC};
