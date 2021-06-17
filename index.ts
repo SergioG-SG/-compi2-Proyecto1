@@ -77,7 +77,7 @@ realizarGraficaAST()
 
 function ejecutarXML(entrada: string) {
     resetTE() // Metodo para resetear la tabla de errores
-    
+    vaciarTodo()
     cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
     //Parseo para obtener la raiz o raices  

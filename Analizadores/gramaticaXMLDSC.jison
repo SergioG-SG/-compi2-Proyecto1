@@ -64,7 +64,10 @@ const {Gramatical} = require('../Simbolo/Gramatical')
 
 START: ROOTS EOF                                    { $$=$1;  
                                                          gramatical.agregar('Start->Roots','$$=$1');
-                                                        return $$; } 
+                                                        return {
+                                                        result: $$,
+                                                        reporteGram: gramatical
+                                                    }; } 
      ;
 
 ROOTS: ROOT ROOTS_P                                 { $$ = $2; $$.push($1); 
