@@ -7,20 +7,24 @@ import { Acceso} from "./Interprete/Expresion/Acceso";
 import { Simbolo } from "./Simbolo/Simbolo.js";
 import { Atributo } from "./Interprete/Expresion/Atributo.js";
 import { GraficarAST } from "./Graficador/GraficarAST.js";
+import { GraficarCST_XML } from "./Graficador/GraficarCST_XML";
 import { ELexico, ESintactico, errorLex, errorSem, errorSin } from "./Interprete/Util/TError.js";
 import { access } from "fs";
+const CST_XML = require('./Analizadores/CSTXML.js');
 const gramaticaXML = require('./Analizadores/gramaticaXML.js');
 const gramaticaXMLD = require('./Analizadores/gramaticaXMLDSC.js');
 const gramaticaXpath = require('./Analizadores/gramaticaXPath.js');
-let ObjetosXML: any
-let resultadoxpath: string=""
-let contador: number
+let ObjetosXML: any;
+let ObjetosNode: any;
+var graficador = new GraficarCST_XML();
+let resultadoxpath: string="";
+let contador: number;
 let cadenaReporteTS = ` <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Ambito</th><th scope="col">Fila</th><th scope="col">Columna</th>
                         </tr></thead>`
 let algo: any        
 //Esta funcion es para mientras en lo que sincroniza con la pag
 
-    ejecutarXML(`
+ejecutarXML(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <app>
@@ -331,6 +335,13 @@ function reporteTablaErrores() {
 
 };
 
+function realizarGraficaCST_XML(entrada: string){
+    ObjetosNode = CST_XML.parse(entrada);
+    var cadena = graficador.graficar(ObjetosNode);
+    var direccion = encodeURI("https://dreampuf.github.io/GraphvizOnline/#" + cadena);
+    window.open(direccion, '_blank');
+};
+
 /*ejecutarXML_DSC(`
 <?xml version="1.0" encoding="UTF-8" ?>
 
@@ -356,4 +367,4 @@ function reporteTablaErrores() {
 </hemeroteca>
 `);*/
 
-module.exports = { ejecutarXML, realizarGraficaAST,reporteTablaErrores,ejecutarXpath };
+module.exports = { ejecutarXML, realizarGraficaAST, reporteTablaErrores, ejecutarXpath, realizarGraficaCST_XML };
